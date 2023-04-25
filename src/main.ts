@@ -31,10 +31,6 @@ class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
   readonly reason: "non-default" | "non-text-channel" | "disabled"
 }> {}
 
-class PermissionsError extends Data.TaggedClass("PermissionsError")<{
-  readonly reason: "edit-message"
-}> {}
-
 const program = Effect.gen(function* ($) {
   const gateway = yield* $(DiscordGateway)
   const rest = yield* $(DiscordREST)
@@ -87,36 +83,36 @@ const program = Effect.gen(function* ($) {
 
   const hasManage = Perms.has(PermissionFlag.MANAGE_CHANNELS)
 
-  const checkPermissions = Effect.gen(function* ($) {
-    const ix = yield* $(Ix.interaction)
-    const ctx = yield* $(Ix.MessageComponentContext)
-    const authorId = ctx.custom_id.split("_")[1]
-    const canEdit =
-      authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
+  const checkPermissions = <R, E, A>(
+    f: (
+      ix: Discord.Interaction,
+      ctx: Discord.MessageComponentDatum,
+    ) => Effect.Effect<R, E, A>,
+  ) =>
+    Effect.gen(function* ($) {
+      const ix = yield* $(Ix.interaction)
+      const ctx = yield* $(Ix.MessageComponentContext)
+      const authorId = ctx.custom_id.split("_")[1]
+      const canEdit =
+        authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
 
-    if (!canEdit) {
-      yield* $(Effect.fail(new PermissionsError({ reason: "edit-message" })))
-    }
+      if (!canEdit) {
+        return Ix.r({
+          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            flags: Discord.MessageFlag.EPHEMERAL,
+            content: "You don't have permissions to edit this thread",
+          },
+        })
+      }
 
-    return [ix, ctx] as const
-  })
-
-  const handlePermissionsError = () =>
-    Effect.succeed(
-      Ix.r({
-        type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          flags: Discord.MessageFlag.EPHEMERAL,
-          content: "You don't have permissions to edit this thread",
-        },
-      }),
-    )
+      return yield* $(f(ix, ctx))
+    })
 
   const edit = Ix.messageComponent(
     Ix.idStartsWith("edit_"),
-    pipe(
-      checkPermissions,
-      Effect.as(
+    checkPermissions(() =>
+      Effect.succeed(
         Ix.r({
           type: Discord.InteractionCallbackType.MODAL,
           data: {
@@ -128,7 +124,6 @@ const program = Effect.gen(function* ($) {
           },
         }),
       ),
-      Effect.catchTag("PermissionsError", handlePermissionsError),
     ),
   )
 
@@ -150,17 +145,15 @@ const program = Effect.gen(function* ($) {
 
   const archive = Ix.messageComponent(
     Ix.idStartsWith("archive_"),
-    pipe(
-      checkPermissions,
-      Effect.tap(([ix]) =>
+    checkPermissions(ix =>
+      Effect.as(
         rest.modifyChannel(ix.channel_id!, {
           archived: true,
         }),
+        Ix.r({
+          type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
+        }),
       ),
-      Effect.as({
-        type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
-      }),
-      Effect.catchTag("PermissionsError", handlePermissionsError),
     ),
   )
 
