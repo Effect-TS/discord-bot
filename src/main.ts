@@ -1,7 +1,6 @@
 import { Config, Data, Effect, Layer, Tag, pipe } from "bot/_common"
 import { Cache, Discord, DiscordREST, Intents, Ix, Perms, UI } from "dfx"
-import { DiscordGateway } from "dfx/DiscordGateway"
-import { CachePrelude, makeLive, runIx } from "dfx/gateway"
+import { CachePrelude, DiscordGateway, makeLive, runIx } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 
 Dotenv.config()
