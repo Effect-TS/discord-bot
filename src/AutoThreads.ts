@@ -145,10 +145,7 @@ const make = Effect.gen(function* ($) {
 
   const ix = Ix.builder.add(archive).add(edit).add(editModal)
 
-  // Run the message handler
-  yield* $(Effect.forkScoped(handleMessages))
-
-  return { ix } as const
+  return { ix, run: handleMessages } as const
 })
 
 export interface AutoThreads extends Effect.Effect.Success<typeof make> {}

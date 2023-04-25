@@ -7,7 +7,4 @@ interface ChannelsCache
   extends Effect.Effect.Success<typeof makeChannelsCache> {}
 
 export const ChannelsCache = Tag<ChannelsCache>()
-export const ChannelsCacheLive = Layer.scoped(
-  ChannelsCache,
-  Effect.tap(makeChannelsCache, _ => Effect.forkScoped(_.run)),
-)
+export const ChannelsCacheLive = Layer.scoped(ChannelsCache, makeChannelsCache)

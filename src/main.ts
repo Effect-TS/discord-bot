@@ -3,10 +3,12 @@ import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents, Ix } from "dfx"
 import { makeLive, runIx } from "dfx/gateway"
 import * as Dotenv from "dotenv"
+import { ChannelsCache, ChannelsCacheLive } from "./ChannelsCache.js"
 
 Dotenv.config()
 
 const program = Effect.gen(function* ($) {
+  const channels = yield* $(ChannelsCache)
   const autoThreads = yield* $(AutoThreads)
 
   const runInteractions = pipe(
@@ -14,7 +16,7 @@ const program = Effect.gen(function* ($) {
     runIx(Effect.catchAllCause(Effect.logErrorCause)),
   )
 
-  yield* $(runInteractions)
+  yield* $(Effect.allParDiscard(channels.run, autoThreads.run, runInteractions))
 })
 
 const BotLive = makeLive({
@@ -24,7 +26,10 @@ const BotLive = makeLive({
   },
 })
 
-const EnvLive = Layer.provideMerge(BotLive, AutoThreadsLive)
+const EnvLive = Layer.provideMerge(
+  BotLive,
+  Layer.merge(AutoThreadsLive, ChannelsCacheLive),
+)
 
 pipe(
   program,
