@@ -25,7 +25,7 @@ const EnvLive = Layer.provideMerge(BotLive, ChannelsCacheLive)
 
 // ==== errors
 class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
-  readonly reason: "non-default" | "non-text-channel" | "disabled"
+  readonly reason: "non-default" | "from-bot" | "non-text-channel" | "disabled"
 }> {}
 
 const program = Effect.gen(function* ($) {
@@ -43,6 +43,10 @@ const program = Effect.gen(function* ($) {
         ),
         channel: channels.get(message.guild_id!, message.channel_id),
       }),
+      Effect.filterOrFail(
+        () => message.author.bot !== true,
+        () => new NotValidMessageError({ reason: "from-bot" }),
+      ),
       Effect.filterOrFail(
         ({ channel }) => channel.type === Discord.ChannelType.GUILD_TEXT,
         () => new NotValidMessageError({ reason: "non-text-channel" }),
@@ -74,6 +78,9 @@ const program = Effect.gen(function* ($) {
           ]),
         }),
       ),
+      Effect.catchTags({
+        NotValidMessageError: () => Effect.unit(),
+      }),
       Effect.catchAllCause(Effect.logErrorCause),
     ),
   )
