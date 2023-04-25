@@ -20,7 +20,7 @@ jobs:
         uses: docker/metadata-action@v3.5.0
         id: meta
         with:
-          images: timsmart/thread-bot
+          images: timsmart/effect-bot
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v2.7.0

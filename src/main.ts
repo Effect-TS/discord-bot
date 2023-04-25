@@ -5,13 +5,6 @@ import * as Dotenv from "dotenv"
 
 Dotenv.config()
 
-// ==== channels cache
-const makeChannelsCache = CachePrelude.channels(Cache.memoryParentDriver())
-interface ChannelsCache
-  extends Effect.Effect.Success<typeof makeChannelsCache> {}
-const ChannelsCache = Tag<ChannelsCache>()
-const ChannelsCacheLive = Layer.effect(ChannelsCache, makeChannelsCache)
-
 // ==== deps
 const BotLive = makeLive({
   token: Config.secret("DISCORD_BOT_TOKEN"),
@@ -19,6 +12,12 @@ const BotLive = makeLive({
     intents: Config.succeed(Intents.fromList(["GUILD_MESSAGES", "GUILDS"])),
   },
 })
+
+const makeChannelsCache = CachePrelude.channels(Cache.memoryParentDriver())
+interface ChannelsCache
+  extends Effect.Effect.Success<typeof makeChannelsCache> {}
+const ChannelsCache = Tag<ChannelsCache>()
+const ChannelsCacheLive = Layer.effect(ChannelsCache, makeChannelsCache)
 
 const EnvLive = Layer.provideMerge(BotLive, ChannelsCacheLive)
 
