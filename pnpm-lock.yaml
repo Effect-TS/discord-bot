@@ -8,8 +8,8 @@ dependencies:
     specifier: ^0.25.5
     version: 0.25.5
   dfx:
-    specifier: ^0.35.2
-    version: 0.35.2
+    specifier: ^0.36.2
+    version: 0.36.2
   dotenv:
     specifier: ^16.0.3
     version: 16.0.3
@@ -135,8 +135,8 @@ packages:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
 
-  /dfx@0.35.2:
-    resolution: {integrity: sha512-+m1Gorb6OAOPRATDQZWtc0WVrkN+nejkziDMQzRjqie23DkU4fG1uboxKbmu7Ud3hmDSF3efJ0aA8xLwjJ8gYQ==}
+  /dfx@0.36.2:
+    resolution: {integrity: sha512-AG5Z/DPcj6u9mpABcIYhV48n7zwDMBybml4X1v1ppV47lm6vabaCfBzJM+hKgOrO/RQh6elDadyJLARN7T6QiQ==}
     dependencies:
       '@effect-http/client': 0.22.0
       '@effect/data': 0.12.2

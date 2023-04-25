@@ -1,14 +1,5 @@
-import {
-  Config,
-  Data,
-  Effect,
-  HashMap,
-  Layer,
-  Option,
-  Tag,
-  pipe,
-} from "bot/_common"
-import { Discord, DiscordREST, Intents, Ix, IxHelpers, Perms, UI } from "dfx"
+import { Config, Data, Effect, Layer, Tag, pipe } from "bot/_common"
+import { Discord, DiscordREST, Intents, Ix, Perms, UI } from "dfx"
 import * as Cache from "dfx/Cache"
 import * as CacheP from "dfx/Cache/prelude"
 import { DiscordGateway } from "dfx/DiscordGateway"
@@ -145,18 +136,14 @@ const program = Effect.gen(function* ($) {
     Ix.id("edit"),
     pipe(
       Effect.allPar({
-        title: Effect.flatMap(Ix.modalValues, _ =>
-          Option.flatMap(HashMap.get(_, "title"), Option.fromNullable),
-        ),
+        title: Ix.modalValue("title"),
         context: Ix.interaction,
       }),
       Effect.flatMap(({ title, context }) =>
         rest.modifyChannel(context.channel_id!, { name: title }),
       ),
       Effect.as(
-        IxHelpers.response({
-          type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
-        }),
+        Ix.r({ type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE }),
       ),
     ),
   )
