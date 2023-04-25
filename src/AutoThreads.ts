@@ -1,8 +1,7 @@
-import { Config, Data, Effect, Layer, Tag, pipe } from "bot/_common"
-import { Cache, Discord, DiscordREST, Intents, Ix, Perms, UI } from "dfx"
-import { CachePrelude, DiscordGateway, makeLive, runIx } from "dfx/gateway"
-import * as Dotenv from "dotenv"
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
+import { Data, Effect, Layer, Tag, pipe } from "bot/_common"
+import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
+import { DiscordGateway } from "dfx/gateway"
 
 // ==== errors
 export class NotValidMessageError extends Data.TaggedClass(
