@@ -1,13 +1,14 @@
 import { AutoThreads, AutoThreadsLive } from "bot/AutoThreads"
 import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents, Ix } from "dfx"
-import { makeLive, runIx } from "dfx/gateway"
+import { DiscordGateway, makeLive, runIx } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 import { ChannelsCache, ChannelsCacheLive } from "./ChannelsCache.js"
 
 Dotenv.config()
 
 const program = Effect.gen(function* ($) {
+  const gateway = yield* $(DiscordGateway)
   const channels = yield* $(ChannelsCache)
   const autoThreads = yield* $(AutoThreads)
 
@@ -16,7 +17,14 @@ const program = Effect.gen(function* ($) {
     runIx(Effect.catchAllCause(Effect.logErrorCause)),
   )
 
-  yield* $(Effect.allParDiscard(channels.run, autoThreads.run, runInteractions))
+  yield* $(
+    Effect.allParDiscard(
+      gateway.run,
+      channels.run,
+      autoThreads.run,
+      runInteractions,
+    ),
+  )
 })
 
 const BotLive = makeLive({

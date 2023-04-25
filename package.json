@@ -15,14 +15,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^18.16.0",
+    "@types/node": "^18.16.1",
     "prettier": "^2.8.8",
     "typescript": "^5.0.4"
   },
   "dependencies": {
     "@effect/data": "^0.12.2",
-    "@effect/io": "^0.25.6",
-    "dfx": "^0.36.4",
+    "@effect/io": "^0.25.7",
+    "dfx": "^0.37.0",
     "dotenv": "^16.0.3"
   }
 }
