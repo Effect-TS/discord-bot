@@ -1,16 +1,13 @@
 import { Config, Data, Effect, Layer, Tag, pipe } from "bot/_common"
-import { Discord, DiscordREST, Intents, Ix, Perms, UI } from "dfx"
-import * as Cache from "dfx/Cache"
-import * as CacheP from "dfx/Cache/prelude"
+import { Cache, Discord, DiscordREST, Intents, Ix, Perms, UI } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
-import { makeLive, runIx } from "dfx/gateway"
-import { PermissionFlag } from "dfx/types"
+import { CachePrelude, makeLive, runIx } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 
 Dotenv.config()
 
 // ==== channels cache
-const makeChannelsCache = CacheP.channels(Cache.memoryParentDriver())
+const makeChannelsCache = CachePrelude.channels(Cache.memoryParentDriver())
 interface ChannelsCache
   extends Effect.Effect.Success<typeof makeChannelsCache> {}
 const ChannelsCache = Tag<ChannelsCache>()
@@ -81,7 +78,7 @@ const program = Effect.gen(function* ($) {
     ),
   )
 
-  const hasManage = Perms.has(PermissionFlag.MANAGE_CHANNELS)
+  const hasManage = Perms.has(Discord.PermissionFlag.MANAGE_CHANNELS)
 
   const checkPermissions = <R, E, A>(
     f: (
