@@ -22,7 +22,8 @@
   "dependencies": {
     "@effect/data": "^0.12.2",
     "@effect/io": "^0.25.7",
-    "dfx": "^0.37.0",
-    "dotenv": "^16.0.3"
+    "dfx": "^0.38.0",
+    "dotenv": "^16.0.3",
+    "openai": "^3.2.1"
   }
 }

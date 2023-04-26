@@ -1,6 +1,7 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import { Data, Effect, Layer, Tag, pipe } from "bot/_common"
-import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
+import { OpenAI } from "bot/OpenAI"
+import { Data, Effect, Layer, Option, Tag, pipe } from "bot/_common"
+import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 
 // ==== errors
@@ -11,6 +12,8 @@ export class NotValidMessageError extends Data.TaggedClass(
 }> {}
 
 const make = Effect.gen(function* ($) {
+  const log = yield* $(Log.Log)
+  const openai = yield* $(OpenAI)
   const gateway = yield* $(DiscordGateway)
   const rest = yield* $(DiscordREST)
   const channels = yield* $(ChannelsCache)
@@ -37,9 +40,19 @@ const make = Effect.gen(function* ($) {
         ({ channel }) => channel.topic?.includes("[threads]") === true,
         () => new NotValidMessageError({ reason: "disabled" }),
       ),
-      Effect.flatMap(({ channel }) =>
+      Effect.bind("title", () =>
+        pipe(
+          Option.fromNullable(message.content),
+          Option.filter(_ => _.trim().length > 0),
+          Effect.flatMap(content =>
+            Effect.tapError(openai.generateTitle(content), log.info),
+          ),
+          Effect.orElseSucceed(() => `${message.member!.nick}'s thread`),
+        ),
+      ),
+      Effect.flatMap(({ channel, title }) =>
         rest.startThreadFromMessage(channel.id, message.id, {
-          name: `${message.member!.nick}'s thread`,
+          name: title,
         }),
       ),
       Effect.flatMap(_ => _.json),
@@ -62,6 +75,10 @@ const make = Effect.gen(function* ($) {
       ),
       Effect.catchTags({
         NotValidMessageError: () => Effect.unit(),
+        DiscordRESTError: _ =>
+          "response" in _.error
+            ? Effect.flatMap(_.error.response.json, log.info)
+            : log.info(_.error),
       }),
       Effect.catchAllCause(Effect.logErrorCause),
     ),
@@ -76,8 +93,8 @@ const make = Effect.gen(function* ($) {
     ) => Effect.Effect<R, E, A>,
   ) =>
     Effect.gen(function* ($) {
-      const ix = yield* $(Ix.interaction)
-      const ctx = yield* $(Ix.MessageComponentContext)
+      const ix = yield* $(Ix.Interaction)
+      const ctx = yield* $(Ix.MessageComponentData)
       const authorId = ctx.custom_id.split("_")[1]
       const canEdit =
         authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
@@ -118,7 +135,7 @@ const make = Effect.gen(function* ($) {
     pipe(
       Effect.allPar({
         title: Ix.modalValue("title"),
-        context: Ix.interaction,
+        context: Ix.Interaction,
       }),
       Effect.flatMap(({ title, context }) =>
         rest.modifyChannel(context.channel_id!, { name: title }),
@@ -133,19 +150,16 @@ const make = Effect.gen(function* ($) {
     Ix.idStartsWith("archive_"),
     checkPermissions(ix =>
       Effect.as(
-        rest.modifyChannel(ix.channel_id!, {
-          archived: true,
-        }),
-        Ix.r({
-          type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
-        }),
+        rest.modifyChannel(ix.channel_id!, { archived: true }),
+        Ix.r({ type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE }),
       ),
     ),
   )
 
-  const ix = Ix.builder.add(archive).add(edit).add(editModal)
-
-  return { ix, run: handleMessages } as const
+  return {
+    ix: Ix.builder.add(archive).add(edit).add(editModal),
+    run: handleMessages,
+  } as const
 })
 
 export interface AutoThreads extends Effect.Effect.Success<typeof make> {}

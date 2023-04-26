@@ -1,4 +1,5 @@
 import { AutoThreads, AutoThreadsLive } from "bot/AutoThreads"
+import * as OpenAI from "bot/OpenAI"
 import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents, Ix } from "dfx"
 import { DiscordGateway, makeLive, runIx } from "dfx/gateway"
@@ -30,13 +31,19 @@ const program = Effect.gen(function* ($) {
 const BotLive = makeLive({
   token: Config.secret("DISCORD_BOT_TOKEN"),
   gateway: {
-    intents: Config.succeed(Intents.fromList(["GUILD_MESSAGES", "GUILDS"])),
+    intents: Config.succeed(
+      Intents.fromList(["GUILD_MESSAGES", "MESSAGE_CONTENT", "GUILDS"]),
+    ),
   },
+})
+
+const OpenAILive = OpenAI.makeLayer({
+  apiKey: Config.secret("OPENAI_API_KEY"),
 })
 
 const EnvLive = Layer.provideMerge(
   BotLive,
-  Layer.merge(AutoThreadsLive, ChannelsCacheLive),
+  Layer.merge(Layer.provide(OpenAILive, AutoThreadsLive), ChannelsCacheLive),
 )
 
 pipe(
