@@ -1,16 +1,16 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIError } from "bot/OpenAI"
 import {
+  Cause,
   Data,
+  Duration,
   Effect,
   Layer,
   Option,
-  Tag,
-  pipe,
   Schedule,
+  Tag,
   millis,
-  Cause,
-  Duration,
+  pipe,
   seconds,
 } from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
@@ -75,7 +75,13 @@ const make = Effect.gen(function* ($) {
               Effect.tapError(log.info),
             ),
           ),
-          Effect.orElseSucceed(() => `${message.member!.nick}'s thread`),
+          Effect.orElseSucceed(() =>
+            pipe(
+              Option.fromNullable(message.member?.nick),
+              Option.getOrElse(() => message.author.username),
+              _ => `${_}'s thread`,
+            ),
+          ),
         ),
       ),
       Effect.flatMap(({ channel, title }) =>
@@ -116,12 +122,7 @@ const make = Effect.gen(function* ($) {
 
   const hasManage = Perms.has(Discord.PermissionFlag.MANAGE_CHANNELS)
 
-  const checkPermissions = <R, E, A>(
-    f: (
-      ix: Discord.Interaction,
-      ctx: Discord.MessageComponentDatum,
-    ) => Effect.Effect<R, E, A>,
-  ) =>
+  const withEditPermissions = <R, E, A>(self: Effect.Effect<R, E, A>) =>
     Effect.gen(function* ($) {
       const ix = yield* $(Ix.Interaction)
       const ctx = yield* $(Ix.MessageComponentData)
@@ -139,32 +140,31 @@ const make = Effect.gen(function* ($) {
         })
       }
 
-      return yield* $(f(ix, ctx))
+      return yield* $(self)
     })
 
   const edit = Ix.messageComponent(
     Ix.idStartsWith("edit_"),
-    checkPermissions(() =>
-      pipe(
-        Ix.Interaction,
-        Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
-        Effect.map(channel =>
-          Ix.response({
-            type: Discord.InteractionCallbackType.MODAL,
-            data: {
-              custom_id: "edit",
-              title: "Edit title",
-              components: UI.singleColumn([
-                UI.textInput({
-                  custom_id: "title",
-                  label: "New title",
-                  value: channel.name!,
-                }),
-              ]),
-            },
-          }),
-        ),
+    pipe(
+      Ix.Interaction,
+      Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
+      Effect.map(channel =>
+        Ix.response({
+          type: Discord.InteractionCallbackType.MODAL,
+          data: {
+            custom_id: "edit",
+            title: "Edit title",
+            components: UI.singleColumn([
+              UI.textInput({
+                custom_id: "title",
+                label: "New title",
+                value: channel.name!,
+              }),
+            ]),
+          },
+        }),
       ),
+      withEditPermissions,
     ),
   )
 
@@ -188,13 +188,15 @@ const make = Effect.gen(function* ($) {
 
   const archive = Ix.messageComponent(
     Ix.idStartsWith("archive_"),
-    checkPermissions(ix =>
+    pipe(
+      Ix.Interaction,
+      Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
       Effect.as(
-        rest.modifyChannel(ix.channel_id!, { archived: true }),
         Ix.response({
           type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
         }),
       ),
+      withEditPermissions,
     ),
   )
 
