@@ -1,8 +1,13 @@
-import { Effect, Layer, Tag } from "bot/_common"
+import { Duration, Effect, Layer, Tag } from "bot/_common"
 import { Cache } from "dfx"
 import { CachePrelude } from "dfx/gateway"
 
-const makeChannelsCache = CachePrelude.channels(Cache.memoryParentDriver())
+const makeChannelsCache = CachePrelude.channels(
+  Cache.memoryTTLParentDriver({
+    ttl: Duration.minutes(5),
+    strategy: "activity",
+  }),
+)
 interface ChannelsCache
   extends Effect.Effect.Success<typeof makeChannelsCache> {}
 
