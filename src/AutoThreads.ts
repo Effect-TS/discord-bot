@@ -190,7 +190,7 @@ const make = Effect.gen(function* ($) {
     Ix.idStartsWith("archive_"),
     pipe(
       Ix.Interaction,
-      Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
+      Effect.tap(ix => rest.modifyChannel(ix.channel_id!, { archived: true })),
       Effect.as(
         Ix.response({
           type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
