@@ -43,13 +43,10 @@ const make = Effect.gen(function* ($) {
       Effect.bind("title", () =>
         pipe(
           Option.fromNullable(message.content),
-          Effect.flatMap(openai.generateTitle),
-          Effect.tapError(_ =>
-            _._tag === "OpenAIError" ? log.info(_) : Effect.unit(),
+          Effect.flatMap(content =>
+            Effect.tapError(openai.generateTitle(content), log.info),
           ),
-          Effect.catchAll(() =>
-            Effect.succeed(`${message.member!.nick}'s thread`),
-          ),
+          Effect.orElseSucceed(() => `${message.member!.nick}'s thread`),
         ),
       ),
       Effect.flatMap(({ channel, title }) =>
@@ -152,19 +149,16 @@ const make = Effect.gen(function* ($) {
     Ix.idStartsWith("archive_"),
     checkPermissions(ix =>
       Effect.as(
-        rest.modifyChannel(ix.channel_id!, {
-          archived: true,
-        }),
-        Ix.r({
-          type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
-        }),
+        rest.modifyChannel(ix.channel_id!, { archived: true }),
+        Ix.r({ type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE }),
       ),
     ),
   )
 
-  const ix = Ix.builder.add(archive).add(edit).add(editModal)
-
-  return { ix, run: handleMessages } as const
+  return {
+    ix: Ix.builder.add(archive).add(edit).add(editModal),
+    run: handleMessages,
+  } as const
 })
 
 export interface AutoThreads extends Effect.Effect.Success<typeof make> {}
