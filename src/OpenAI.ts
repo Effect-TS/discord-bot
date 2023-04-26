@@ -38,8 +38,10 @@ const make = (params: OpenAIOptions) => {
             model: "text-curie-001",
             prompt: `Create a short title summarizing the following text:
 
-${prompt}`,
-            temperature: 0.5,
+${prompt}
+
+`,
+            temperature: 0.25,
             max_tokens: 64,
             top_p: 1,
             frequency_penalty: 0,
