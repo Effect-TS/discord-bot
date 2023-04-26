@@ -32,17 +32,20 @@ const make = (params: OpenAIOptions) => {
 
   const generateTitle = (prompt: string) =>
     Effect.flatMap(
-      call(_ =>
-        _.createCompletion({
-          model: "text-davinci-003",
-          prompt: `Create a Discord thread title for the following text, removing any twitter handles and don't add quotation marks:
+      call((_, signal) =>
+        _.createCompletion(
+          {
+            model: "text-davinci-003",
+            prompt: `Create a Discord thread title for the following text, removing any twitter handles and don't add quotation marks:
 ${prompt}`,
-          temperature: 0.25,
-          max_tokens: 64,
-          top_p: 1,
-          frequency_penalty: 0,
-          presence_penalty: 0,
-        }),
+            temperature: 0.25,
+            max_tokens: 64,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+          },
+          { signal },
+        ),
       ),
       _ =>
         Option.map(
