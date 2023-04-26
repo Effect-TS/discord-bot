@@ -1,16 +1,16 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIError } from "bot/OpenAI"
 import {
+  Cause,
   Data,
+  Duration,
   Effect,
   Layer,
   Option,
-  Tag,
-  pipe,
   Schedule,
+  Tag,
   millis,
-  Cause,
-  Duration,
+  pipe,
   seconds,
 } from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
@@ -75,7 +75,13 @@ const make = Effect.gen(function* ($) {
               Effect.tapError(log.info),
             ),
           ),
-          Effect.orElseSucceed(() => `${message.member!.nick}'s thread`),
+          Effect.orElseSucceed(() =>
+            pipe(
+              Option.fromNullable(message.member?.nick),
+              Option.getOrElse(() => message.author.username),
+              _ => `${_}'s thread`,
+            ),
+          ),
         ),
       ),
       Effect.flatMap(({ channel, title }) =>
@@ -139,25 +145,25 @@ const make = Effect.gen(function* ($) {
 
   const edit = Ix.messageComponent(
     Ix.idStartsWith("edit_"),
-      pipe(
-        Ix.Interaction,
-        Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
-        Effect.map(channel =>
-          Ix.response({
-            type: Discord.InteractionCallbackType.MODAL,
-            data: {
-              custom_id: "edit",
-              title: "Edit title",
-              components: UI.singleColumn([
-                UI.textInput({
-                  custom_id: "title",
-                  label: "New title",
-                  value: channel.name!,
-                }),
-              ]),
-            },
-          }),
-        ),
+    pipe(
+      Ix.Interaction,
+      Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
+      Effect.map(channel =>
+        Ix.response({
+          type: Discord.InteractionCallbackType.MODAL,
+          data: {
+            custom_id: "edit",
+            title: "Edit title",
+            components: UI.singleColumn([
+              UI.textInput({
+                custom_id: "title",
+                label: "New title",
+                value: channel.name!,
+              }),
+            ]),
+          },
+        }),
+      ),
       withEditPermissions,
     ),
   )
