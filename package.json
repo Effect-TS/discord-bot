@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc",
+    "dev": "tsc-watch --onSuccess \"node --enable-source-maps dist/main.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,6 +18,7 @@
   "devDependencies": {
     "@types/node": "^18.16.1",
     "prettier": "^2.8.8",
+    "tsc-watch": "^6.0.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {

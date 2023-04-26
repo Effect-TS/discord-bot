@@ -11,6 +11,9 @@ export class NotValidMessageError extends Data.TaggedClass(
   readonly reason: "non-default" | "from-bot" | "non-text-channel" | "disabled"
 }> {}
 
+const truncate = (str: string, len: number) =>
+  str.length > len ? str.substring(0, len - 3) + "..." : str
+
 const make = Effect.gen(function* ($) {
   const log = yield* $(Log.Log)
   const openai = yield* $(OpenAI)
@@ -52,7 +55,7 @@ const make = Effect.gen(function* ($) {
       ),
       Effect.flatMap(({ channel, title }) =>
         rest.startThreadFromMessage(channel.id, message.id, {
-          name: title,
+          name: truncate(title, 100),
         }),
       ),
       Effect.flatMap(_ => _.json),
@@ -77,7 +80,9 @@ const make = Effect.gen(function* ($) {
         NotValidMessageError: () => Effect.unit(),
         DiscordRESTError: _ =>
           "response" in _.error
-            ? Effect.flatMap(_.error.response.json, log.info)
+            ? Effect.flatMap(_.error.response.json, _ =>
+                Effect.logInfo(JSON.stringify(_, null, 2)),
+              )
             : log.info(_.error),
       }),
       Effect.catchAllCause(Effect.logErrorCause),

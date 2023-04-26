@@ -35,10 +35,10 @@ const make = (params: OpenAIOptions) => {
       call((_, signal) =>
         _.createCompletion(
           {
-            model: "text-curie-001",
+            model: "text-davinci-003",
             prompt: `Create a short title summarizing the following text:
 
-${prompt}
+${prompt.split("\n")[0].trim()}
 
 `,
             temperature: 0.25,
@@ -51,9 +51,10 @@ ${prompt}
         ),
       ),
       _ =>
-        Option.map(
-          Option.fromNullable(_.data.choices[0]?.text),
-          _ => _.trim().split("\n")[0],
+        Option.map(Option.fromNullable(_.data.choices[0]?.text), _ =>
+          _.trim()
+            .split("\n")[0]
+            .replace(/(^"|"$)/g, ""),
         ),
     )
 
