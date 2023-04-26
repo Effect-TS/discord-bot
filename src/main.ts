@@ -1,10 +1,10 @@
 import { AutoThreads, AutoThreadsLive } from "bot/AutoThreads"
+import * as OpenAI from "bot/OpenAI"
 import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents, Ix } from "dfx"
 import { DiscordGateway, makeLive, runIx } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 import { ChannelsCache, ChannelsCacheLive } from "./ChannelsCache.js"
-import * as OpenAI from "bot/OpenAI"
 
 Dotenv.config()
 

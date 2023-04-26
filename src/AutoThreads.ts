@@ -1,8 +1,8 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
+import { OpenAI } from "bot/OpenAI"
 import { Data, Effect, Layer, Option, Tag, pipe } from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
-import { OpenAI } from "bot/OpenAI"
 
 // ==== errors
 export class NotValidMessageError extends Data.TaggedClass(
@@ -92,8 +92,8 @@ const make = Effect.gen(function* ($) {
     ) => Effect.Effect<R, E, A>,
   ) =>
     Effect.gen(function* ($) {
-      const ix = yield* $(Ix.interaction)
-      const ctx = yield* $(Ix.MessageComponentContext)
+      const ix = yield* $(Ix.Interaction)
+      const ctx = yield* $(Ix.MessageComponentData)
       const authorId = ctx.custom_id.split("_")[1]
       const canEdit =
         authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
@@ -134,7 +134,7 @@ const make = Effect.gen(function* ($) {
     pipe(
       Effect.allPar({
         title: Ix.modalValue("title"),
-        context: Ix.interaction,
+        context: Ix.Interaction,
       }),
       Effect.flatMap(({ title, context }) =>
         rest.modifyChannel(context.channel_id!, { name: title }),
