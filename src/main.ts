@@ -39,7 +39,7 @@ const BotLive = makeLive({
 
 const OpenAILive = OpenAI.makeLayer({
   apiKey: Config.secret("OPENAI_API_KEY"),
-  organization: Config.secret("OPENAI_ORGANIZATION"),
+  organization: Config.optional(Config.secret("OPENAI_ORGANIZATION")),
 })
 
 const EnvLive = Layer.provideMerge(

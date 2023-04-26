@@ -11,7 +11,7 @@ import { Configuration, OpenAIApi } from "openai"
 
 export interface OpenAIOptions {
   readonly apiKey: ConfigSecret.ConfigSecret
-  readonly organization: ConfigSecret.ConfigSecret
+  readonly organization: Option.Option<ConfigSecret.ConfigSecret>
 }
 
 export class OpenAIError extends Data.TaggedClass("OpenAIError")<{
@@ -21,7 +21,9 @@ export class OpenAIError extends Data.TaggedClass("OpenAIError")<{
 const make = (params: OpenAIOptions) => {
   const config = new Configuration({
     apiKey: ConfigSecret.value(params.apiKey),
-    organization: ConfigSecret.value(params.organization),
+    organization: Option.getOrUndefined(
+      Option.map(params.organization, ConfigSecret.value),
+    ),
   })
 
   const client = new OpenAIApi(config)
