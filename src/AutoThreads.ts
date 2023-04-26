@@ -120,17 +120,25 @@ const make = Effect.gen(function* ($) {
   const edit = Ix.messageComponent(
     Ix.idStartsWith("edit_"),
     checkPermissions(() =>
-      Effect.succeed(
-        Ix.r({
-          type: Discord.InteractionCallbackType.MODAL,
-          data: {
-            custom_id: "edit",
-            title: "Edit title",
-            components: UI.singleColumn([
-              UI.textInput({ custom_id: "title", label: "New title" }),
-            ]),
-          },
-        }),
+      pipe(
+        Ix.Interaction,
+        Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
+        Effect.map(channel =>
+          Ix.r({
+            type: Discord.InteractionCallbackType.MODAL,
+            data: {
+              custom_id: "edit",
+              title: "Edit title",
+              components: UI.singleColumn([
+                UI.textInput({
+                  custom_id: "title",
+                  label: "New title",
+                  value: channel.name!,
+                }),
+              ]),
+            },
+          }),
+        ),
       ),
     ),
   )
