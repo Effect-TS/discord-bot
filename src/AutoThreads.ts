@@ -1,14 +1,28 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIError } from "bot/OpenAI"
-import { Data, Effect, Layer, Option, Tag, pipe, Schedule, millis, Cause, Duration, seconds } from "bot/_common"
+import {
+  Data,
+  Effect,
+  Layer,
+  Option,
+  Tag,
+  pipe,
+  Schedule,
+  millis,
+  Cause,
+  Duration,
+  seconds,
+} from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 
 const retryPolicy = pipe(
   Schedule.fixed(millis(500)),
-  Schedule.whileInput((_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError"),
+  Schedule.whileInput(
+    (_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError",
+  ),
   Schedule.compose(Schedule.elapsed()),
-  Schedule.whileOutput(Duration.lessThanOrEqualTo(seconds(3)))
+  Schedule.whileOutput(Duration.lessThanOrEqualTo(seconds(3))),
 )
 
 // ==== errors
@@ -16,7 +30,7 @@ export class NotValidMessageError extends Data.TaggedClass(
   "NotValidMessageError",
 )<{
   readonly reason: "non-default" | "from-bot" | "non-text-channel" | "disabled"
-}> { }
+}> {}
 
 const truncate = (str: string, len: number) =>
   str.length > len ? str.substring(0, len - 3) + "..." : str
@@ -58,8 +72,8 @@ const make = Effect.gen(function* ($) {
             pipe(
               openai.generateTitle(content),
               Effect.retry(retryPolicy),
-              Effect.tapError(log.info)
-            )
+              Effect.tapError(log.info),
+            ),
           ),
           Effect.orElseSucceed(() => `${message.member!.nick}'s thread`),
         ),
@@ -92,8 +106,8 @@ const make = Effect.gen(function* ($) {
         DiscordRESTError: _ =>
           "response" in _.error
             ? Effect.flatMap(_.error.response.json, _ =>
-              Effect.logInfo(JSON.stringify(_, null, 2)),
-            )
+                Effect.logInfo(JSON.stringify(_, null, 2)),
+              )
             : log.info(_.error),
       }),
       Effect.catchAllCause(Effect.logErrorCause),
@@ -116,7 +130,7 @@ const make = Effect.gen(function* ($) {
         authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
 
       if (!canEdit) {
-        return Ix.r({
+        return Ix.response({
           type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             flags: Discord.MessageFlag.EPHEMERAL,
@@ -135,7 +149,7 @@ const make = Effect.gen(function* ($) {
         Ix.Interaction,
         Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
         Effect.map(channel =>
-          Ix.r({
+          Ix.response({
             type: Discord.InteractionCallbackType.MODAL,
             data: {
               custom_id: "edit",
@@ -165,7 +179,9 @@ const make = Effect.gen(function* ($) {
         rest.modifyChannel(context.channel_id!, { name: title }),
       ),
       Effect.as(
-        Ix.r({ type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE }),
+        Ix.response({
+          type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
+        }),
       ),
     ),
   )
@@ -175,7 +191,9 @@ const make = Effect.gen(function* ($) {
     checkPermissions(ix =>
       Effect.as(
         rest.modifyChannel(ix.channel_id!, { archived: true }),
-        Ix.r({ type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE }),
+        Ix.response({
+          type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
+        }),
       ),
     ),
   )
@@ -186,7 +204,7 @@ const make = Effect.gen(function* ($) {
   } as const
 })
 
-export interface AutoThreads extends Effect.Effect.Success<typeof make> { }
+export interface AutoThreads extends Effect.Effect.Success<typeof make> {}
 export const AutoThreads = Tag<AutoThreads>()
 export const AutoThreadsLive = Layer.provide(
   ChannelsCacheLive,
