@@ -33,14 +33,17 @@ const make = (params: OpenAIOptions) => {
   const generateTitle = (prompt: string) =>
     Effect.flatMap(
       call((_, signal) =>
-        _.createCompletion(
+        _.createChatCompletion(
           {
-            model: "text-davinci-003",
-            prompt: `Create a short title summarizing the following text:
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "user",
+                content: `Create a short title summarizing the following text:
 
-${prompt.split("\n")[0].trim()}
-
-`,
+${prompt.split("\n")[0].trim()}`,
+              },
+            ],
             temperature: 0.25,
             max_tokens: 64,
             top_p: 1,
@@ -51,10 +54,12 @@ ${prompt.split("\n")[0].trim()}
         ),
       ),
       _ =>
-        Option.map(Option.fromNullable(_.data.choices[0]?.text), _ =>
-          _.trim()
-            .split("\n")[0]
-            .replace(/(^"|"$)/g, ""),
+        Option.map(
+          Option.fromNullable(_.data.choices[0]?.message?.content),
+          _ =>
+            _.trim()
+              .split("\n")[0]
+              .replace(/(^"|"$)/g, ""),
         ),
     )
 
