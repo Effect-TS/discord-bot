@@ -1,15 +1,22 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import { OpenAI } from "bot/OpenAI"
-import { Data, Effect, Layer, Option, Tag, pipe } from "bot/_common"
+import { OpenAI, OpenAIError } from "bot/OpenAI"
+import { Data, Effect, Layer, Option, Tag, pipe, Schedule, millis, Cause, Duration, seconds } from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
+
+const retryPolicy = pipe(
+  Schedule.fixed(millis(500)),
+  Schedule.whileInput((_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError"),
+  Schedule.compose(Schedule.elapsed()),
+  Schedule.whileOutput(Duration.lessThanOrEqualTo(seconds(3)))
+)
 
 // ==== errors
 export class NotValidMessageError extends Data.TaggedClass(
   "NotValidMessageError",
 )<{
   readonly reason: "non-default" | "from-bot" | "non-text-channel" | "disabled"
-}> {}
+}> { }
 
 const truncate = (str: string, len: number) =>
   str.length > len ? str.substring(0, len - 3) + "..." : str
@@ -48,7 +55,11 @@ const make = Effect.gen(function* ($) {
           Option.fromNullable(message.content),
           Option.filter(_ => _.trim().length > 0),
           Effect.flatMap(content =>
-            Effect.tapError(openai.generateTitle(content), log.info),
+            pipe(
+              openai.generateTitle(content),
+              Effect.retry(retryPolicy),
+              Effect.tapError(log.info)
+            )
           ),
           Effect.orElseSucceed(() => `${message.member!.nick}'s thread`),
         ),
@@ -81,8 +92,8 @@ const make = Effect.gen(function* ($) {
         DiscordRESTError: _ =>
           "response" in _.error
             ? Effect.flatMap(_.error.response.json, _ =>
-                Effect.logInfo(JSON.stringify(_, null, 2)),
-              )
+              Effect.logInfo(JSON.stringify(_, null, 2)),
+            )
             : log.info(_.error),
       }),
       Effect.catchAllCause(Effect.logErrorCause),
@@ -175,7 +186,7 @@ const make = Effect.gen(function* ($) {
   } as const
 })
 
-export interface AutoThreads extends Effect.Effect.Success<typeof make> {}
+export interface AutoThreads extends Effect.Effect.Success<typeof make> { }
 export const AutoThreads = Tag<AutoThreads>()
 export const AutoThreadsLive = Layer.provide(
   ChannelsCacheLive,
