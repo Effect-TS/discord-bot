@@ -1,5 +1,5 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import { Data, Effect, Layer, Tag, pipe } from "bot/_common"
+import { Data, Effect, Layer, Option, Tag, pipe } from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 import { OpenAI } from "bot/OpenAI"
@@ -41,9 +41,16 @@ const make = Effect.gen(function* ($) {
         () => new NotValidMessageError({ reason: "disabled" }),
       ),
       Effect.bind("title", () =>
-        message.content
-          ? openai.generateTitle(message.content)
-          : Effect.succeed(`${message.member!.nick}'s thread`),
+        pipe(
+          Option.fromNullable(message.content),
+          Effect.flatMap(openai.generateTitle),
+          Effect.tapError(_ =>
+            _._tag === "OpenAIError" ? log.info(_) : Effect.unit(),
+          ),
+          Effect.catchAll(() =>
+            Effect.succeed(`${message.member!.nick}'s thread`),
+          ),
+        ),
       ),
       Effect.flatMap(({ channel, title }) =>
         rest.startThreadFromMessage(channel.id, message.id, {
