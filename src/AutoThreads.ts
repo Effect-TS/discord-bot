@@ -116,12 +116,7 @@ const make = Effect.gen(function* ($) {
 
   const hasManage = Perms.has(Discord.PermissionFlag.MANAGE_CHANNELS)
 
-  const checkPermissions = <R, E, A>(
-    f: (
-      ix: Discord.Interaction,
-      ctx: Discord.MessageComponentDatum,
-    ) => Effect.Effect<R, E, A>,
-  ) =>
+  const withEditPermissions = <R, E, A>(self: Effect.Effect<R, E, A>) =>
     Effect.gen(function* ($) {
       const ix = yield* $(Ix.Interaction)
       const ctx = yield* $(Ix.MessageComponentData)
@@ -139,12 +134,11 @@ const make = Effect.gen(function* ($) {
         })
       }
 
-      return yield* $(f(ix, ctx))
+      return yield* $(self)
     })
 
   const edit = Ix.messageComponent(
     Ix.idStartsWith("edit_"),
-    checkPermissions(() =>
       pipe(
         Ix.Interaction,
         Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
@@ -164,7 +158,7 @@ const make = Effect.gen(function* ($) {
             },
           }),
         ),
-      ),
+      withEditPermissions,
     ),
   )
 
@@ -188,13 +182,15 @@ const make = Effect.gen(function* ($) {
 
   const archive = Ix.messageComponent(
     Ix.idStartsWith("archive_"),
-    checkPermissions(ix =>
+    pipe(
+      Ix.Interaction,
+      Effect.flatMap(ix => channels.get(ix.guild_id!, ix.channel_id!)),
       Effect.as(
-        rest.modifyChannel(ix.channel_id!, { archived: true }),
         Ix.response({
           type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
         }),
       ),
+      withEditPermissions,
     ),
   )
 
