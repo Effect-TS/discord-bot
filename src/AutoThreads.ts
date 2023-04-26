@@ -1,7 +1,8 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { Data, Effect, Layer, Tag, pipe } from "bot/_common"
-import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
+import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
+import { OpenAI } from "bot/OpenAI"
 
 // ==== errors
 export class NotValidMessageError extends Data.TaggedClass(
@@ -11,6 +12,8 @@ export class NotValidMessageError extends Data.TaggedClass(
 }> {}
 
 const make = Effect.gen(function* ($) {
+  const log = yield* $(Log.Log)
+  const openai = yield* $(OpenAI)
   const gateway = yield* $(DiscordGateway)
   const rest = yield* $(DiscordREST)
   const channels = yield* $(ChannelsCache)
@@ -37,9 +40,14 @@ const make = Effect.gen(function* ($) {
         ({ channel }) => channel.topic?.includes("[threads]") === true,
         () => new NotValidMessageError({ reason: "disabled" }),
       ),
-      Effect.flatMap(({ channel }) =>
+      Effect.bind("title", () =>
+        message.content
+          ? openai.generateTitle(message.content)
+          : Effect.succeed(`${message.member!.nick}'s thread`),
+      ),
+      Effect.flatMap(({ channel, title }) =>
         rest.startThreadFromMessage(channel.id, message.id, {
-          name: `${message.member!.nick}'s thread`,
+          name: title,
         }),
       ),
       Effect.flatMap(_ => _.json),
@@ -62,6 +70,10 @@ const make = Effect.gen(function* ($) {
       ),
       Effect.catchTags({
         NotValidMessageError: () => Effect.unit(),
+        DiscordRESTError: _ =>
+          "response" in _.error
+            ? Effect.flatMap(_.error.response.json, log.info)
+            : log.info(_.error),
       }),
       Effect.catchAllCause(Effect.logErrorCause),
     ),

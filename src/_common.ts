@@ -1,4 +1,5 @@
 export * as Config from "@effect/io/Config"
+export * as ConfigSecret from "@effect/io/Config/Secret"
 export * as Data from "@effect/data/Data"
 export * as Effect from "@effect/io/Effect"
 export * as HashMap from "@effect/data/HashMap"

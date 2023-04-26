@@ -4,6 +4,7 @@ import { Intents, Ix } from "dfx"
 import { DiscordGateway, makeLive, runIx } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 import { ChannelsCache, ChannelsCacheLive } from "./ChannelsCache.js"
+import * as OpenAI from "bot/OpenAI"
 
 Dotenv.config()
 
@@ -34,9 +35,13 @@ const BotLive = makeLive({
   },
 })
 
+const OpenAILive = OpenAI.makeLayer({
+  apiKey: Config.secret("OPENAI_API_KEY"),
+})
+
 const EnvLive = Layer.provideMerge(
   BotLive,
-  Layer.merge(AutoThreadsLive, ChannelsCacheLive),
+  Layer.merge(Layer.provide(OpenAILive, AutoThreadsLive), ChannelsCacheLive),
 )
 
 pipe(
