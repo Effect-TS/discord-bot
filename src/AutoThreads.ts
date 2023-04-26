@@ -43,6 +43,7 @@ const make = Effect.gen(function* ($) {
       Effect.bind("title", () =>
         pipe(
           Option.fromNullable(message.content),
+          Option.filter(_ => _.trim().length > 0),
           Effect.flatMap(content =>
             Effect.tapError(openai.generateTitle(content), log.info),
           ),

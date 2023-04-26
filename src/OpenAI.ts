@@ -30,15 +30,19 @@ const make = (params: OpenAIOptions) => {
       error => new OpenAIError({ error }),
     )
 
-  const generateTitle = (prompt: string) =>
-    Effect.flatMap(
+  const generateTitle = (prompt: string) => {
+    console.log(`Create a short title summarizing the following text:
+
+${prompt}`)
+    return Effect.flatMap(
       call((_, signal) =>
         _.createCompletion(
           {
-            model: "text-davinci-003",
-            prompt: `Create a Discord thread title for the following text, removing any twitter handles and don't add quotation marks:
+            model: "text-curie-001",
+            prompt: `Create a short title summarizing the following text:
+
 ${prompt}`,
-            temperature: 0.25,
+            temperature: 0.5,
             max_tokens: 64,
             top_p: 1,
             frequency_penalty: 0,
@@ -53,6 +57,7 @@ ${prompt}`,
           _ => _.trim().split("\n")[0],
         ),
     )
+  }
 
   return { client, call, generateTitle } as const
 }

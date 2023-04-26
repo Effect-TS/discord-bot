@@ -31,7 +31,9 @@ const program = Effect.gen(function* ($) {
 const BotLive = makeLive({
   token: Config.secret("DISCORD_BOT_TOKEN"),
   gateway: {
-    intents: Config.succeed(Intents.fromList(["GUILD_MESSAGES", "GUILDS"])),
+    intents: Config.succeed(
+      Intents.fromList(["GUILD_MESSAGES", "MESSAGE_CONTENT", "GUILDS"]),
+    ),
   },
 })
 
