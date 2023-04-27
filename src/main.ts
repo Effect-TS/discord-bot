@@ -1,34 +1,14 @@
-import { AutoThreads, AutoThreadsLive } from "bot/AutoThreads"
+import { AutoThreadsLive } from "bot/AutoThreads"
+import { BotLive } from "bot/Bot"
 import * as OpenAI from "bot/OpenAI"
 import { Config, Effect, Layer, pipe } from "bot/_common"
-import { Intents, Ix } from "dfx"
-import { DiscordGateway, makeLive, runIx } from "dfx/gateway"
+import { Intents } from "dfx"
+import { makeLive } from "dfx/gateway"
 import * as Dotenv from "dotenv"
-import { ChannelsCache, ChannelsCacheLive } from "./ChannelsCache.js"
 
 Dotenv.config()
 
-const program = Effect.gen(function* ($) {
-  const gateway = yield* $(DiscordGateway)
-  const channels = yield* $(ChannelsCache)
-  const autoThreads = yield* $(AutoThreads)
-
-  const runInteractions = pipe(
-    Ix.builder.concat(autoThreads.ix),
-    runIx(Effect.catchAllCause(Effect.logErrorCause)),
-  )
-
-  yield* $(
-    Effect.allParDiscard(
-      gateway.run,
-      channels.run,
-      autoThreads.run,
-      runInteractions,
-    ),
-  )
-})
-
-const BotLive = makeLive({
+const DiscordLive = makeLive({
   token: Config.secret("DISCORD_BOT_TOKEN"),
   gateway: {
     intents: Config.succeed(
@@ -42,14 +22,14 @@ const OpenAILive = OpenAI.makeLayer({
   organization: Config.optional(Config.secret("OPENAI_ORGANIZATION")),
 })
 
-const EnvLive = Layer.provideMerge(
-  BotLive,
-  Layer.merge(Layer.provide(OpenAILive, AutoThreadsLive), ChannelsCacheLive),
+const MainLive = pipe(
+  DiscordLive,
+  Layer.merge(OpenAILive),
+  Layer.provide(Layer.merge(AutoThreadsLive, BotLive)),
 )
 
 pipe(
-  program,
-  Effect.provideLayer(EnvLive),
+  Layer.launch(MainLive),
   Effect.tapErrorCause(Effect.logErrorCause),
   Effect.runFork,
 )
