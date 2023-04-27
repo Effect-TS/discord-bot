@@ -8,13 +8,12 @@ import {
   Layer,
   Option,
   Schedule,
-  Tag,
   millis,
   pipe,
   seconds,
 } from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
-import { DiscordGateway } from "dfx/gateway"
+import { DiscordGateway, runIx } from "dfx/gateway"
 
 const retryPolicy = pipe(
   Schedule.fixed(millis(500)),
@@ -25,7 +24,6 @@ const retryPolicy = pipe(
   Schedule.whileOutput(Duration.lessThanOrEqualTo(seconds(3))),
 )
 
-// ==== errors
 export class NotValidMessageError extends Data.TaggedClass(
   "NotValidMessageError",
 )<{
@@ -72,7 +70,7 @@ const make = Effect.gen(function* ($) {
             pipe(
               openai.generateTitle(content),
               Effect.retry(retryPolicy),
-              Effect.tapError(log.info),
+              Effect.tapError(_ => log.info(_)),
             ),
           ),
           Effect.orElseSucceed(() =>
@@ -200,15 +198,15 @@ const make = Effect.gen(function* ($) {
     ),
   )
 
-  return {
-    ix: Ix.builder.add(archive).add(edit).add(editModal),
-    run: handleMessages,
-  } as const
+  const runInteractions = pipe(
+    Ix.builder.add(archive).add(edit).add(editModal),
+    runIx(Effect.catchAllCause(Effect.logErrorCause), { sync: false }),
+  )
+
+  yield* $(Effect.allPar(runInteractions, handleMessages))
 })
 
-export interface AutoThreads extends Effect.Effect.Success<typeof make> {}
-export const AutoThreads = Tag<AutoThreads>()
 export const AutoThreadsLive = Layer.provide(
   ChannelsCacheLive,
-  Layer.scoped(AutoThreads, make),
+  Layer.effectDiscard(make),
 )
