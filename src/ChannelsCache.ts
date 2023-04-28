@@ -4,7 +4,7 @@ import { CachePrelude } from "dfx/gateway"
 
 const makeChannelsCache = CachePrelude.channels(
   Cache.memoryTTLParentDriver({
-    ttl: Duration.minutes(5),
+    ttl: Duration.minutes(30),
     strategy: "activity",
   }),
 )

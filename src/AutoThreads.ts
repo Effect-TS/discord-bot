@@ -176,6 +176,11 @@ const make = Effect.gen(function* ($) {
       Effect.flatMap(({ title, context }) =>
         rest.modifyChannel(context.channel_id!, { name: title }),
       ),
+      Effect.tap(_ =>
+        Effect.flatMap(_.json, channel =>
+          channels.set(channel.guild_id!, channel.id, channel),
+        ),
+      ),
       Effect.as(
         Ix.response({
           type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
