@@ -6,6 +6,7 @@ import {
   Layer,
   Option,
   Tag,
+  flow,
 } from "bot/_common"
 import { Configuration, OpenAIApi } from "openai"
 
@@ -60,10 +61,7 @@ ${prompt.split("\n")[0].trim()}`,
       _ =>
         Option.map(
           Option.fromNullable(_.data.choices[0]?.message?.content),
-          _ =>
-            _.trim()
-              .split("\n")[0]
-              .replace(/(^"|"$)/g, ""),
+          cleanTitle,
         ),
     )
 
@@ -74,3 +72,13 @@ export interface OpenAI extends ReturnType<typeof make> {}
 export const OpenAI = Tag<OpenAI>()
 export const makeLayer = (config: Config.Config.Wrap<OpenAIOptions>) =>
   Layer.effect(OpenAI, Effect.map(Effect.config(Config.unwrap(config)), make))
+
+const firstParagraph = (str: string) => str.trim().split("\n")[0].trim()
+
+const removeQuotes = (str: string) =>
+  str.startsWith('"') && str.endsWith('"') ? str.slice(1, -1) : str
+
+const removePeriod = (str: string) =>
+  str.endsWith(".") ? str.slice(0, -1) : str
+
+const cleanTitle = flow(firstParagraph, removeQuotes, removePeriod)

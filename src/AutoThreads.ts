@@ -8,6 +8,7 @@ import {
   Layer,
   Option,
   Schedule,
+  flow,
   millis,
   pipe,
   seconds,
@@ -156,6 +157,7 @@ const make = Effect.gen(function* ($) {
               UI.textInput({
                 custom_id: "title",
                 label: "New title",
+                max_length: 100,
                 value: channel.name!,
               }),
             ]),
