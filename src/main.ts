@@ -1,4 +1,4 @@
-import { AutoThreadsLive } from "bot/AutoThreads"
+import * as AutoThreads from "bot/AutoThreads"
 import { BotLive } from "bot/Bot"
 import * as OpenAI from "bot/OpenAI"
 import { Config, Effect, Layer, pipe } from "bot/_common"
@@ -20,6 +20,13 @@ const DiscordLive = makeLive({
 const OpenAILive = OpenAI.makeLayer({
   apiKey: Config.secret("OPENAI_API_KEY"),
   organization: Config.optional(Config.secret("OPENAI_ORGANIZATION")),
+})
+
+const AutoThreadsLive = AutoThreads.makeLayer({
+  topicKeyword: Config.withDefault(
+    Config.string("AUTOTHREADS_KEYWORD"),
+    "[threads]",
+  ),
 })
 
 const MainLive = pipe(
