@@ -16,15 +16,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^18.16.2",
+    "@types/node": "^18.16.3",
     "prettier": "^2.8.8",
-    "tsc-watch": "^6.0.1",
+    "tsc-watch": "^6.0.4",
     "typescript": "^5.0.4"
   },
   "dependencies": {
     "@effect/data": "^0.12.2",
     "@effect/io": "^0.25.8",
-    "dfx": "^0.41.0",
+    "dfx": "^0.42.0",
     "dotenv": "^16.0.3",
     "openai": "^3.2.1"
   }

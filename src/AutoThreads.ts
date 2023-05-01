@@ -8,7 +8,6 @@ import {
   Layer,
   Option,
   Schedule,
-  flow,
   millis,
   pipe,
   seconds,
@@ -175,12 +174,11 @@ const make = Effect.gen(function* ($) {
         title: Ix.modalValue("title"),
         context: Ix.Interaction,
       }),
-      Effect.flatMap(({ title, context }) =>
-        rest.modifyChannel(context.channel_id!, { name: title }),
-      ),
-      Effect.tap(_ =>
-        Effect.flatMap(_.json, channel =>
-          channels.set(channel.guild_id!, channel.id, channel),
+      Effect.tap(({ title, context }) =>
+        pipe(
+          rest.modifyChannel(context.channel_id!, { name: title }),
+          Effect.flatMap(_ => _.json),
+          Effect.tap(channels.put),
         ),
       ),
       Effect.as(
