@@ -7,7 +7,9 @@ import {
   Option,
   Tag,
   flow,
+  pipe,
 } from "bot/_common"
+import * as Str from "bot/utils/String"
 import { Configuration, OpenAIApi } from "openai"
 
 export interface OpenAIOptions {
@@ -46,7 +48,7 @@ const make = (params: OpenAIOptions) => {
                 role: "user",
                 content: `Create a short title summarizing the following text:
 
-${prompt.split("\n")[0].trim()}`,
+${Str.truncateWords(prompt, 75)}`,
               },
             ],
             temperature: 0.25,
@@ -59,9 +61,9 @@ ${prompt.split("\n")[0].trim()}`,
         ),
       ),
       _ =>
-        Option.map(
+        pipe(
           Option.fromNullable(_.data.choices[0]?.message?.content),
-          cleanTitle,
+          Option.map(cleanTitle),
         ),
     )
 
@@ -73,12 +75,4 @@ export const OpenAI = Tag<OpenAI>()
 export const makeLayer = (config: Config.Config.Wrap<OpenAIOptions>) =>
   Layer.effect(OpenAI, Effect.map(Effect.config(Config.unwrap(config)), make))
 
-const firstParagraph = (str: string) => str.trim().split("\n")[0].trim()
-
-const removeQuotes = (str: string) =>
-  str.startsWith('"') && str.endsWith('"') ? str.slice(1, -1) : str
-
-const removePeriod = (str: string) =>
-  str.endsWith(".") ? str.slice(0, -1) : str
-
-const cleanTitle = flow(firstParagraph, removeQuotes, removePeriod)
+const cleanTitle = flow(Str.firstParagraph, Str.removeQuotes, Str.removePeriod)
