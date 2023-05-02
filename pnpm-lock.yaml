@@ -8,8 +8,8 @@ dependencies:
     specifier: ^0.25.8
     version: 0.25.8
   dfx:
-    specifier: ^0.42.3
-    version: 0.42.3
+    specifier: ^0.42.4
+    version: 0.42.4
   dotenv:
     specifier: ^16.0.3
     version: 16.0.3
@@ -39,7 +39,7 @@ packages:
       '@effect/data': 0.12.2
       '@effect/io': 0.25.8
       '@effect/schema': 0.17.3
-      '@effect/stream': 0.21.0
+      '@effect/stream': 0.21.1
     dev: false
 
   /@effect/data@0.12.2:
@@ -60,8 +60,8 @@ packages:
       fast-check: 3.8.1
     dev: false
 
-  /@effect/stream@0.21.0:
-    resolution: {integrity: sha512-39nkKJVUt41DDn08E4we9L/7YGHAZeDjyiAapFn1Grx2npR+CRra4gZqqJF3bwO/9b9Yipl1I8WD+6v/Hx2tfA==}
+  /@effect/stream@0.21.1:
+    resolution: {integrity: sha512-x227xIB+PC/xaz4R3RYkjg2Z0sw5Fgkt5hfxXeGHpKThhmqVEeIXjd0v04pcoz2lJtStcvWL5Wuh/Z8HP3Hw/Q==}
     dependencies:
       '@effect/data': 0.12.2
       '@effect/io': 0.25.8
@@ -113,13 +113,13 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
-  /dfx@0.42.3:
-    resolution: {integrity: sha512-Rj02p8Fg9nCBB/0mbuFZvBLcbRmr4RND1PUsj8wWjHscfq9Ckfg7C8Y+3SCdwu4yy/9E5NROnNpTuU/kZFmFwg==}
+  /dfx@0.42.4:
+    resolution: {integrity: sha512-K2ZfVNyYyja3PKMDFoy163HwI3GB11epePyUkUeMC7LTFDPIL0AhpEC20o13Bk3xZxi9H8Qh5QYBXLVOxx9ydg==}
     dependencies:
       '@effect-http/client': 0.24.2
       '@effect/data': 0.12.2
       '@effect/io': 0.25.8
-      '@effect/stream': 0.21.0
+      '@effect/stream': 0.21.1
       tweetnacl: 1.0.3
     optionalDependencies:
       bufferutil: 4.0.7
@@ -281,8 +281,8 @@ packages:
       duplexer: 0.1.2
     dev: true
 
-  /string-argv@0.3.1:
-    resolution: {integrity: sha512-a1uQGz7IyVy9YwhqjZIZu1c8JO8dNIe20xBmSS6qu9kv++k3JGzCVmprbNN5Kn+BgzD5E7YYwg1CcjuJMRNsvg==}
+  /string-argv@0.3.2:
+    resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
     engines: {node: '>=0.6.19'}
     dev: true
 
@@ -300,7 +300,7 @@ packages:
       cross-spawn: 7.0.3
       node-cleanup: 2.1.2
       ps-tree: 1.2.0
-      string-argv: 0.3.1
+      string-argv: 0.3.2
       typescript: 5.0.4
     dev: true
 
