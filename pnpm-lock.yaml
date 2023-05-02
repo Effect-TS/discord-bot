@@ -8,8 +8,8 @@ dependencies:
     specifier: ^0.25.8
     version: 0.25.8
   dfx:
-    specifier: ^0.42.2
-    version: 0.42.2
+    specifier: ^0.42.3
+    version: 0.42.3
   dotenv:
     specifier: ^16.0.3
     version: 16.0.3
@@ -38,7 +38,7 @@ packages:
     dependencies:
       '@effect/data': 0.12.2
       '@effect/io': 0.25.8
-      '@effect/schema': 0.17.2
+      '@effect/schema': 0.17.3
       '@effect/stream': 0.21.0
     dev: false
 
@@ -52,8 +52,8 @@ packages:
       '@effect/data': 0.12.2
     dev: false
 
-  /@effect/schema@0.17.2:
-    resolution: {integrity: sha512-HcXZBGtPzhuX/RnIkaVIlYGp1ThuAyl34YNhxrhUQ8TdOnRFkx3tAbmXYpkWkrlo92Ou+/Z0ZixEaSFn7x2shw==}
+  /@effect/schema@0.17.3:
+    resolution: {integrity: sha512-IYimFeJQ+chz3C2I+sgm7uRW7rWGOqAGxxipViyL/wA7FUznysNlGmS1m0ABlk1kXbep3ZfvgxBEQtK3wY4dCw==}
     dependencies:
       '@effect/data': 0.12.2
       '@effect/io': 0.25.8
@@ -113,8 +113,8 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
-  /dfx@0.42.2:
-    resolution: {integrity: sha512-S6ctfn7x2fQsZbJY8Kwt5pSQLl4xBFNxeKLNhmcmPOQuW09mHY8JxHu6f51lLyEA0EcwZnaKF/tJoU8rpQdtdg==}
+  /dfx@0.42.3:
+    resolution: {integrity: sha512-Rj02p8Fg9nCBB/0mbuFZvBLcbRmr4RND1PUsj8wWjHscfq9Ckfg7C8Y+3SCdwu4yy/9E5NROnNpTuU/kZFmFwg==}
     dependencies:
       '@effect-http/client': 0.24.2
       '@effect/data': 0.12.2
