@@ -10,6 +10,7 @@ Dotenv.config()
 
 const DiscordLive = makeLive({
   token: Config.secret("DISCORD_BOT_TOKEN"),
+  debug: Config.withDefault(Config.bool("DEBUG"), false),
   gateway: {
     intents: Config.succeed(
       Intents.fromList(["GUILD_MESSAGES", "MESSAGE_CONTENT", "GUILDS"]),
