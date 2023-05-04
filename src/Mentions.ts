@@ -33,14 +33,14 @@ const make = Effect.gen(function* (_) {
         [message, ...messages]
           .reverse()
           .filter(
-            _ =>
-              _.type === Discord.MessageType.DEFAULT ||
-              _.type === Discord.MessageType.REPLY,
+            msg =>
+              msg.type === Discord.MessageType.DEFAULT ||
+              msg.type === Discord.MessageType.REPLY,
           )
-          .filter(_ => _.content.trim().length > 0)
+          .filter(msg => msg.content.trim().length > 0)
           .map(
-            _ => `${handle(_)}:
-${_.content}`,
+            msg => `${handle(msg)}:
+${msg.content}`,
           ),
       ),
     )
@@ -82,7 +82,6 @@ ${_.content}`,
       Effect.catchTags({
         NonEligibleMessage: _ => Effect.unit(),
         NoSuchElementException: _ => Effect.unit(),
-        OpenAIError: _ => Effect.logError(JSON.stringify(_, null, 2)),
       }),
       Effect.catchAllCause(Effect.logErrorCause),
     ),
