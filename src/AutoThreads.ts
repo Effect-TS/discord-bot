@@ -15,7 +15,11 @@ import {
   seconds,
 } from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
-import { DiscordGateway, runIx } from "dfx/gateway"
+import {
+  DiscordGateway,
+  InteractionsRegistry,
+  InteractionsRegistryLive,
+} from "dfx/gateway"
 
 const retryPolicy = pipe(
   Schedule.fixed(millis(500)),
@@ -32,17 +36,23 @@ export class NotValidMessageError extends Data.TaggedClass(
   readonly reason: "non-default" | "from-bot" | "non-text-channel" | "disabled"
 }> {}
 
+export class PermissionsError extends Data.TaggedClass("PermissionsError")<{
+  readonly action: string
+  readonly subject: string
+}> {}
+
 export interface AutoThreadsOptions {
   readonly topicKeyword: string
 }
 
 const make = ({ topicKeyword }: AutoThreadsOptions) =>
-  Effect.gen(function* ($) {
-    const log = yield* $(Log.Log)
-    const openai = yield* $(OpenAI)
-    const gateway = yield* $(DiscordGateway)
-    const rest = yield* $(DiscordREST)
-    const channels = yield* $(ChannelsCache)
+  Effect.gen(function* (_) {
+    const log = yield* _(Log.Log)
+    const openai = yield* _(OpenAI)
+    const gateway = yield* _(DiscordGateway)
+    const rest = yield* _(DiscordREST)
+    const channels = yield* _(ChannelsCache)
+    const registry = yield* _(InteractionsRegistry)
 
     const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
       pipe(
@@ -132,13 +142,11 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
           authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
 
         if (!canEdit) {
-          return Ix.response({
-            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              flags: Discord.MessageFlag.EPHEMERAL,
-              content: "You don't have permissions to edit this thread",
-            },
-          })
+          yield* _(
+            Effect.fail(
+              new PermissionsError({ action: "edit", subject: "thread" }),
+            ),
+          )
         }
 
         return yield* $(self)
@@ -170,7 +178,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
       ),
     )
 
-    const editModal = Ix.modalSubmit(
+    const editSubmit = Ix.modalSubmit(
       Ix.id("edit"),
       pipe(
         Effect.allPar({
@@ -208,17 +216,30 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
       ),
     )
 
-    const runInteractions = pipe(
-      Ix.builder.add(archive).add(edit).add(editModal),
-      runIx(Effect.catchAllCause(Effect.logErrorCause), { sync: false }),
-    )
+    const ix = Ix.builder
+      .add(archive)
+      .add(edit)
+      .add(editSubmit)
+      .catchTagRespond("PermissionsError", _ =>
+        Effect.succeed(
+          Ix.response({
+            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+              flags: Discord.MessageFlag.EPHEMERAL,
+              content: `You don't have permission to ${_.action} this ${_.subject}.`,
+            },
+          }),
+        ),
+      )
+      .catchAllCause(Effect.logErrorCause)
 
-    yield* $(Effect.allPar(runInteractions, handleMessages))
+    yield* _(registry.register(ix))
+    yield* _(handleMessages)
   })
 
 export const makeLayer = (config: Config.Config.Wrap<AutoThreadsOptions>) =>
   Layer.provide(
-    ChannelsCacheLive,
+    Layer.mergeAll(ChannelsCacheLive, InteractionsRegistryLive),
     Layer.effectDiscard(
       Effect.flatMap(Effect.config(Config.unwrap(config)), make),
     ),

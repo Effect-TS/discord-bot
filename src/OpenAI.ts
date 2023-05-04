@@ -10,7 +10,7 @@ import {
   pipe,
 } from "bot/_common"
 import * as Str from "bot/utils/String"
-import { Configuration, OpenAIApi } from "openai"
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai"
 
 export interface OpenAIOptions {
   readonly apiKey: ConfigSecret.ConfigSecret
@@ -20,6 +20,11 @@ export interface OpenAIOptions {
 export class OpenAIError extends Data.TaggedClass("OpenAIError")<{
   readonly error: unknown
 }> {}
+
+export interface OpenAIMessage {
+  readonly bot: boolean
+  readonly content: string
+}
 
 const make = (params: OpenAIOptions) => {
   const config = new Configuration({
@@ -67,7 +72,37 @@ ${Str.truncateWords(prompt, 75)}`,
         ),
     )
 
-  return { client, call, generateTitle } as const
+  const generateReply = (
+    title: string,
+    messages: ReadonlyArray<OpenAIMessage>,
+  ) =>
+    Effect.flatMap(
+      call((_, signal) =>
+        _.createChatCompletion(
+          {
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "system",
+                content: `You are Effect Bot, a helpful assistant for the Effect Discord community.
+
+The title of this conversation is "${title}".`,
+              },
+              ...messages.map(
+                ({ content, bot }): ChatCompletionRequestMessage => ({
+                  role: bot ? "assistant" : "user",
+                  content: Str.truncateWords(content, 50),
+                }),
+              ),
+            ],
+          },
+          { signal },
+        ),
+      ),
+      _ => Option.fromNullable(_.data.choices[0]?.message?.content),
+    )
+
+  return { client, call, generateTitle, generateReply } as const
 }
 
 export interface OpenAI extends ReturnType<typeof make> {}
