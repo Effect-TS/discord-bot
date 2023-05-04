@@ -10,7 +10,7 @@ import {
   pipe,
 } from "bot/_common"
 import * as Str from "bot/utils/String"
-import { Configuration, OpenAIApi } from "openai"
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai"
 
 export interface OpenAIOptions {
   readonly apiKey: ConfigSecret.ConfigSecret
@@ -20,6 +20,11 @@ export interface OpenAIOptions {
 export class OpenAIError extends Data.TaggedClass("OpenAIError")<{
   readonly error: unknown
 }> {}
+
+export interface OpenAIMessage {
+  readonly bot: boolean
+  readonly content: string
+}
 
 const make = (params: OpenAIOptions) => {
   const config = new Configuration({
@@ -69,7 +74,7 @@ ${Str.truncateWords(prompt, 75)}`,
 
   const generateReply = (
     title: string,
-    messages: ReadonlyArray<readonly [content: string, bot: boolean]>,
+    messages: ReadonlyArray<OpenAIMessage>,
   ) =>
     Effect.flatMap(
       call((_, signal) =>
@@ -84,11 +89,10 @@ ${Str.truncateWords(prompt, 75)}`,
 The title of this conversation is "${title}".`,
               },
               ...messages.map(
-                ([content, bot]) =>
-                  ({
-                    role: bot ? "assistant" : "user",
-                    content: Str.truncateWords(content, 50),
-                  } as const),
+                ({ content, bot }): ChatCompletionRequestMessage => ({
+                  role: bot ? "assistant" : "user",
+                  content: Str.truncateWords(content, 50),
+                }),
               ),
             ],
           },
