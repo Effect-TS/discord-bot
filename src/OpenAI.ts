@@ -67,7 +67,35 @@ ${Str.truncateWords(prompt, 75)}`,
         ),
     )
 
-  return { client, call, generateTitle } as const
+  const generateReply = (title: string, messages: string[]) =>
+    Effect.flatMap(
+      call((_, signal) =>
+        _.createChatCompletion(
+          {
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "system",
+                content: `You are Effect Bot, a helpful assistant for the Effect Discord community.
+
+The title of this conversation is "${title}".`,
+              },
+              ...messages.map(
+                content =>
+                  ({
+                    role: "user",
+                    content: Str.truncateWords(content, 50),
+                  } as const),
+              ),
+            ],
+          },
+          { signal },
+        ),
+      ),
+      _ => Option.fromNullable(_.data.choices[0]?.message?.content),
+    )
+
+  return { client, call, generateTitle, generateReply } as const
 }
 
 export interface OpenAI extends ReturnType<typeof make> {}
