@@ -10,13 +10,16 @@ import {
   Layer,
   Option,
   Schedule,
-  Tag,
   millis,
   pipe,
   seconds,
 } from "bot/_common"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
-import { DiscordGateway, runIx } from "dfx/gateway"
+import {
+  DiscordGateway,
+  InteractionsRegistry,
+  InteractionsRegistryLive,
+} from "dfx/gateway"
 
 const retryPolicy = pipe(
   Schedule.fixed(millis(500)),
@@ -38,12 +41,13 @@ export interface AutoThreadsOptions {
 }
 
 const make = ({ topicKeyword }: AutoThreadsOptions) =>
-  Effect.gen(function* ($) {
-    const log = yield* $(Log.Log)
-    const openai = yield* $(OpenAI)
-    const gateway = yield* $(DiscordGateway)
-    const rest = yield* $(DiscordREST)
-    const channels = yield* $(ChannelsCache)
+  Effect.gen(function* (_) {
+    const log = yield* _(Log.Log)
+    const openai = yield* _(OpenAI)
+    const gateway = yield* _(DiscordGateway)
+    const rest = yield* _(DiscordREST)
+    const channels = yield* _(ChannelsCache)
+    const registry = yield* _(InteractionsRegistry)
 
     const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
       pipe(
@@ -197,6 +201,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
       Ix.idStartsWith("archive_"),
       pipe(
         Ix.Interaction,
+        Effect.zipLeft(Effect.die("boom")),
         Effect.tap(ix =>
           rest.modifyChannel(ix.channel_id!, { archived: true }),
         ),
@@ -209,21 +214,23 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
       ),
     )
 
-    return {
-      ix: Ix.builder.add(archive).add(edit).add(editModal),
-      run: handleMessages,
-    } as const
-  })
+    yield* _(
+      registry.register(
+        Ix.builder
+          .add(archive)
+          .add(edit)
+          .add(editModal)
+          .catchAllCause(Effect.logErrorCause),
+      ),
+    )
 
-export interface AutoThreads
-  extends Effect.Effect.Success<ReturnType<typeof make>> {}
-export const AutoThreads = Tag<AutoThreads>()
+    yield* _(handleMessages)
+  })
 
 export const makeLayer = (config: Config.Config.Wrap<AutoThreadsOptions>) =>
   Layer.provide(
-    ChannelsCacheLive,
-    Layer.effect(
-      AutoThreads,
+    Layer.mergeAll(ChannelsCacheLive, InteractionsRegistryLive),
+    Layer.effectDiscard(
       Effect.flatMap(Effect.config(Config.unwrap(config)), make),
     ),
   )

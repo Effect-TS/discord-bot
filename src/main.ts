@@ -31,11 +31,10 @@ const AutoThreadsLive = AutoThreads.makeLayer({
   ),
 })
 
-const MainServicesLive = Layer.mergeAll(BotLive, MentionsLive)
+const MainServicesLive = Layer.mergeAll(AutoThreadsLive, MentionsLive, BotLive)
 
 const MainLive = pipe(
   Layer.mergeAll(DiscordLive, OpenAILive),
-  Layer.provideMerge(AutoThreadsLive),
   Layer.provide(MainServicesLive),
 )
 
