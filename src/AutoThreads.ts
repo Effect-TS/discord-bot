@@ -10,6 +10,7 @@ import {
   Layer,
   Option,
   Schedule,
+  Tag,
   millis,
   pipe,
   seconds,
@@ -208,18 +209,21 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
       ),
     )
 
-    const runInteractions = pipe(
-      Ix.builder.add(archive).add(edit).add(editModal),
-      runIx(Effect.catchAllCause(Effect.logErrorCause), { sync: false }),
-    )
-
-    yield* $(Effect.allPar(runInteractions, handleMessages))
+    return {
+      ix: Ix.builder.add(archive).add(edit).add(editModal),
+      run: handleMessages,
+    } as const
   })
+
+export interface AutoThreads
+  extends Effect.Effect.Success<ReturnType<typeof make>> {}
+export const AutoThreads = Tag<AutoThreads>()
 
 export const makeLayer = (config: Config.Config.Wrap<AutoThreadsOptions>) =>
   Layer.provide(
     ChannelsCacheLive,
-    Layer.effectDiscard(
+    Layer.effect(
+      AutoThreads,
       Effect.flatMap(Effect.config(Config.unwrap(config)), make),
     ),
   )

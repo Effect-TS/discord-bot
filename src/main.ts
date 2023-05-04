@@ -5,6 +5,7 @@ import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents } from "dfx"
 import { makeLive } from "dfx/gateway"
 import * as Dotenv from "dotenv"
+import { MentionsLive } from "./Mentions.js"
 
 Dotenv.config()
 
@@ -30,10 +31,12 @@ const AutoThreadsLive = AutoThreads.makeLayer({
   ),
 })
 
+const MainServicesLive = Layer.mergeAll(BotLive, MentionsLive)
+
 const MainLive = pipe(
-  DiscordLive,
-  Layer.merge(OpenAILive),
-  Layer.provide(Layer.merge(AutoThreadsLive, BotLive)),
+  Layer.mergeAll(DiscordLive, OpenAILive),
+  Layer.provideMerge(AutoThreadsLive),
+  Layer.provide(MainServicesLive),
 )
 
 pipe(
