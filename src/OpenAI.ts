@@ -67,7 +67,10 @@ ${Str.truncateWords(prompt, 75)}`,
         ),
     )
 
-  const generateReply = (title: string, messages: string[]) =>
+  const generateReply = (
+    title: string,
+    messages: ReadonlyArray<readonly [content: string, bot: boolean]>,
+  ) =>
     Effect.flatMap(
       call((_, signal) =>
         _.createChatCompletion(
@@ -81,9 +84,9 @@ ${Str.truncateWords(prompt, 75)}`,
 The title of this conversation is "${title}".`,
               },
               ...messages.map(
-                content =>
+                ([content, bot]) =>
                   ({
-                    role: "user",
+                    role: bot ? "assistant" : "user",
                     content: Str.truncateWords(content, 50),
                   } as const),
               ),

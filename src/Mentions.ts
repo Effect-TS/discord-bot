@@ -38,9 +38,14 @@ const make = Effect.gen(function* (_) {
               msg.type === Discord.MessageType.REPLY,
           )
           .filter(msg => msg.content.trim().length > 0)
-          .map(
-            msg => `${handle(msg)}:
+          .map(msg =>
+            msg.author.id === botUser.id
+              ? ([msg.content, true] as const)
+              : ([
+                  `${handle(msg)}:
 ${msg.content}`,
+                  false,
+                ] as const),
           ),
       ),
     )
