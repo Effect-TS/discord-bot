@@ -54,7 +54,7 @@ const make = Effect.gen(function* (_) {
               content:
                 msg.author.id === botUser.id
                   ? msg.content
-                  : `${handle(msg)}:
+                  : `${handle(msg)} said:
 ${msg.content}`,
               bot: msg.author.id === botUser.id,
             }),
