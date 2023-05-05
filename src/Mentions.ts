@@ -1,9 +1,10 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIMessage } from "bot/OpenAI"
 import { Data, Effect, Layer, pipe } from "bot/_common"
+import { logRESTError } from "bot/utils/Errors"
+import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
-import { logRESTError } from "bot/utils/Errors"
 
 class NonEligibleMessage extends Data.TaggedClass("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
@@ -91,7 +92,7 @@ ${msg.content}`,
           message_reference: {
             message_id: message.id,
           },
-          content,
+          content: Str.truncate(content, 2000),
         }),
       ),
       Effect.catchTags({
