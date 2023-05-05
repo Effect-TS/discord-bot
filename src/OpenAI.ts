@@ -81,10 +81,15 @@ ${Str.truncateWords(prompt, 75)}`,
         _.createChatCompletion(
           {
             model: "gpt-3.5-turbo",
+            temperature: 1,
+            top_p: 1,
+            max_tokens: 256,
+            frequency_penalty: 0,
+            presence_penalty: 0,
             messages: [
               {
                 role: "system",
-                content: `You are Effect Bot, a helpful assistant for the Effect Discord community.
+                content: `You are Effect Bot, a funny, helpful assistant.
 
 Please keep responses under 2000 characters.
 
