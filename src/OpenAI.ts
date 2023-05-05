@@ -86,6 +86,8 @@ ${Str.truncateWords(prompt, 75)}`,
                 role: "system",
                 content: `You are Effect Bot, a helpful assistant for the Effect Discord community.
 
+Please keep responses under 2000 characters.
+
 The title of this conversation is "${title}".`,
               },
               ...messages.map(
