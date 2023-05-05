@@ -3,6 +3,7 @@ import { OpenAI, OpenAIMessage } from "bot/OpenAI"
 import { Data, Effect, Layer, pipe } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
+import { logRESTError } from "bot/utils/Errors"
 
 class NonEligibleMessage extends Data.TaggedClass("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
@@ -96,6 +97,7 @@ ${msg.content}`,
       Effect.catchTags({
         NonEligibleMessage: _ => Effect.unit(),
         NoSuchElementException: _ => Effect.unit(),
+        DiscordRESTError: logRESTError,
       }),
       Effect.catchAllCause(Effect.logErrorCause),
     ),

@@ -1,6 +1,5 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIError } from "bot/OpenAI"
-import * as Str from "bot/utils/String"
 import {
   Cause,
   Config,
@@ -14,6 +13,8 @@ import {
   pipe,
   seconds,
 } from "bot/_common"
+import { logRESTError } from "bot/utils/Errors"
+import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
 import {
   DiscordGateway,
@@ -120,12 +121,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
         ),
         Effect.catchTags({
           NotValidMessageError: () => Effect.unit(),
-          DiscordRESTError: _ =>
-            "response" in _.error
-              ? Effect.flatMap(_.error.response.json, _ =>
-                  Effect.logInfo(JSON.stringify(_, null, 2)),
-                )
-              : log.info(_.error),
+          DiscordRESTError: logRESTError,
         }),
         Effect.catchAllCause(Effect.logErrorCause),
       ),
