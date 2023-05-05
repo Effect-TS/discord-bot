@@ -22,15 +22,26 @@ const make = Effect.gen(function* (_) {
   const handle = (message: Discord.MessageCreateEvent) =>
     message.member?.nick ?? message.author.username
 
-  const generateContext = (message: Discord.MessageCreateEvent) =>
+  const generateContext = (
+    thread: Discord.Channel,
+    message: Discord.MessageCreateEvent,
+  ) =>
     pipe(
-      rest.getChannelMessages(message.channel_id, {
-        before: message.id,
-        limit: 4,
+      Effect.allPar({
+        openingMessage: Effect.flatMap(
+          rest.getChannelMessage(thread.parent_id!, thread.id),
+          _ => _.json,
+        ),
+        messages: Effect.flatMap(
+          rest.getChannelMessages(message.channel_id, {
+            before: message.id,
+            limit: 4,
+          }),
+          _ => _.json,
+        ),
       }),
-      Effect.flatMap(_ => _.json),
-      Effect.map(messages =>
-        [message, ...messages]
+      Effect.map(({ openingMessage, messages }) =>
+        [message, ...messages, openingMessage]
           .reverse()
           .filter(
             msg =>
@@ -71,7 +82,7 @@ ${msg.content}`,
       ),
       Effect.flatMap(thread =>
         pipe(
-          generateContext(message),
+          generateContext(thread, message),
           Effect.flatMap(messages =>
             openai.generateReply(thread.name ?? "A thread", messages),
           ),
