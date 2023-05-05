@@ -93,7 +93,7 @@ The title of this conversation is "${title}".`,
               ...messages.map(
                 ({ content, bot }): ChatCompletionRequestMessage => ({
                   role: bot ? "assistant" : "user",
-                  content: Str.truncateWords(content, 50),
+                  content: Str.truncateWords(content, 100),
                 }),
               ),
             ],
