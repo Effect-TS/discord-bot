@@ -19,9 +19,6 @@ const make = Effect.gen(function* (_) {
     Effect.flatMap(_ => _.json),
   )
 
-  const handle = (message: Discord.MessageCreateEvent) =>
-    message.member?.nick ?? message.author.username
-
   const generateContext = (
     thread: Discord.Channel,
     message: Discord.MessageCreateEvent,
@@ -54,7 +51,7 @@ const make = Effect.gen(function* (_) {
               content:
                 msg.author.id === botUser.id
                   ? msg.content
-                  : `${handle(msg)} said:
+                  : `<@${msg.author.id}> said:
 ${msg.content}`,
               bot: msg.author.id === botUser.id,
             }),
