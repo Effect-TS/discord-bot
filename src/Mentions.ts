@@ -72,12 +72,10 @@ ${msg.content}`,
         message => message.mentions.some(_ => _.id === botUser.id),
         () => new NonEligibleMessage({ reason: "non-mentioned" }),
       ),
-      Effect.zipRight(
-        Effect.tap(channels.get(message.guild_id!, message.channel_id), _ =>
-          _.type === Discord.ChannelType.PUBLIC_THREAD
-            ? Effect.unit()
-            : Effect.fail(new NonEligibleMessage({ reason: "not-in-thread" })),
-        ),
+      Effect.zipRight(channels.get(message.guild_id!, message.channel_id)),
+      Effect.filterOrFail(
+        _ => _.type === Discord.ChannelType.PUBLIC_THREAD,
+        () => new NonEligibleMessage({ reason: "not-in-thread" }),
       ),
       Effect.flatMap(thread =>
         pipe(
