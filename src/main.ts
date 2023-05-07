@@ -35,7 +35,7 @@ const AutoThreadsLive = AutoThreads.makeLayer({
 const NoEmbedLive = NoEmbed.makeLayer({
   topicKeyword: Config.withDefault(
     Config.string("NOEMBED_KEYWORD"),
-    "[noembeds]",
+    "[noembed]",
   ),
 })
 
