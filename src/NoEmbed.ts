@@ -12,9 +12,6 @@ export interface NoEmbedOptions {
   readonly topicKeyword: string
 }
 
-const UrlRE =
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
-
 const make = ({ topicKeyword }: NoEmbedOptions) =>
   Effect.gen(function* (_) {
     const gateway = yield* _(DiscordGateway)
@@ -36,7 +33,10 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
           () => new NotValidMessageError({ reason: "disabled" }),
         ),
         Effect.filterOrFail(
-          () => UrlRE.test(message.content) && message.embeds.length > 0,
+          () =>
+            message.embeds.length > 0 &&
+            !!message.embeds[0].url &&
+            message.content.includes(message.embeds[0].url),
           () => new NotValidMessageError({ reason: "no-embed" }),
         ),
         Effect.zipRight(
