@@ -1,4 +1,5 @@
 import * as AutoThreads from "bot/AutoThreads"
+import * as NoEmbed from "bot/NoEmbed"
 import { BotLive } from "bot/Bot"
 import * as OpenAI from "bot/OpenAI"
 import { Config, Effect, Layer, pipe } from "bot/_common"
@@ -31,9 +32,18 @@ const AutoThreadsLive = AutoThreads.makeLayer({
   ),
 })
 
+const NoEmbedLive = NoEmbed.makeLayer({
+  topicKeyword: Config.withDefault(
+    Config.string("NOEMBED_KEYWORD"),
+    "[noembed]",
+  ),
+})
+
 const MainLive = pipe(
   Layer.mergeAll(DiscordLive, OpenAILive),
-  Layer.provide(Layer.mergeAll(AutoThreadsLive, MentionsLive, BotLive)),
+  Layer.provide(
+    Layer.mergeAll(AutoThreadsLive, NoEmbedLive, MentionsLive, BotLive),
+  ),
 )
 
 pipe(
