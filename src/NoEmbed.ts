@@ -5,7 +5,7 @@ import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 
 class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
-  readonly reason: "disabled" | "no-embed" | "already-supressed"
+  readonly reason: "disabled" | "no-embed"
 }> {}
 
 export interface NoEmbedOptions {
@@ -45,17 +45,12 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
         ),
         Effect.filterOrFail(
           ({ message }) =>
-            (Number(message.flags) & Discord.MessageFlag.SUPPRESS_EMBEDS) === 0,
-          () => new NotValidMessageError({ reason: "already-supressed" }),
-        ),
-        Effect.filterOrFail(
-          ({ message }) =>
             message.embeds.length > 0 &&
             !!message.embeds[0].url &&
             message.content.includes(message.embeds[0].url),
           () => new NotValidMessageError({ reason: "no-embed" }),
         ),
-        Effect.zipRight(
+        Effect.flatMap(({ message }) =>
           rest.editMessage(message.channel_id, message.id, {
             flags: Number(message.flags) | Discord.MessageFlag.SUPPRESS_EMBEDS,
           }),
