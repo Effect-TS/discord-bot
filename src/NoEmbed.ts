@@ -5,7 +5,7 @@ import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 
 class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
-  readonly reason: "disabled" | "no-embed"
+  readonly reason: "disabled" | "no-embed" | "already-supressed"
 }> {}
 
 export interface NoEmbedOptions {
@@ -25,15 +25,31 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
           : Effect.succeed(_),
       )
 
-    const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
+    const handleMessage = (message: Discord.MessageCreateEvent) =>
       pipe(
-        getChannel(message.guild_id!, message.channel_id),
-        Effect.filterOrFail(
-          channel => channel.topic?.includes(topicKeyword) === true,
-          () => new NotValidMessageError({ reason: "disabled" }),
+        Effect.Do(),
+        Effect.bind("channel", () =>
+          getChannel(message.guild_id!, message.channel_id),
         ),
         Effect.filterOrFail(
-          () =>
+          ({ channel }) => channel.topic?.includes(topicKeyword) === true,
+          () => new NotValidMessageError({ reason: "disabled" }),
+        ),
+        Effect.bind("message", () =>
+          message.content
+            ? Effect.succeed(message)
+            : Effect.flatMap(
+                rest.getChannelMessage(message.channel_id, message.id),
+                _ => _.json,
+              ),
+        ),
+        Effect.filterOrFail(
+          ({ message }) =>
+            (Number(message.flags) & Discord.MessageFlag.SUPPRESS_EMBEDS) === 0,
+          () => new NotValidMessageError({ reason: "already-supressed" }),
+        ),
+        Effect.filterOrFail(
+          ({ message }) =>
             message.embeds.length > 0 &&
             !!message.embeds[0].url &&
             message.content.includes(message.embeds[0].url),
@@ -41,7 +57,7 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
         ),
         Effect.zipRight(
           rest.editMessage(message.channel_id, message.id, {
-            flags: Discord.MessageFlag.SUPPRESS_EMBEDS,
+            flags: Number(message.flags) | Discord.MessageFlag.SUPPRESS_EMBEDS,
           }),
         ),
         Effect.catchTags({
@@ -49,10 +65,14 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
           DiscordRESTError: logRESTError,
         }),
         Effect.catchAllCause(Effect.logErrorCause),
+      )
+
+    yield* _(
+      Effect.allPar(
+        gateway.handleDispatch("MESSAGE_CREATE", handleMessage),
+        gateway.handleDispatch("MESSAGE_UPDATE", handleMessage),
       ),
     )
-
-    yield* _(handleMessages)
   })
 
 export const makeLayer = (config: Config.Config.Wrap<NoEmbedOptions>) =>
