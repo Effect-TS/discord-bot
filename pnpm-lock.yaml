@@ -5,11 +5,11 @@ dependencies:
     specifier: ^0.12.2
     version: 0.12.2
   '@effect/io':
-    specifier: ^0.25.9
-    version: 0.25.9
+    specifier: ^0.25.10
+    version: 0.25.10
   dfx:
-    specifier: ^0.45.3
-    version: 0.45.3
+    specifier: ^0.45.5
+    version: 0.45.5
   dotenv:
     specifier: ^16.0.3
     version: 16.0.3
@@ -19,8 +19,8 @@ dependencies:
 
 devDependencies:
   '@types/node':
-    specifier: ^20.1.1
-    version: 20.1.1
+    specifier: ^20.1.4
+    version: 20.1.4
   prettier:
     specifier: ^2.8.8
     version: 2.8.8
@@ -33,12 +33,12 @@ devDependencies:
 
 packages:
 
-  /@effect-http/client@0.24.2:
-    resolution: {integrity: sha512-Ae5v2KraedgMSlwSvD2Qn+dLWJ21XAWDZoUtdHbmNL21DRfR4DiF0NvogA/Wa4tlyrlAscY1GY+PnFoi48GqGw==}
+  /@effect-http/client@0.25.1:
+    resolution: {integrity: sha512-4J1tGCaPHzuct1GPLLpMXdsOX1Q85UmEppY86yaYsDYig7uAhSBlUfqIEdPqSd9INKhf/a2VOYl8udZP2HU27Q==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.25.9
-      '@effect/schema': 0.17.5
+      '@effect/io': 0.25.10
+      '@effect/schema': 0.19.0
       '@effect/stream': 0.21.1
     dev: false
 
@@ -46,17 +46,17 @@ packages:
     resolution: {integrity: sha512-bmWRTcsSRG1FlBswT+D8SxW6r3c4B3pKJrjYfitCD03tXHnup5gLHaWqbFgIjiyYITS+UsJRRjVrNxvyGG4ZNQ==}
     dev: false
 
-  /@effect/io@0.25.9:
-    resolution: {integrity: sha512-RvW3l7A7PpPb74xwegxVKL5S+Zt+oA73fimSI7GunwaRk/OpI942BKdMczW1xN2sV5EME6jernAVAhKdncxM9Q==}
+  /@effect/io@0.25.10:
+    resolution: {integrity: sha512-hDgm6L2QKO+ML3s7irvKD78lq7n8HXJ9AnDjSG8nRF3rKaTh9MAwI8RN05Yd0qgGo9iXe93RSaWzO2+Xn/0WWg==}
     dependencies:
       '@effect/data': 0.12.2
     dev: false
 
-  /@effect/schema@0.17.5:
-    resolution: {integrity: sha512-I9NJ/Zwx605hdMT5G1OZ1jlo95WC4KvfXFY2zHYTJNAkdv6f31GF5qylrcd32pUm6/EM73HdjxrEZMMKnpEeUQ==}
+  /@effect/schema@0.19.0:
+    resolution: {integrity: sha512-BCmDLvFJol1uAyCJbCi+Ss0HFf+k/qb4tyvc8Iu4O/7ChNnBiACDWukU3f+7lHZPIh729arzdBoBSQqyKX64iw==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.25.9
+      '@effect/io': 0.25.10
       fast-check: 3.8.1
     dev: false
 
@@ -64,11 +64,11 @@ packages:
     resolution: {integrity: sha512-x227xIB+PC/xaz4R3RYkjg2Z0sw5Fgkt5hfxXeGHpKThhmqVEeIXjd0v04pcoz2lJtStcvWL5Wuh/Z8HP3Hw/Q==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.25.9
+      '@effect/io': 0.25.10
     dev: false
 
-  /@types/node@20.1.1:
-    resolution: {integrity: sha512-uKBEevTNb+l6/aCQaKVnUModfEMjAl98lw2Si9P5y4hLu9tm6AlX2ZIoXZX6Wh9lJueYPrGPKk5WMCNHg/u6/A==}
+  /@types/node@20.1.4:
+    resolution: {integrity: sha512-At4pvmIOki8yuwLtd7BNHl3CiWNbtclUbNtScGx4OHfBd4/oWoJC8KRCIxXwkdndzhxOsPXihrsOoydxBjlE9Q==}
     dev: true
 
   /asynckit@0.4.0:
@@ -113,12 +113,12 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
-  /dfx@0.45.3:
-    resolution: {integrity: sha512-PudoR4k9+fDidm+5ZlvqTZKY6/plfbI/3vzhq+bbS9AzGZtAdHuR8z12xe+Lryi16LP0/979/Stx6mkzgRBW0g==}
+  /dfx@0.45.5:
+    resolution: {integrity: sha512-a9/Usk36mF0mYotVTr2Im7WLczwTjwkhnORWXEy/94Nt6t7Wp0dk1Ms13p0tDREd9Ws5CHpeb8+jUTb4JUv25A==}
     dependencies:
-      '@effect-http/client': 0.24.2
+      '@effect-http/client': 0.25.1
       '@effect/data': 0.12.2
-      '@effect/io': 0.25.9
+      '@effect/io': 0.25.10
       '@effect/stream': 0.21.1
       tweetnacl: 1.0.3
     optionalDependencies:
