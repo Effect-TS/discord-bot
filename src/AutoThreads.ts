@@ -99,6 +99,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
         Effect.flatMap(({ channel, title }) =>
           rest.startThreadFromMessage(channel.id, message.id, {
             name: Str.truncate(title, 100),
+            auto_archive_duration: 1440,
           }),
         ),
         Effect.flatMap(_ => _.json),
