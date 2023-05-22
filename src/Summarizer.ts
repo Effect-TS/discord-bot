@@ -122,7 +122,7 @@ ${messageContent.join("\n\n")}`,
         () => "",
         ([, index]) => ` (replying to \\#${index})`,
       )} &mdash; ${new Date(message.timestamp).toUTCString()}<br />
-${message.content}`
+${message.content.replace(/```ts\b/g, "```typescript")}`
 
       const mentions = yield* _(
         Effect.forEachPar(content.matchAll(/<@(\d+)>/g), ([, userId]) =>
