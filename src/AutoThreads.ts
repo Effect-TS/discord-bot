@@ -122,7 +122,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
         ),
         Effect.catchTags({
           NotValidMessageError: () => Effect.unit(),
-          DiscordRESTError: logRESTError,
+          DiscordRESTError: logRESTError(log),
         }),
         Effect.catchAllCause(Effect.logErrorCause),
       ),
