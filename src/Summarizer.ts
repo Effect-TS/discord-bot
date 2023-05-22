@@ -121,7 +121,9 @@ ${messageContent.join("\n\n")}`,
         replyTo,
         () => "",
         ([, index]) => ` (replying to \\#${index})`,
-      )} &mdash; ${new Date(message.timestamp).toUTCString()}<br />
+      )} <small>&mdash; ${new Date(
+        message.timestamp,
+      ).toUTCString()}</small><br />
 ${message.content.replace(/```ts\b/g, "```typescript")}`
 
       const mentions = yield* _(
