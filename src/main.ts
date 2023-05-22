@@ -7,6 +7,7 @@ import { Intents } from "dfx"
 import { makeLive } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 import { MentionsLive } from "./Mentions.js"
+import { SummarizerLive } from "./Summarizer.js"
 
 Dotenv.config()
 
@@ -42,7 +43,13 @@ const NoEmbedLive = NoEmbed.makeLayer({
 const MainLive = pipe(
   Layer.mergeAll(DiscordLive, OpenAILive),
   Layer.provide(
-    Layer.mergeAll(AutoThreadsLive, NoEmbedLive, MentionsLive, BotLive),
+    Layer.mergeAll(
+      AutoThreadsLive,
+      NoEmbedLive,
+      MentionsLive,
+      SummarizerLive,
+      BotLive,
+    ),
   ),
 )
 
