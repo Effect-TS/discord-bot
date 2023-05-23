@@ -82,6 +82,7 @@ const make = Effect.gen(function* (_) {
     channel: Discord.Channel,
     thread: Discord.Channel,
     messages: Chunk.Chunk<Discord.Message>,
+    small: boolean,
   ) =>
     Effect.map(
       Effect.forEachParWithIndex(messages, (message, index) => {
@@ -94,7 +95,7 @@ const make = Effect.gen(function* (_) {
             index => [Chunk.unsafeGet(messages, index), index + 1] as const,
           ),
         )
-        return summarizeMessage(thread, index + 1, message, reply)
+        return summarizeMessage(thread, index + 1, message, reply, small)
       }),
       messageContent =>
         `# ${thread.name}
@@ -112,18 +113,27 @@ ${messageContent.join("\n\n")}`,
     index: number,
     message: Discord.Message,
     replyTo: Option.Option<readonly [Discord.Message, number]>,
+    small: boolean,
   ) =>
     Effect.gen(function* (_) {
       const user = message.author
       const member = yield* _(members.get(thread.guild_id!, message.author.id))
       const username = member.nick ?? user.username
-      const content = `${index}: **${username}**${Option.match(
+
+      const smallOpen = small ? "<small>" : ""
+      const smallClose = small ? "</small>" : ""
+
+      const reply = Option.match(
         replyTo,
         () => "",
         ([, index]) => ` (replying to \\#${index})`,
-      )} <small>&mdash; ${new Date(
+      )
+
+      const header = `${smallOpen}${smallOpen}${index}: **${username}**${reply} ${smallOpen}&mdash; ${new Date(
         message.timestamp,
-      ).toUTCString()}</small><br />
+      ).toUTCString()}${smallClose}${smallClose}${smallClose}`
+
+      const content = `${header}<br />
 ${message.content
   .replace(/```ts\b/g, "```typescript")
   .replace(/^```/, "\n```")
@@ -156,6 +166,7 @@ ${message.content
   const followUpResponse = (
     context: Discord.Interaction,
     channel: Discord.Channel,
+    small: boolean,
   ) =>
     pipe(
       Effect.all({
@@ -168,7 +179,7 @@ ${message.content
         ),
       ),
       Effect.bind("summary", ({ parentChannel, messages }) =>
-        summarize(parentChannel, channel, messages),
+        summarize(parentChannel, channel, messages, small),
       ),
       Effect.tap(({ summary }) => {
         const formData = new FormData()
@@ -205,29 +216,44 @@ ${message.content
     {
       name: "summarize",
       description: "Create a summary of the current thread",
+      options: [
+        {
+          type: Discord.ApplicationCommandOptionType.BOOLEAN,
+          name: "small",
+          description: "Add <small> tags to the message headers",
+          required: false,
+        },
+      ],
     },
-    pipe(
-      Effect.all({ context: Ix.Interaction }),
-      Effect.bind("channel", ({ context }) =>
-        channels.get(context.guild_id!, context.channel_id!),
-      ),
-      Effect.filterOrFail(
-        ({ channel }) => channel.type === Discord.ChannelType.PUBLIC_THREAD,
-        () => new NotInThreadError(),
-      ),
-      Effect.tap(({ context, channel }) =>
-        Effect.forkIn(followUpResponse(context, channel), scope),
-      ),
-      Effect.as(
-        Ix.response({
-          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data: {
-            content: "Creating summary...",
-            flags: Discord.MessageFlag.EPHEMERAL,
-          },
+    ix =>
+      pipe(
+        Effect.all({
+          context: Ix.Interaction,
+          small: Effect.map(
+            ix.optionValueOptional("small"),
+            Option.getOrElse(() => true),
+          ),
         }),
+        Effect.bind("channel", ({ context }) =>
+          channels.get(context.guild_id!, context.channel_id!),
+        ),
+        Effect.filterOrFail(
+          ({ channel }) => channel.type === Discord.ChannelType.PUBLIC_THREAD,
+          () => new NotInThreadError(),
+        ),
+        Effect.tap(({ context, channel, small }) =>
+          Effect.forkIn(followUpResponse(context, channel, small), scope),
+        ),
+        Effect.as(
+          Ix.response({
+            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+              content: "Creating summary...",
+              flags: Discord.MessageFlag.EPHEMERAL,
+            },
+          }),
+        ),
       ),
-    ),
   )
 
   const ix = Ix.builder
