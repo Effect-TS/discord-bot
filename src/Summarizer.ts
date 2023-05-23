@@ -138,7 +138,7 @@ ${message.content
   .replace(/```ts\b/g, "```typescript")
   .replace(/^```/, "\n```")
   .replace(/[^\n]```/gm, "\n\n```")
-  .replace(/([^\n])\n```/gm, "$1\n\n```")}`
+  .replace(/([^\n])\n```([^\n]*\n[^\n])/gm, "$1\n\n```$2")}`
 
       const mentions = yield* _(
         Effect.forEachPar(content.matchAll(/<@(\d+)>/g), ([, userId]) =>
