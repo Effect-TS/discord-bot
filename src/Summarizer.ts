@@ -129,9 +129,9 @@ ${messageContent.join("\n\n")}`,
         ([, index]) => ` (replying to \\#${index})`,
       )
 
-      const header = `${smallOpen}${smallOpen}${index}: **${username}**${reply} ${smallOpen}&mdash; ${new Date(
+      const header = `${smallOpen}${index}: **${username}**${reply} ${smallOpen}&mdash; ${new Date(
         message.timestamp,
-      ).toUTCString()}${smallClose}${smallClose}${smallClose}`
+      ).toUTCString()}${smallClose}${smallClose}`
 
       const content = `${header}<br />
 ${message.content
