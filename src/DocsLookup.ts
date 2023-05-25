@@ -73,7 +73,7 @@ class DocEntry extends SchemaClass({
       )
     }
 
-    return terms
+    return terms.map(_ => _.toLowerCase())
   }
 }
 
@@ -180,7 +180,7 @@ ${entry.url}`,
         _ => _.length >= 3,
         _ => Effect.fail(new QueryTooShort({ actual: _.length, min: 3 })),
       ),
-      Effect.flatMap(search),
+      Effect.flatMap(_ => search(_.trim().toLowerCase())),
       Effect.map(results =>
         Ix.response({
           type: Discord.InteractionCallbackType
