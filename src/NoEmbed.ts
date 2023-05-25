@@ -1,7 +1,6 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { Config, Data, Effect, Layer, pipe } from "bot/_common"
-import { logRESTError } from "bot/utils/Errors"
-import { Discord, DiscordREST, Log } from "dfx"
+import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 
 class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
@@ -17,7 +16,6 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)
     const channels = yield* _(ChannelsCache)
-    const log = yield* _(Log.Log)
 
     const getChannel = (guildId: string, id: string) =>
       Effect.flatMap(channels.get(guildId, id), _ =>
@@ -58,7 +56,6 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
         ),
         Effect.catchTags({
           NotValidMessageError: () => Effect.unit(),
-          DiscordRESTError: logRESTError(log),
         }),
         Effect.catchAllCause(Effect.logErrorCause),
       )

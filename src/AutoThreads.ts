@@ -13,7 +13,6 @@ import {
   pipe,
   seconds,
 } from "bot/_common"
-import { logRESTError } from "bot/utils/Errors"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
 import {
@@ -122,7 +121,6 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
         ),
         Effect.catchTags({
           NotValidMessageError: () => Effect.unit(),
-          DiscordRESTError: logRESTError(log),
         }),
         Effect.catchAllCause(Effect.logErrorCause),
       ),
