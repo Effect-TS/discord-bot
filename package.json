@@ -17,8 +17,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.2.3",
-    "prettier": "^2.8.8",
     "tsc-watch": "^6.0.4",
+    "prettier": "^2.8.8",
     "typescript": "^5.0.4"
   },
   "dependencies": {
@@ -30,6 +30,7 @@
     "dfx": "^0.45.10",
     "dotenv": "^16.0.3",
     "effect-schema-class": "^0.2.4",
+    "html-entities": "^2.3.3",
     "openai": "^3.2.1"
   }
 }
