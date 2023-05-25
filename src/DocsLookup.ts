@@ -59,7 +59,7 @@ class DocEntry extends SchemaClass({
   }
 
   get searchTerm(): string {
-    return `/${this.subpackage}/${this.module}.${this.title}`
+    return `/${this.subpackage}/${this.module}.${this.title}`.toLowerCase()
   }
 
   get formattedContent(): string {
@@ -119,8 +119,9 @@ const make = Effect.gen(function* (_) {
   // prime the cache
   yield* _(allDocs)
 
-  const search = (query: string) =>
-    pipe(
+  const search = (query: string) => {
+    query = query.toLowerCase()
+    return pipe(
       Effect.logDebug("searching"),
       Effect.zipRight(allDocs),
       Effect.map(_ =>
@@ -131,6 +132,7 @@ const make = Effect.gen(function* (_) {
       Effect.logAnnotate("module", "DocsLookup"),
       Effect.logAnnotate("query", query),
     )
+  }
 
   const command = Ix.global(
     {
