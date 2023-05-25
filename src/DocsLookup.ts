@@ -1,6 +1,5 @@
-import { Discord, Ix, Log } from "dfx"
+import { Discord, Ix } from "dfx"
 import {
-  Cause,
   Data,
   Duration,
   Effect,
@@ -12,6 +11,7 @@ import {
   pipe,
 } from "./_common.js"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
+import * as HtmlEnt from "html-entities"
 
 const docUrls = [
   "https://effect-ts.github.io/cli",
@@ -60,6 +60,17 @@ class DocEntry extends SchemaClass({
 
   get searchTerm(): string {
     return `/${this.subpackage}/${this.module}.${this.title}`
+  }
+
+  get declaration(): string {
+    return this.content
+      .split(" . ")
+      .map(text =>
+        text.startsWith("export ")
+          ? "```typescript\n" + HtmlEnt.decode(text) + "\n```"
+          : text,
+      )
+      .join("\n\n")
   }
 }
 
@@ -149,7 +160,9 @@ const make = Effect.gen(function* (_) {
             type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
               content: `View the documentation for \`${entry.signature}\` from \`${entry.package}\` here:
-${entry.url}`,
+${entry.url}
+
+${entry.declaration}`,
             },
           })
         }),
