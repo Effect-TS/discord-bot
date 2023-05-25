@@ -1,9 +1,8 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIMessage } from "bot/OpenAI"
 import { Data, Effect, Layer, pipe } from "bot/_common"
-import { logRESTError } from "bot/utils/Errors"
 import * as Str from "bot/utils/String"
-import { Discord, DiscordREST, Log } from "dfx"
+import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
 
 class NonEligibleMessage extends Data.TaggedClass("NonEligibleMessage")<{
@@ -15,7 +14,6 @@ const make = Effect.gen(function* (_) {
   const gateway = yield* _(DiscordGateway)
   const channels = yield* _(ChannelsCache)
   const openai = yield* _(OpenAI)
-  const log = yield* _(Log.Log)
 
   const botUser = yield* _(
     rest.getCurrentUser(),
@@ -97,7 +95,6 @@ ${msg.content}`,
       Effect.catchTags({
         NonEligibleMessage: _ => Effect.unit(),
         NoSuchElementException: _ => Effect.unit(),
-        DiscordRESTError: logRESTError(log),
       }),
       Effect.catchAllCause(Effect.logErrorCause),
     ),
