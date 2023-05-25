@@ -1,5 +1,6 @@
-import { Discord, Ix } from "dfx"
+import { Discord, Ix, Log } from "dfx"
 import {
+  Cause,
   Data,
   Duration,
   Effect,
@@ -73,7 +74,7 @@ class DocEntry extends SchemaClass({
       )
     }
 
-    return terms.map(_ => _.toLowerCase())
+    return terms
   }
 }
 
@@ -88,6 +89,7 @@ const retryPolicy = Schedule.fixed(Duration.seconds(3))
 
 const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
+  const log = yield* _(Log.Log)
 
   const buildDocs = (baseUrl: string) =>
     Effect.gen(function* (_) {
@@ -180,13 +182,13 @@ ${entry.url}`,
         _ => _.length >= 3,
         _ => Effect.fail(new QueryTooShort({ actual: _.length, min: 3 })),
       ),
-      Effect.flatMap(_ => search(_.trim().toLowerCase())),
+      Effect.flatMap(search),
       Effect.map(results =>
         Ix.response({
           type: Discord.InteractionCallbackType
             .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
           data: {
-            choices: results.slice(0, 15).map(
+            choices: results.slice(0, 25).map(
               ([{ entry }, index]): Discord.ApplicationCommandOptionChoice => ({
                 name: `${entry.signature} (${entry.package})`,
                 value: index.toString(),
