@@ -62,13 +62,12 @@ class DocEntry extends SchemaClass({
     return `/${this.subpackage}/${this.module}.${this.title}`
   }
 
-  get declaration(): string {
+  get formattedContent(): string {
     return this.content
       .split(" . ")
+      .map(_ => HtmlEnt.decode(_))
       .map(text =>
-        text.startsWith("export ")
-          ? "```typescript\n" + HtmlEnt.decode(text) + "\n```"
-          : text,
+        text.startsWith("export ") ? "```typescript\n" + text + "\n```" : text,
       )
       .join("\n")
   }
@@ -162,7 +161,7 @@ const make = Effect.gen(function* (_) {
               content: `View the documentation for \`${entry.signature}\` from \`${entry.package}\` here:
 ${entry.url}
 
-${entry.declaration}`,
+${entry.formattedContent}`,
             },
           })
         }),
