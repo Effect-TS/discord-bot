@@ -12,6 +12,7 @@ import {
 } from "./_common.js"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
 import * as HtmlEnt from "html-entities"
+import * as Prettier from "prettier"
 
 const docUrls = [
   "https://effect-ts.github.io/cli",
@@ -62,14 +63,20 @@ class DocEntry extends SchemaClass({
     return `/${this.subpackage}/${this.module}.${this.title}`.toLowerCase()
   }
 
-  get formattedContent(): string {
-    return this.content
-      .split(" . ")
-      .map(_ => HtmlEnt.decode(_))
-      .map(text =>
-        text.startsWith("export ") ? "```typescript\n" + text + "\n```" : text,
-      )
-      .join("\n")
+  get formattedContent() {
+    return Effect.map(
+      Effect.forEach(
+        this.content.split(" . ").map(_ => HtmlEnt.decode(_)),
+        text =>
+          text.startsWith("export ")
+            ? Effect.map(
+                makePretty(text),
+                text => "```typescript\n" + text + "\n```",
+              )
+            : Effect.succeed(text),
+      ),
+      _ => _.join("\n"),
+    )
   }
 }
 
@@ -81,6 +88,21 @@ class QueryTooShort extends Data.TaggedClass("QueryTooShort")<{
 }> {}
 
 const retryPolicy = Schedule.fixed(Duration.seconds(3))
+
+const makePretty = (code: string) => {
+  code = code.split("> <").join(">\n<")
+  return pipe(
+    Effect.try(() =>
+      Prettier.format(code, {
+        parser: "typescript",
+        trailingComma: "all",
+        semi: false,
+        arrowParens: "avoid"
+      }),
+    ),
+    Effect.catchAllCause(_ => Effect.succeed(code)),
+  )
+}
 
 const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
@@ -154,19 +176,19 @@ const make = Effect.gen(function* (_) {
           index: ix.optionValue("query"),
           docs: allDocs,
         }),
-        Effect.map(({ index, docs }) => {
-          const entry = docs[Number(index)].entry
-
-          return Ix.response({
+        Effect.let("entry", ({ index, docs }) => docs[Number(index)].entry),
+        Effect.bind("content", ({ entry }) => entry.formattedContent),
+        Effect.map(({ entry, content }) =>
+          Ix.response({
             type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
               content: `View the documentation for \`${entry.signature}\` from \`${entry.package}\` here:
 ${entry.url}
 
-${entry.formattedContent}`,
+${content}`,
             },
-          })
-        }),
+          }),
+        ),
       ),
   )
 
