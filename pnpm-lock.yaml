@@ -10,6 +10,9 @@ dependencies:
   '@effect/io':
     specifier: ^0.25.13
     version: 0.25.13
+  '@effect/schema':
+    specifier: ^0.19.3
+    version: 0.19.3
   '@effect/stream':
     specifier: ^0.21.1
     version: 0.21.1
@@ -19,6 +22,9 @@ dependencies:
   dotenv:
     specifier: ^16.0.3
     version: 16.0.3
+  effect-schema-class:
+    specifier: ^0.2.4
+    version: 0.2.4
   openai:
     specifier: ^3.2.1
     version: 3.2.1
@@ -142,6 +148,14 @@ packages:
   /duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
     dev: true
+
+  /effect-schema-class@0.2.4:
+    resolution: {integrity: sha512-8qemq2Qh3S0b8TdBpSDzJQRUfqi2N4bAJxw4OTPbhX4S8EHJoiBIfo+FN+xVPx8ZuPIzOtbb5ipM7EbZM9poRg==}
+    dependencies:
+      '@effect/data': 0.12.2
+      '@effect/io': 0.25.13
+      '@effect/schema': 0.19.3
+    dev: false
 
   /event-stream@3.3.4:
     resolution: {integrity: sha512-QHpkERcGsR0T7Qm3HNJSyXKEEj8AHNxkY3PK8TS2KJvQ7NiSHe3DDpwVKKtoYprL/AreyzFBeIkBIWChAqn60g==}
