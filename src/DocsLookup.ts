@@ -70,7 +70,7 @@ class DocEntry extends SchemaClass({
           ? "```typescript\n" + HtmlEnt.decode(text) + "\n```"
           : text,
       )
-      .join("\n\n")
+      .join("\n")
   }
 }
 
