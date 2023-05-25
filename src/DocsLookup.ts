@@ -58,23 +58,8 @@ class DocEntry extends SchemaClass({
     return `${this.module}.${this.title}`
   }
 
-  get searchTerms(): ReadonlyArray<string> {
-    const terms: Array<string> = [
-      `${this.module}.${this.title}`,
-      `/${this.subpackage}/${this.module}.${this.title}`,
-    ]
-
-    const moduleParts = this.module.split("/")
-    if (moduleParts.length > 1) {
-      terms.push(`${moduleParts[moduleParts.length - 1]}.${this.title}`)
-      terms.push(
-        `/${this.subpackage}/${moduleParts[moduleParts.length - 1]}.${
-          this.title
-        }`,
-      )
-    }
-
-    return terms
+  get searchTerm(): string {
+    return `/${this.subpackage}/${this.module}.${this.title}`
   }
 }
 
@@ -89,7 +74,6 @@ const retryPolicy = Schedule.fixed(Duration.seconds(3))
 
 const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
-  const log = yield* _(Log.Log)
 
   const buildDocs = (baseUrl: string) =>
     Effect.gen(function* (_) {
@@ -110,12 +94,10 @@ const make = Effect.gen(function* (_) {
         ),
       )
 
-      return searchData.flatMap(entry =>
-        entry.searchTerms.map(term => ({
-          term,
-          entry,
-        })),
-      )
+      return searchData.map(entry => ({
+        term: entry.searchTerm,
+        entry,
+      }))
     })
 
   const allDocs = yield* _(
