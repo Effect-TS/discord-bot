@@ -133,7 +133,7 @@ const make = Effect.gen(function* (_) {
       Effect.zipRight(allDocs),
       Effect.map(_ =>
         _.map((_, index) => [_, index] as const).filter(([_]) =>
-          _.term.startsWith(query),
+          _.term.includes(query),
         ),
       ),
       Effect.logAnnotate("module", "DocsLookup"),
