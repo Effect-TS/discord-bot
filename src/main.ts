@@ -1,13 +1,14 @@
 import * as AutoThreads from "bot/AutoThreads"
-import * as NoEmbed from "bot/NoEmbed"
 import { BotLive } from "bot/Bot"
+import { DocsLookupLive } from "bot/DocsLookup"
+import { MentionsLive } from "bot/Mentions"
+import * as NoEmbed from "bot/NoEmbed"
 import * as OpenAI from "bot/OpenAI"
+import { SummarizerLive } from "bot/Summarizer"
 import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents } from "dfx"
 import { makeLive } from "dfx/gateway"
 import * as Dotenv from "dotenv"
-import { MentionsLive } from "./Mentions.js"
-import { SummarizerLive } from "./Summarizer.js"
 
 Dotenv.config()
 
@@ -45,6 +46,7 @@ const MainLive = pipe(
   Layer.provide(
     Layer.mergeAll(
       AutoThreadsLive,
+      DocsLookupLive,
       NoEmbedLive,
       MentionsLive,
       SummarizerLive,
