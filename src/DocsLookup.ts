@@ -1,4 +1,7 @@
 import { Discord, Ix } from "dfx"
+import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
+import * as HtmlEnt from "html-entities"
+import * as Prettier from "prettier"
 import {
   Data,
   Duration,
@@ -10,9 +13,6 @@ import {
   SchemaClass,
   pipe,
 } from "./_common.js"
-import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
-import * as HtmlEnt from "html-entities"
-import * as Prettier from "prettier"
 
 const docUrls = [
   "https://effect-ts.github.io/cli",
@@ -89,20 +89,19 @@ class QueryTooShort extends Data.TaggedClass("QueryTooShort")<{
 
 const retryPolicy = Schedule.fixed(Duration.seconds(3))
 
-const makePretty = (code: string) => {
-  code = code.split("> <").join(">\n<")
-  return pipe(
-    Effect.try(() =>
-      Prettier.format(code, {
+const makePretty = (code: string) =>
+  pipe(
+    Effect.try(() => {
+      const codeWithNewlines = code.replace(/ (<|\[|readonly)/g, "\n$1")
+      return Prettier.format(codeWithNewlines, {
         parser: "typescript",
         trailingComma: "all",
         semi: false,
-        arrowParens: "avoid"
-      }),
-    ),
+        arrowParens: "avoid",
+      })
+    }),
     Effect.catchAllCause(_ => Effect.succeed(code)),
   )
-}
 
 const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
