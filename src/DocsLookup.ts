@@ -11,6 +11,7 @@ import {
   Schedule,
   Schema,
   SchemaClass,
+  identity,
   pipe,
 } from "./_common.js"
 
@@ -25,11 +26,146 @@ const docUrls = [
   "https://effect-ts.github.io/stream",
 ]
 
+const make = Effect.gen(function* (_) {
+  const registry = yield* _(InteractionsRegistry)
+
+  const buildDocs = (baseUrl: string) =>
+    Effect.gen(function* (_) {
+      const searchData = yield* _(
+        Http.get(`${baseUrl}/assets/js/search-data.json`),
+        Http.fetchJson(),
+        Effect.retry(retryPolicy),
+        Effect.map(_ => Object.values(_ as object)),
+        Effect.flatMap(decodeEntries),
+        Effect.map(entries => entries.filter(_ => _.isSignature)),
+      )
+
+      return searchData.map(entry => ({
+        term: entry.searchTerm,
+        entry,
+      }))
+    })
+
+  const allDocs = yield* _(
+    Effect.forEachPar(docUrls, buildDocs),
+    Effect.map(_ => _.flat()),
+    Effect.cachedWithTTL(Duration.hours(3)),
+  )
+
+  // prime the cache
+  yield* _(allDocs)
+
+  const search = (query: string) => {
+    query = query.toLowerCase()
+    return pipe(
+      Effect.logDebug("searching"),
+      Effect.zipRight(allDocs),
+      Effect.map(entries =>
+        entries
+          .map((_, index) => [_, index] as const)
+          .filter(([_]) => _.term.includes(query))
+          .map(([_, index]) => [_.entry, index] as const),
+      ),
+      Effect.logAnnotate("module", "DocsLookup"),
+      Effect.logAnnotate("query", query),
+    )
+  }
+
+  const command = Ix.global(
+    {
+      name: "docs",
+      description: "Search the Effect reference docs",
+      options: [
+        {
+          type: Discord.ApplicationCommandOptionType.INTEGER,
+          name: "query",
+          description: "The query to search for",
+          required: true,
+          autocomplete: true,
+        },
+      ],
+    },
+    ix =>
+      pipe(
+        Effect.all({
+          index: ix.optionValue("query"),
+          docs: allDocs,
+        }),
+        Effect.bind("embed", ({ index, docs }) => docs[index].entry.embed),
+        Effect.map(({ embed }) => {
+          return Ix.response({
+            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+              embeds: [embed],
+            },
+          })
+        }),
+      ),
+  )
+
+  const autocomplete = Ix.autocomplete(
+    Ix.option("docs", "query"),
+    pipe(
+      Ix.focusedOptionValue,
+      Effect.filterOrElseWith(
+        _ => _.length >= 3,
+        _ => Effect.fail(new QueryTooShort({ actual: _.length, min: 3 })),
+      ),
+      Effect.flatMap(search),
+      Effect.map(results =>
+        Ix.response({
+          type: Discord.InteractionCallbackType
+            .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+          data: {
+            choices: results.slice(0, 25).map(
+              ([entry, index]): Discord.ApplicationCommandOptionChoice => ({
+                name: `${entry.signature} (${entry.package})`,
+                value: index.toString(),
+              }),
+            ),
+          },
+        }),
+      ),
+      Effect.catchTags({
+        QueryTooShort: _ =>
+          Effect.succeed(
+            Ix.response({
+              type: Discord.InteractionCallbackType
+                .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+              data: { choices: [] },
+            }),
+          ),
+      }),
+    ),
+  )
+
+  const ix = Ix.builder
+    .add(command)
+    .add(autocomplete)
+    .catchAllCause(Effect.logErrorCause)
+
+  yield* _(registry.register(ix))
+})
+
+export const DocsLookupLive = Layer.provide(
+  InteractionsRegistryLive,
+  Layer.effectDiscard(make),
+)
+
+// schema
+
 class DocEntry extends SchemaClass({
   doc: Schema.string,
   title: Schema.string,
   content: Schema.string,
-  url: Schema.string,
+  url: pipe(
+    Schema.string,
+    Schema.transform(
+      Schema.string,
+      path => `https://effect-ts.github.io${path}`,
+      identity,
+    ),
+  ),
   relUrl: Schema.string,
 }) {
   get isSignature() {
@@ -64,23 +200,43 @@ class DocEntry extends SchemaClass({
   }
 
   get formattedContent() {
-    return Effect.map(
-      Effect.forEach(
-        this.content.split(" . ").map(_ => HtmlEnt.decode(_)),
-        text =>
-          text.startsWith("export ")
-            ? Effect.map(
-                makePretty(text),
-                text => "```typescript\n" + text + "\n```",
-              )
-            : Effect.succeed(text),
-      ),
-      _ => _.join("\n"),
+    return Effect.forEach(
+      this.content
+        .split(" . ")
+        .map(_ => _.trim())
+        .filter(_ => _.length)
+        .map(_ => HtmlEnt.decode(_)),
+      text =>
+        text.startsWith("export ") ? wrapCodeBlock(text) : Effect.succeed(text),
+    )
+  }
+
+  get embed() {
+    return pipe(
+      this.formattedContent,
+      Effect.map((content): Discord.Embed => {
+        const footer = content.pop()!
+
+        return {
+          author: {
+            name: this.package,
+          },
+          title: this.signature,
+          description: content.join("\n\n"),
+          color: 0x882ecb,
+          url: this.url,
+          footer: {
+            text: footer,
+          },
+        }
+      }),
     )
   }
 }
 
 const decodeEntries = Schema.parseEffect(Schema.array(DocEntry.schema()))
+
+// errors
 
 class QueryTooShort extends Data.TaggedClass("QueryTooShort")<{
   readonly actual: number
@@ -89,13 +245,14 @@ class QueryTooShort extends Data.TaggedClass("QueryTooShort")<{
 
 const retryPolicy = Schedule.fixed(Duration.seconds(3))
 
-const makePretty = (code: string) =>
+// helpers
+
+const wrapCodeBlock = (code: string) =>
   pipe(
     Effect.try(() => {
-      const codeWithNewlines = code.replace(
-        / (<|\[|readonly|(?<!readonly |\()\b\w+\??:)/g,
-        "\n$1",
-      )
+      const codeWithNewlines = code
+        .replace(/ (<|\[|readonly|(?<!readonly |\()\b\w+\??:|\/\*\*)/g, "\n$1")
+        .replace(/\*\//g, "*/\n")
       return Prettier.format(codeWithNewlines, {
         parser: "typescript",
         trailingComma: "all",
@@ -104,141 +261,5 @@ const makePretty = (code: string) =>
       })
     }),
     Effect.catchAllCause(_ => Effect.succeed(code)),
+    Effect.map(_ => "```typescript\n" + _ + "\n```"),
   )
-
-const make = Effect.gen(function* (_) {
-  const registry = yield* _(InteractionsRegistry)
-
-  const buildDocs = (baseUrl: string) =>
-    Effect.gen(function* (_) {
-      const searchData = yield* _(
-        Http.get(`${baseUrl}/assets/js/search-data.json`),
-        Http.fetchJson(),
-        Effect.retry(retryPolicy),
-        Effect.map(_ => Object.values(_ as object)),
-        Effect.flatMap(_ => decodeEntries(_)),
-        Effect.map(entries =>
-          entries
-            .filter(_ => _.isSignature)
-            .map(entry =>
-              entry.copyWith({
-                url: `${baseUrl}${entry.relUrl}`,
-              }),
-            ),
-        ),
-      )
-
-      return searchData.map(entry => ({
-        term: entry.searchTerm,
-        entry,
-      }))
-    })
-
-  const allDocs = yield* _(
-    Effect.forEachPar(docUrls, buildDocs),
-    Effect.map(_ => _.flat()),
-    Effect.cachedWithTTL(Duration.hours(3)),
-  )
-
-  // prime the cache
-  yield* _(allDocs)
-
-  const search = (query: string) => {
-    query = query.toLowerCase()
-    return pipe(
-      Effect.logDebug("searching"),
-      Effect.zipRight(allDocs),
-      Effect.map(_ =>
-        _.map((_, index) => [_, index] as const).filter(([_]) =>
-          _.term.includes(query),
-        ),
-      ),
-      Effect.logAnnotate("module", "DocsLookup"),
-      Effect.logAnnotate("query", query),
-    )
-  }
-
-  const command = Ix.global(
-    {
-      name: "docs",
-      description: "Search the Effect reference docs",
-      options: [
-        {
-          type: Discord.ApplicationCommandOptionType.STRING,
-          name: "query",
-          description: "The query to search for",
-          required: true,
-          autocomplete: true,
-        },
-      ],
-    },
-    ix =>
-      pipe(
-        Effect.all({
-          index: ix.optionValue("query"),
-          docs: allDocs,
-        }),
-        Effect.let("entry", ({ index, docs }) => docs[Number(index)].entry),
-        Effect.bind("content", ({ entry }) => entry.formattedContent),
-        Effect.map(({ entry, content }) =>
-          Ix.response({
-            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              content: `View the documentation for \`${entry.signature}\` from \`${entry.package}\` here:
-${entry.url}
-
-${content}`,
-            },
-          }),
-        ),
-      ),
-  )
-
-  const autocomplete = Ix.autocomplete(
-    Ix.option("docs", "query"),
-    pipe(
-      Ix.focusedOptionValue,
-      Effect.filterOrElseWith(
-        _ => _.length >= 3,
-        _ => Effect.fail(new QueryTooShort({ actual: _.length, min: 3 })),
-      ),
-      Effect.flatMap(search),
-      Effect.map(results =>
-        Ix.response({
-          type: Discord.InteractionCallbackType
-            .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-          data: {
-            choices: results.slice(0, 25).map(
-              ([{ entry }, index]): Discord.ApplicationCommandOptionChoice => ({
-                name: `${entry.signature} (${entry.package})`,
-                value: index.toString(),
-              }),
-            ),
-          },
-        }),
-      ),
-      Effect.catchTags({
-        QueryTooShort: _ =>
-          Effect.succeed(
-            Ix.response({
-              type: Discord.InteractionCallbackType
-                .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-              data: { choices: [] },
-            }),
-          ),
-      }),
-    ),
-  )
-
-  const ix = Ix.builder
-    .add(command)
-    .add(autocomplete)
-    .catchAllCause(Effect.logErrorCause)
-
-  yield* _(registry.register(ix))
-})
-
-export const DocsLookupLive = Layer.provide(
-  InteractionsRegistryLive,
-  Layer.effectDiscard(make),
-)
