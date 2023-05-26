@@ -251,7 +251,10 @@ const wrapCodeBlock = (code: string) =>
   pipe(
     Effect.try(() => {
       const codeWithNewlines = code
-        .replace(/ (<|\[|readonly|(?<!readonly |\()\b\w+\??:|\/\*\*)/g, "\n$1")
+        .replace(
+          / (<|\[|readonly|(?<!readonly |\()\b\w+\??:|\/\*\*|\*\/? )/g,
+          "\n$1",
+        )
         .replace(/\*\//g, "*/\n")
       return Prettier.format(codeWithNewlines, {
         parser: "typescript",
