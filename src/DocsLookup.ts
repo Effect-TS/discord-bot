@@ -252,7 +252,7 @@ const wrapCodeBlock = (code: string) =>
     Effect.try(() => {
       const codeWithNewlines = code
         .replace(
-          / (<|\[|readonly|(?<!readonly |\()\b\w+\??:|\/\*\*|\*\/? )/g,
+          / (<|\[|readonly|(?<!readonly |\()\b\w+\??:|\/\*\*|\*\/? |export declare)/g,
           "\n$1",
         )
         .replace(/\*\//g, "*/\n")
