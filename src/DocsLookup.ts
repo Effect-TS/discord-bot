@@ -92,7 +92,10 @@ const retryPolicy = Schedule.fixed(Duration.seconds(3))
 const makePretty = (code: string) =>
   pipe(
     Effect.try(() => {
-      const codeWithNewlines = code.replace(/ (<|\[|readonly)/g, "\n$1")
+      const codeWithNewlines = code.replace(
+        / (<|\[|readonly|(?<!readonly |\()\b\w+\??:)/g,
+        "\n$1",
+      )
       return Prettier.format(codeWithNewlines, {
         parser: "typescript",
         trailingComma: "all",
