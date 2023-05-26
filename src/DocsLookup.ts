@@ -29,26 +29,36 @@ const docUrls = [
 const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
 
-  const buildDocs = (baseUrl: string) =>
-    Effect.gen(function* (_) {
-      const searchData = yield* _(
-        Http.get(`${baseUrl}/assets/js/search-data.json`),
-        Http.fetchJson(),
-        Effect.retry(retryPolicy),
-        Effect.map(_ => Object.values(_ as object)),
-        Effect.flatMap(decodeEntries),
-        Effect.map(entries => entries.filter(_ => _.isSignature)),
-      )
-
-      return searchData.map(entry => ({
-        term: entry.searchTerm,
-        entry,
-      }))
-    })
+  const loadDocs = (baseUrl: string) =>
+    pipe(
+      Http.get(`${baseUrl}/assets/js/search-data.json`),
+      Http.fetchJson(),
+      Effect.retry(retryPolicy),
+      Effect.map(_ => Object.values(_ as object)),
+      Effect.flatMap(decodeEntries),
+      Effect.map(entries => entries.filter(_ => _.isSignature)),
+    )
 
   const allDocs = yield* _(
-    Effect.forEachPar(docUrls, buildDocs),
-    Effect.map(_ => _.flat()),
+    Effect.forEachPar(docUrls, loadDocs),
+    Effect.map(_ =>
+      _.flat().reduce((acc, entry) => {
+        acc[entry.searchTerm] = entry
+        return acc
+      }, {} as Record<string, DocEntry>),
+    ),
+    Effect.map(
+      map =>
+        [
+          Object.entries(map).map(([key, entry]) => ({
+            term: key.toLowerCase(),
+            key,
+            label: `${entry.signature} (${entry.package})`,
+            entry,
+          })),
+          map,
+        ] as const,
+    ),
     Effect.cachedWithTTL(Duration.hours(3)),
   )
 
@@ -60,12 +70,7 @@ const make = Effect.gen(function* (_) {
     return pipe(
       Effect.logDebug("searching"),
       Effect.zipRight(allDocs),
-      Effect.map(entries =>
-        entries
-          .map((_, index) => [_, index] as const)
-          .filter(([_]) => _.term.includes(query))
-          .map(([_, index]) => [_.entry, index] as const),
-      ),
+      Effect.map(([entries]) => entries.filter(_ => _.term.includes(query))),
       Effect.logAnnotate("module", "DocsLookup"),
       Effect.logAnnotate("query", query),
     )
@@ -77,7 +82,7 @@ const make = Effect.gen(function* (_) {
       description: "Search the Effect reference docs",
       options: [
         {
-          type: Discord.ApplicationCommandOptionType.INTEGER,
+          type: Discord.ApplicationCommandOptionType.STRING,
           name: "query",
           description: "The query to search for",
           required: true,
@@ -88,10 +93,10 @@ const make = Effect.gen(function* (_) {
     ix =>
       pipe(
         Effect.all({
-          index: ix.optionValue("query"),
+          key: ix.optionValue("query"),
           docs: allDocs,
         }),
-        Effect.bind("embed", ({ index, docs }) => docs[index].entry.embed),
+        Effect.bind("embed", ({ key, docs }) => docs[1][key].embed),
         Effect.map(({ embed }) => {
           return Ix.response({
             type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -118,9 +123,9 @@ const make = Effect.gen(function* (_) {
             .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
           data: {
             choices: results.slice(0, 25).map(
-              ([entry, index]): Discord.ApplicationCommandOptionChoice => ({
-                name: `${entry.signature} (${entry.package})`,
-                value: index.toString(),
+              (_): Discord.ApplicationCommandOptionChoice => ({
+                name: _.label,
+                value: _.key,
               }),
             ),
           },
@@ -196,7 +201,7 @@ class DocEntry extends SchemaClass({
   }
 
   get searchTerm(): string {
-    return `/${this.subpackage}/${this.module}.${this.title}`.toLowerCase()
+    return `/${this.subpackage}/${this.module}.${this.title}`
   }
 
   get formattedContent() {
