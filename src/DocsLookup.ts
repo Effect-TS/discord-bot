@@ -8,6 +8,7 @@ import {
   Effect,
   Http,
   Layer,
+  Option,
   Schedule,
   Schema,
   SchemaClass,
@@ -88,19 +89,30 @@ const make = Effect.gen(function* (_) {
           required: true,
           autocomplete: true,
         },
+        {
+          type: Discord.ApplicationCommandOptionType.BOOLEAN,
+          name: "silent",
+          description: "Only show the results to you",
+          required: false,
+        },
       ],
     },
     ix =>
       pipe(
         Effect.all({
           key: ix.optionValue("query"),
+          silent: Effect.map(
+            ix.optionValueOptional("silent"),
+            Option.getOrElse(() => false),
+          ),
           docs: allDocs,
         }),
         Effect.bind("embed", ({ key, docs }) => docs[1][key].embed),
-        Effect.map(({ embed }) =>
+        Effect.map(({ embed, silent }) =>
           Ix.response({
             type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
+              flags: silent ? Discord.MessageFlag.EPHEMERAL : undefined,
               embeds: [embed],
             },
           }),
