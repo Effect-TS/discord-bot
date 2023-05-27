@@ -97,14 +97,14 @@ const make = Effect.gen(function* (_) {
           docs: allDocs,
         }),
         Effect.bind("embed", ({ key, docs }) => docs[1][key].embed),
-        Effect.map(({ embed }) => {
-          return Ix.response({
+        Effect.map(({ embed }) =>
+          Ix.response({
             type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
               embeds: [embed],
             },
-          })
-        }),
+          }),
+        ),
       ),
   )
 
@@ -123,9 +123,9 @@ const make = Effect.gen(function* (_) {
             .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
           data: {
             choices: results.slice(0, 25).map(
-              (_): Discord.ApplicationCommandOptionChoice => ({
-                name: _.label,
-                value: _.key,
+              ({ label, key }): Discord.ApplicationCommandOptionChoice => ({
+                name: label,
+                value: key,
               }),
             ),
           },
@@ -261,6 +261,7 @@ const wrapCodeBlock = (code: string) =>
           "\n$1",
         )
         .replace(/\*\//g, "*/\n")
+
       return Prettier.format(codeWithNewlines, {
         parser: "typescript",
         trailingComma: "all",
