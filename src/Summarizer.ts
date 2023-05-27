@@ -189,25 +189,20 @@ ${message.content
           new Blob([summary], { type: "text/plain" }),
           `${channel.name} Summary.md`,
         )
-        formData.append(
-          "payload_json",
-          JSON.stringify({ content: "Here is your summary!" }),
-        )
 
         return rest.editOriginalInteractionResponse(
           application.id,
           context.token,
+          { content: "Here is your summary!" },
           { body: Http.body.formData(formData) },
         )
       }),
       Effect.catchAllCause(cause =>
         rest.editOriginalInteractionResponse(application.id, context.token, {
-          body: Http.body.json({
-            content:
-              "Could not create summary. Here are the full error details:\n\n```" +
-              Cause.pretty(cause) +
-              "\n```",
-          }),
+          content:
+            "Could not create summary. Here are the full error details:\n\n```" +
+            Cause.pretty(cause) +
+            "\n```",
         }),
       ),
     )
