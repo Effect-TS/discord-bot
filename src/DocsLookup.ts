@@ -48,18 +48,15 @@ const make = Effect.gen(function* (_) {
         return acc
       }, {} as Record<string, DocEntry>),
     ),
-    Effect.map(
-      map =>
-        [
-          Object.entries(map).map(([key, entry]) => ({
-            term: key.toLowerCase(),
-            key,
-            label: `${entry.signature} (${entry.package})`,
-            entry,
-          })),
-          map,
-        ] as const,
-    ),
+    Effect.map(map => ({
+      forSearch: Object.entries(map).map(([key, entry]) => ({
+        term: key.toLowerCase(),
+        key,
+        label: `${entry.signature} (${entry.package})`,
+        entry,
+      })),
+      map,
+    })),
     Effect.cachedWithTTL(Duration.hours(3)),
   )
 
@@ -71,7 +68,9 @@ const make = Effect.gen(function* (_) {
     return pipe(
       Effect.logDebug("searching"),
       Effect.zipRight(allDocs),
-      Effect.map(([entries]) => entries.filter(_ => _.term.includes(query))),
+      Effect.map(({ forSearch }) =>
+        forSearch.filter(_ => _.term.includes(query)),
+      ),
       Effect.logAnnotate("module", "DocsLookup"),
       Effect.logAnnotate("query", query),
     )
@@ -107,7 +106,7 @@ const make = Effect.gen(function* (_) {
           ),
           docs: allDocs,
         }),
-        Effect.bind("embed", ({ key, docs }) => docs[1][key].embed),
+        Effect.bind("embed", ({ key, docs }) => docs.map[key].embed),
         Effect.map(({ embed, silent }) =>
           Ix.response({
             type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
