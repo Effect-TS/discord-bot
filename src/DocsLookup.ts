@@ -90,8 +90,8 @@ const make = Effect.gen(function* (_) {
         },
         {
           type: Discord.ApplicationCommandOptionType.BOOLEAN,
-          name: "silent",
-          description: "Only show the results to you",
+          name: "public",
+          description: "Make the results visible for everyone",
           required: false,
         },
       ],
@@ -100,18 +100,18 @@ const make = Effect.gen(function* (_) {
       pipe(
         Effect.all({
           key: ix.optionValue("query"),
-          silent: Effect.map(
-            ix.optionValueOptional("silent"),
+          reveal: Effect.map(
+            ix.optionValueOptional("public"),
             Option.getOrElse(() => false),
           ),
           docs: allDocs,
         }),
         Effect.bind("embed", ({ key, docs }) => docs.map[key].embed),
-        Effect.map(({ embed, silent }) =>
+        Effect.map(({ embed, reveal }) =>
           Ix.response({
             type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
-              flags: silent ? Discord.MessageFlag.EPHEMERAL : undefined,
+              flags: reveal ? undefined : Discord.MessageFlag.EPHEMERAL,
               embeds: [embed],
             },
           }),
