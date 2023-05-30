@@ -181,11 +181,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
           context: Ix.Interaction,
         }),
         Effect.tap(({ title, context }) =>
-          pipe(
-            rest.modifyChannel(context.channel_id!, { name: title }),
-            Effect.flatMap(_ => _.json),
-            Effect.tap(channels.put),
-          ),
+          rest.modifyChannel(context.channel_id!, { name: title }),
         ),
         Effect.as(
           Ix.response({

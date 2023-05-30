@@ -224,10 +224,7 @@ ${message.content
       pipe(
         Effect.all({
           context: Ix.Interaction,
-          small: Effect.map(
-            ix.optionValueOptional("small"),
-            Option.getOrElse(() => true),
-          ),
+          small: Effect.someOrElse(ix.optionValueOptional("small"), () => true),
         }),
         Effect.bind("channel", ({ context }) =>
           channels.get(context.guild_id!, context.channel_id!),

@@ -100,9 +100,9 @@ const make = Effect.gen(function* (_) {
       pipe(
         Effect.all({
           key: ix.optionValue("query"),
-          reveal: Effect.map(
+          reveal: Effect.someOrElse(
             ix.optionValueOptional("public"),
-            Option.getOrElse(() => false),
+            () => false,
           ),
           docs: allDocs,
         }),
