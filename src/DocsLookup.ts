@@ -106,7 +106,10 @@ const make = Effect.gen(function* (_) {
           ),
           docs: allDocs,
         }),
-        Effect.bind("embed", ({ key, docs }) => docs.map[key].embed),
+        Effect.bind("entry", ({ key, docs }) =>
+          Option.fromNullable(docs.map[key]),
+        ),
+        Effect.bind("embed", ({ entry }) => entry.embed),
         Effect.map(({ embed, reveal }) =>
           Ix.response({
             type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -116,6 +119,19 @@ const make = Effect.gen(function* (_) {
             },
           }),
         ),
+        Effect.catchTags({
+          NoSuchElementException: () =>
+            Effect.succeed(
+              Ix.response({
+                type: Discord.InteractionCallbackType
+                  .CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                  flags: Discord.MessageFlag.EPHEMERAL,
+                  content: `Sorry, that query could not found.`,
+                },
+              }),
+            ),
+        }),
       ),
   )
 
