@@ -4,7 +4,7 @@ import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 
 class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
-  readonly reason: "disabled" | "no-embed"
+  readonly reason: "disabled" | "no-embed" | "gif"
 }> {}
 
 export interface NoEmbedOptions {
@@ -48,6 +48,10 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
             !!message.embeds[0].url &&
             message.content.includes(message.embeds[0].url),
           () => new NotValidMessageError({ reason: "no-embed" }),
+        ),
+        Effect.filterOrFail(
+          ({ message }) => message.embeds[0].type !== Discord.EmbedType.GIFV,
+          () => new NotValidMessageError({ reason: "gif" }),
         ),
         Effect.flatMap(({ message }) =>
           rest.editMessage(message.channel_id, message.id, {
