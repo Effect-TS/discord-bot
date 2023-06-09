@@ -9,14 +9,14 @@ dependencies:
     specifier: ^0.27.0
     version: 0.27.0
   '@effect/data':
-    specifier: ^0.12.4
-    version: 0.12.4
+    specifier: ^0.12.5
+    version: 0.12.5
   '@effect/io':
     specifier: ^0.26.0
     version: 0.26.0
   '@effect/schema':
-    specifier: ^0.20.0
-    version: 0.20.0
+    specifier: ^0.20.1
+    version: 0.20.1
   '@effect/stream':
     specifier: ^0.22.0
     version: 0.22.0
@@ -24,14 +24,14 @@ dependencies:
     specifier: ^0.48.0
     version: 0.48.0
   dotenv:
-    specifier: ^16.1.3
-    version: 16.1.3
+    specifier: ^16.1.4
+    version: 16.1.4
   effect-schema-class:
     specifier: ^0.4.0
     version: 0.4.0
   html-entities:
-    specifier: ^2.3.3
-    version: 2.3.3
+    specifier: ^2.3.5
+    version: 2.3.5
   openai:
     specifier: ^3.2.1
     version: 3.2.1
@@ -58,26 +58,26 @@ packages:
   /@effect-http/client@0.27.0:
     resolution: {integrity: sha512-uEUgJFJdwpgYMd7C7jtxyKdGkTnYT/H8ni6dAzn4gbxE4iypupKwv18roZsdpFmBjKTTzgKLtc9KtVqXIZegTQ==}
     dependencies:
-      '@effect/data': 0.12.4
+      '@effect/data': 0.12.5
       '@effect/io': 0.26.0
-      '@effect/schema': 0.20.0
+      '@effect/schema': 0.20.1
       '@effect/stream': 0.22.0
     dev: false
 
-  /@effect/data@0.12.4:
-    resolution: {integrity: sha512-QawuBkTEib4JetN6dmCURbjW9OK1dHdRLekNfuiPZefQdxQnnoFFTKBxPK5z60xmTjY4ZNawfKvcSpsuEzKiiQ==}
+  /@effect/data@0.12.5:
+    resolution: {integrity: sha512-gmHSsG4earpIWufwCNT1R1pZ5BIe7z0bMmexnAFOT9csc8bwTSzk1e5QAd/65/vyczf/cMMrXgjpasdxlJ5POA==}
     dev: false
 
   /@effect/io@0.26.0:
     resolution: {integrity: sha512-umwZ/sRoV7zb/8WwoiK7xWoypqvY6C1EXWEGORpViAFUTx3/bXc9i7JtdttTWVokXb3qogrxGX2SHopB20I4vQ==}
     dependencies:
-      '@effect/data': 0.12.4
+      '@effect/data': 0.12.5
     dev: false
 
-  /@effect/schema@0.20.0:
-    resolution: {integrity: sha512-uiqNI/xpXhER0blFzX/rPnCSjiW4zHQxVgiEctVRxK9Gz1Pa+VI/wsv5FJzjmiKprtIcmcLwD9NtU1akp5w42w==}
+  /@effect/schema@0.20.1:
+    resolution: {integrity: sha512-wp3qYMIC/NyVbUhJ7W52JQcPN56AsagTYJsXVmYyK24QEtTuEGbVqCelihY8RwjJZLPEt230bqssFb2+Q/EsHQ==}
     dependencies:
-      '@effect/data': 0.12.4
+      '@effect/data': 0.12.5
       '@effect/io': 0.26.0
       fast-check: 3.10.0
     dev: false
@@ -85,7 +85,7 @@ packages:
   /@effect/stream@0.22.0:
     resolution: {integrity: sha512-kmn3CquMfrCVDtU4hrEzvP+rreBt0g0T41QapDvNmFD7bnhJXGoeLTNRZr6MVnKg4M/ubVWlhZ+Qa7IMKezRgg==}
     dependencies:
-      '@effect/data': 0.12.4
+      '@effect/data': 0.12.5
       '@effect/io': 0.26.0
     dev: false
 
@@ -203,7 +203,7 @@ packages:
     resolution: {integrity: sha512-mwLHSShglRtJAY/ZcA6GBCGuQoe4SKYXi1qPksUqO4EeYnzLbh/gx0i/YE7r7koSempk4UKTNf9kyvHixvi8+Q==}
     dependencies:
       '@effect-http/client': 0.27.0
-      '@effect/data': 0.12.4
+      '@effect/data': 0.12.5
       '@effect/io': 0.26.0
       '@effect/stream': 0.22.0
       discord-verify: 1.1.0
@@ -221,8 +221,8 @@ packages:
       '@types/express': 4.17.17
     dev: false
 
-  /dotenv@16.1.3:
-    resolution: {integrity: sha512-FYssxsmCTtKL72fGBSvb1K9dRz0/VZeWqFme/vSb7r7323x4CRaHu4LvQ5JG3+s6yt2YPbBrkpiEODktfyjI9A==}
+  /dotenv@16.1.4:
+    resolution: {integrity: sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==}
     engines: {node: '>=12'}
     dev: false
 
@@ -233,9 +233,9 @@ packages:
   /effect-schema-class@0.4.0:
     resolution: {integrity: sha512-LYO1AFK3+mXIrOi6iwHtjErKNj9LvM8Jcwj7fRs5nNEozbOgIWFbcy6voE95AznR4OVa8lUsnIHRUiOp0KHR4A==}
     dependencies:
-      '@effect/data': 0.12.4
+      '@effect/data': 0.12.5
       '@effect/io': 0.26.0
-      '@effect/schema': 0.20.0
+      '@effect/schema': 0.20.1
     dev: false
 
   /event-stream@3.3.4:
@@ -280,8 +280,8 @@ packages:
     resolution: {integrity: sha512-twe20eF1OxVxp/ML/kq2p1uc6KvFK/+vs8WjEbeKmV2He22MKm7YF2ANIt+EOqhJ5L3K/SuuPhk0hWQDjOM23g==}
     dev: true
 
-  /html-entities@2.3.3:
-    resolution: {integrity: sha512-DV5Ln36z34NNTDgnz0EWGBLZENelNAtkiFA4kyNOG2tDI6Mz1uSWiq1wAKdyjnJwyDiDO7Fa2SO1CTxPXL8VxA==}
+  /html-entities@2.3.5:
+    resolution: {integrity: sha512-72TJlcMkYsEJASa/3HnX7VT59htM7iSHbH59NSZbtc+22Ap0Txnlx91sfeB+/A7wNZg7UxtZdhAW4y+/jimrdg==}
     dev: false
 
   /isexe@2.0.0:
