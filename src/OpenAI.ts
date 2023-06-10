@@ -11,6 +11,7 @@ import {
 } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai"
+import * as Tokenizer from "gpt-tokenizer"
 
 export interface OpenAIOptions {
   readonly apiKey: ConfigSecret.ConfigSecret
@@ -23,6 +24,7 @@ export class OpenAIError extends Data.TaggedClass("OpenAIError")<{
 
 export interface OpenAIMessage {
   readonly bot: boolean
+  readonly name?: string
   readonly content: string
 }
 
@@ -122,22 +124,25 @@ The title of this conversation is "${title}".`,
         _.createChatCompletion(
           {
             model: "gpt-3.5-turbo",
+            temperature: 0.25,
             messages: [
               {
                 role: "system",
-                content: `You are a helpful assistant. Your role is to create documentation articles for the Typescript Effect-TS library.
+                content: `You are a helpful assistant for the Effect-TS typescript library.
 
 The title of this chat is "${title}".`,
               },
-              ...messages.map(
-                ({ content, bot }): ChatCompletionRequestMessage => ({
+              ...limitMessageTokens(messages, 3300).map(
+                ({ content, bot, name }): ChatCompletionRequestMessage => ({
                   role: bot ? "assistant" : "user",
+                  name,
                   content,
                 }),
               ),
               {
                 role: "user",
-                content: `Create a documentation article from these messages.`,
+                content:
+                  "Summarize the conversation, then add some key takeaways.",
               },
             ],
           },
@@ -162,3 +167,20 @@ export const makeLayer = (config: Config.Config.Wrap<OpenAIOptions>) =>
   Layer.effect(OpenAI, Effect.map(Effect.config(Config.unwrap(config)), make))
 
 const cleanTitle = flow(Str.firstParagraph, Str.removeQuotes, Str.removePeriod)
+
+const limitMessageTokens = (
+  messages: ReadonlyArray<OpenAIMessage>,
+  count: number,
+): ReadonlyArray<OpenAIMessage> => {
+  let content = ""
+  const newMessages: OpenAIMessage[] = []
+  for (const message of messages) {
+    content += message.content
+    const tokens = Tokenizer.encode(content).length
+    if (tokens > count) {
+      break
+    }
+    newMessages.push(message)
+  }
+  return newMessages
+}

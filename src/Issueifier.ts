@@ -1,12 +1,11 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
+import { Github } from "bot/Github"
+import { Messages, MessagesLive } from "bot/Messages"
 import { OpenAI, OpenAIMessage } from "bot/OpenAI"
+import { Summarizer, SummarizerLive } from "bot/Summarizer"
 import { Chunk, Config, Data, Effect, Layer, Stream, pipe } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
-import { Messages, MessagesLive } from "bot/Messages"
-import { Github } from "bot/Github"
-import { Summarizer, SummarizerLive } from "bot/Summarizer"
-import { appendFile } from "fs"
 
 export interface IssueifierConfig {
   readonly githubRepo: string
@@ -45,6 +44,7 @@ const make = ({ githubRepo }: IssueifierConfig) =>
             messages,
             (msg): OpenAIMessage => ({
               bot: false,
+              name: msg.author.username,
               content: msg.content,
             }),
           ),
@@ -62,7 +62,7 @@ const make = ({ githubRepo }: IssueifierConfig) =>
           createGithubIssue({
             owner: repoOwner,
             repo: repoName,
-            title: `From Discord Bot: ${channel.name}`,
+            title: `From Discord: ${channel.name}`,
             body: `${summary}
 
 ## Discord thread

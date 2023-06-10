@@ -49,11 +49,11 @@ const make = Effect.gen(function* (_) {
           .filter(msg => msg.content.trim().length > 0)
           .map(
             (msg): OpenAIMessage => ({
-              content:
+              content: msg.content,
+              name:
                 msg.author.id === botUser.id
-                  ? msg.content
-                  : `<@${msg.author.id}> said:
-${msg.content}`,
+                  ? undefined
+                  : `<@${msg.author.id}>`,
               bot: msg.author.id === botUser.id,
             }),
           ),
