@@ -130,9 +130,9 @@ The title of this conversation is "${title}".`,
             messages: [
               {
                 role: "system",
-                content: `You are a helpful assistant for writing documentation.
+                content: `You are a helpful assistant.
 
-The title of this conversation is "${title}".`,
+The title of this chat is "${title}".`,
               },
               ...messages.map(
                 ({ content, bot }): ChatCompletionRequestMessage => ({
@@ -142,9 +142,7 @@ The title of this conversation is "${title}".`,
               ),
               {
                 role: "user",
-                content: `Summarize this conversation so it can be used as documentation. Provide a title for the summary and include code examples.
-
-Do not mention that it came from a conversation.`,
+                content: `Create a documentation article from these messages.`,
               },
             ],
           },
