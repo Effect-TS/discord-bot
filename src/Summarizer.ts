@@ -40,14 +40,24 @@ const make = Effect.gen(function* (_) {
     pipe(
       Effect.all({
         parentChannel: channels.get(channel.guild_id!, channel.parent_id!),
-      }),
-      Effect.bind("messages", () =>
-        Effect.map(
+        messages: Effect.map(
           Stream.runCollect(messages.cleanForChannel(channel)),
           Chunk.reverse,
         ),
-      ),
+      }),
       Effect.flatMap(({ parentChannel, messages }) =>
+        summarize(parentChannel, channel, messages, small),
+      ),
+    )
+
+  const summarizeWithMessages = (
+    channel: Discord.Channel,
+    messages: Chunk.Chunk<Discord.Message>,
+    small = true,
+  ) =>
+    pipe(
+      channels.get(channel.guild_id!, channel.parent_id!),
+      Effect.flatMap(parentChannel =>
         summarize(parentChannel, channel, messages, small),
       ),
     )
@@ -202,7 +212,11 @@ ${message.content}`
 
   yield* _(registry.register(ix))
 
-  return { summarizeThread } as const
+  return {
+    thread: summarizeThread,
+    withMessages: summarizeWithMessages,
+    message: summarizeMessage,
+  } as const
 })
 
 export interface Summarizer extends Effect.Effect.Success<typeof make> {}

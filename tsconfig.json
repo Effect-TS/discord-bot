@@ -8,6 +8,7 @@
     "moduleResolution": "NodeNext",
     "module": "ESNext",
     "allowSyntheticDefaultImports": true,
+    "noErrorTruncation": true,
     "lib": ["ESNext", "DOM"],
     "sourceMap": true,
     "strict": true,

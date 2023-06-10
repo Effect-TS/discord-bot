@@ -1,6 +1,8 @@
 import * as AutoThreads from "bot/AutoThreads"
 import { BotLive } from "bot/Bot"
 import { DocsLookupLive } from "bot/DocsLookup"
+import * as Github from "bot/Github"
+import * as Issueifier from "bot/Issueifier"
 import { MentionsLive } from "bot/Mentions"
 import * as NoEmbed from "bot/NoEmbed"
 import * as OpenAI from "bot/OpenAI"
@@ -9,7 +11,6 @@ import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents } from "dfx"
 import { makeLive } from "dfx/gateway"
 import * as Dotenv from "dotenv"
-import { IssueifierLive } from "./Issueifier.js"
 
 Dotenv.config()
 
@@ -42,8 +43,19 @@ const NoEmbedLive = NoEmbed.makeLayer({
   ),
 })
 
+const IssueifierLive = Issueifier.makeLayer({
+  githubRepo: Config.withDefault(
+    Config.string("ISSUEIFIER_REPO"),
+    "effect-ts/website",
+  ),
+})
+
+const GithubLive = Github.makeLayer({
+  token: Config.secret("GITHUB_TOKEN"),
+})
+
 const MainLive = pipe(
-  Layer.mergeAll(DiscordLive, OpenAILive),
+  Layer.mergeAll(DiscordLive, GithubLive, OpenAILive),
   Layer.provide(
     Layer.mergeAll(
       AutoThreadsLive,
