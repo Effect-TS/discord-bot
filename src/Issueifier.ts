@@ -88,6 +88,7 @@ ${fullThread}
         Effect.tapErrorCause(() =>
           rest.deleteOriginalInteractionResponse(application.id, context.token),
         ),
+        Effect.catchAllCause(Effect.logErrorCause),
       )
 
     const command = Ix.global(
