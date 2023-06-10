@@ -113,7 +113,54 @@ The title of this conversation is "${title}".`,
       _ => Option.fromNullable(_.data.choices[0]?.message?.content),
     )
 
-  return { client, call, generateTitle, generateReply } as const
+  const generateSummary = (
+    title: string,
+    messages: ReadonlyArray<OpenAIMessage>,
+  ) =>
+    Effect.flatMap(
+      call((_, signal) =>
+        _.createChatCompletion(
+          {
+            model: "gpt-3.5-turbo",
+            temperature: 1,
+            top_p: 1,
+            max_tokens: 256,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            messages: [
+              {
+                role: "system",
+                content: `You are a helpful assistant for writing documentation.
+
+The title of this conversation is "${title}".`,
+              },
+              ...messages.map(
+                ({ content, bot }): ChatCompletionRequestMessage => ({
+                  role: bot ? "assistant" : "user",
+                  content,
+                }),
+              ),
+              {
+                role: "user",
+                content: `Summarize this conversation so it can be used as documentation. Provide a title for the summary and include code examples.
+
+Do not mention that it came from a conversation.`,
+              },
+            ],
+          },
+          { signal },
+        ),
+      ),
+      _ => Option.fromNullable(_.data.choices[0]?.message?.content),
+    )
+
+  return {
+    client,
+    call,
+    generateTitle,
+    generateReply,
+    generateSummary,
+  } as const
 }
 
 export interface OpenAI extends ReturnType<typeof make> {}

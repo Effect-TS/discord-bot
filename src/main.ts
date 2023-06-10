@@ -9,6 +9,7 @@ import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents } from "dfx"
 import { makeLive } from "dfx/gateway"
 import * as Dotenv from "dotenv"
+import { IssueifierLive } from "./Issueifier.js"
 
 Dotenv.config()
 
@@ -47,6 +48,7 @@ const MainLive = pipe(
     Layer.mergeAll(
       AutoThreadsLive,
       DocsLookupLive,
+      IssueifierLive,
       NoEmbedLive,
       MentionsLive,
       SummarizerLive,

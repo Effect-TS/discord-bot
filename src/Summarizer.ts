@@ -9,10 +9,12 @@ import {
   Layer,
   Option,
   Stream,
+  Tag,
   pipe,
 } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
+import { Messages, MessagesLive } from "bot/Messages"
 
 export class NotInThreadError extends Data.TaggedClass(
   "NotInThreadError",
@@ -28,54 +30,26 @@ const make = Effect.gen(function* (_) {
   const channels = yield* _(ChannelsCache)
   const registry = yield* _(InteractionsRegistry)
   const members = yield* _(MemberCache)
+  const messages = yield* _(Messages)
   const scope = yield* _(Effect.scope())
   const application = yield* _(
     Effect.flatMap(rest.getCurrentBotApplicationInformation(), _ => _.json),
   )
 
-  const getAllMessages = (channelId: string) =>
+  const summarizeThread = (channel: Discord.Channel, small = true) =>
     pipe(
-      Stream.paginateChunkEffect(Option.none<Discord.Snowflake>(), before =>
-        pipe(
-          rest.getChannelMessages(channelId, {
-            limit: 100,
-            before: Option.getOrUndefined(before),
-          }),
-          Effect.flatMap(_ => _.json),
-          Effect.map(messages =>
-            messages.length < 100
-              ? ([
-                  Chunk.unsafeFromArray(messages),
-                  Option.none<Option.Option<Discord.Snowflake>>(),
-                ] as const)
-              : ([
-                  Chunk.unsafeFromArray(messages),
-                  Option.some(Option.some(messages[messages.length - 1].id)),
-                ] as const),
-          ),
+      Effect.all({
+        parentChannel: channels.get(channel.guild_id!, channel.parent_id!),
+      }),
+      Effect.bind("messages", () =>
+        Effect.map(
+          Stream.runCollect(messages.cleanForChannel(channel)),
+          Chunk.reverse,
         ),
       ),
-
-      // only include normal messages
-      Stream.flatMapPar(Number.MAX_SAFE_INTEGER, msg => {
-        if (msg.type === Discord.MessageType.THREAD_STARTER_MESSAGE) {
-          return Effect.flatMap(
-            rest.getChannelMessage(
-              msg.message_reference!.channel_id!,
-              msg.message_reference!.message_id!,
-            ),
-            _ => _.json,
-          )
-        } else if (
-          msg.content !== "" &&
-          (msg.type === Discord.MessageType.REPLY ||
-            msg.type === Discord.MessageType.DEFAULT)
-        ) {
-          return Stream.succeed(msg)
-        }
-
-        return Stream.empty
-      }),
+      Effect.flatMap(({ parentChannel, messages }) =>
+        summarize(parentChannel, channel, messages, small),
+      ),
     )
 
   const summarize = (
@@ -133,34 +107,8 @@ ${messageContent.join("\n\n")}`,
         message.timestamp,
       ).toUTCString()}${smallClose}${smallClose}`
 
-      const content = `${header}<br />
-${message.content
-  .replace(/```ts\b/g, "```typescript")
-  .replace(/^```/, "\n```")
-  .replace(/[^\n]```/gm, "\n\n```")
-  .replace(/([^\n])\n```([^\n]*\n[^\n])/gm, "$1\n\n```$2")}`
-
-      const mentions = yield* _(
-        Effect.forEachPar(content.matchAll(/<@(\d+)>/g), ([, userId]) =>
-          Effect.option(
-            members.get(thread.guild_id!, userId as Discord.Snowflake),
-          ),
-        ),
-      )
-
-      return mentions.reduce(
-        (content, member) =>
-          Option.match(
-            member,
-            () => content,
-            member =>
-              content.replace(
-                new RegExp(`<@${member.user!.id}>`, "g"),
-                `**@${member.nick ?? member.user!.username}**`,
-              ),
-          ),
-        content,
-      )
+      return `${header}<br />
+${message.content}`
     })
 
   const followUpResponse = (
@@ -169,19 +117,8 @@ ${message.content
     small: boolean,
   ) =>
     pipe(
-      Effect.all({
-        parentChannel: channels.get(channel.guild_id!, channel.parent_id!),
-      }),
-      Effect.bind("messages", () =>
-        Effect.map(
-          Stream.runCollect(getAllMessages(channel.id)),
-          Chunk.reverse,
-        ),
-      ),
-      Effect.bind("summary", ({ parentChannel, messages }) =>
-        summarize(parentChannel, channel, messages, small),
-      ),
-      Effect.tap(({ summary }) => {
+      summarizeThread(channel, small),
+      Effect.tap(summary => {
         const formData = new FormData()
 
         formData.append(
@@ -264,9 +201,18 @@ ${message.content
     .catchAllCause(Effect.logErrorCause)
 
   yield* _(registry.register(ix))
+
+  return { summarizeThread } as const
 })
 
+export interface Summarizer extends Effect.Effect.Success<typeof make> {}
+export const Summarizer = Tag<Summarizer>()
 export const SummarizerLive = Layer.provide(
-  Layer.mergeAll(ChannelsCacheLive, InteractionsRegistryLive, MemberCacheLive),
-  Layer.scopedDiscard(make),
+  Layer.mergeAll(
+    ChannelsCacheLive,
+    InteractionsRegistryLive,
+    MemberCacheLive,
+    MessagesLive,
+  ),
+  Layer.scoped(Summarizer, make),
 )
