@@ -125,7 +125,7 @@ The title of this conversation is "${title}".`,
             messages: [
               {
                 role: "system",
-                content: `You are a helpful assistant.
+                content: `You are a helpful assistant. Your role is to create documentation articles for the Typescript Effect-TS library.
 
 The title of this chat is "${title}".`,
               },
