@@ -11,6 +11,7 @@ import {
 } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai"
+import * as Tokenizer from "gpt-tokenizer"
 
 export interface OpenAIOptions {
   readonly apiKey: ConfigSecret.ConfigSecret
@@ -23,6 +24,7 @@ export class OpenAIError extends Data.TaggedClass("OpenAIError")<{
 
 export interface OpenAIMessage {
   readonly bot: boolean
+  readonly name?: string
   readonly content: string
 }
 
@@ -113,7 +115,50 @@ The title of this conversation is "${title}".`,
       _ => Option.fromNullable(_.data.choices[0]?.message?.content),
     )
 
-  return { client, call, generateTitle, generateReply } as const
+  const generateSummary = (
+    title: string,
+    messages: ReadonlyArray<OpenAIMessage>,
+  ) =>
+    Effect.flatMap(
+      call((_, signal) =>
+        _.createChatCompletion(
+          {
+            model: "gpt-3.5-turbo",
+            temperature: 0.25,
+            messages: [
+              {
+                role: "system",
+                content: `You are a helpful assistant for the Effect-TS typescript library.
+
+The title of this chat is "${title}".`,
+              },
+              ...limitMessageTokens(messages, 3300).map(
+                ({ content, bot, name }): ChatCompletionRequestMessage => ({
+                  role: bot ? "assistant" : "user",
+                  name,
+                  content,
+                }),
+              ),
+              {
+                role: "user",
+                content:
+                  "Summarize the conversation, then add some key takeaways.",
+              },
+            ],
+          },
+          { signal },
+        ),
+      ),
+      _ => Option.fromNullable(_.data.choices[0]?.message?.content),
+    )
+
+  return {
+    client,
+    call,
+    generateTitle,
+    generateReply,
+    generateSummary,
+  } as const
 }
 
 export interface OpenAI extends ReturnType<typeof make> {}
@@ -122,3 +167,20 @@ export const makeLayer = (config: Config.Config.Wrap<OpenAIOptions>) =>
   Layer.effect(OpenAI, Effect.map(Effect.config(Config.unwrap(config)), make))
 
 const cleanTitle = flow(Str.firstParagraph, Str.removeQuotes, Str.removePeriod)
+
+const limitMessageTokens = (
+  messages: ReadonlyArray<OpenAIMessage>,
+  count: number,
+): ReadonlyArray<OpenAIMessage> => {
+  let content = ""
+  const newMessages: OpenAIMessage[] = []
+  for (const message of messages) {
+    content += message.content
+    const tokens = Tokenizer.encode(content).length
+    if (tokens > count) {
+      break
+    }
+    newMessages.push(message)
+  }
+  return newMessages
+}
