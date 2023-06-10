@@ -32,6 +32,7 @@ const make = ({ githubRepo }: IssueifierConfig) =>
       pipe(
         messages.cleanForChannel(channel),
         Stream.runCollect,
+        Effect.map(Chunk.reverse),
         Effect.bindTo("messages"),
         Effect.let("openAiMessages", ({ messages }) =>
           Chunk.map(
@@ -48,7 +49,7 @@ const make = ({ githubRepo }: IssueifierConfig) =>
               channel.name!,
               Chunk.toReadonlyArray(openAiMessages),
             ),
-            fullThread: summarizer.withMessages(channel, messages),
+            fullThread: summarizer.messages(channel, messages),
           }),
         ),
         Effect.flatMap(({ summary, fullThread }) =>
@@ -56,10 +57,9 @@ const make = ({ githubRepo }: IssueifierConfig) =>
             owner: repoOwner,
             repo: repoName,
             title: `From Discord Bot: ${channel.name}`,
-            body: `## Summary
-${summary}
+            body: `${summary}
 
-## Full thread
+## Discord thread
 
 <details>
 <summary>Click to expand</summary>

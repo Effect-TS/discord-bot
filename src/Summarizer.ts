@@ -214,7 +214,7 @@ ${message.content}`
 
   return {
     thread: summarizeThread,
-    withMessages: summarizeWithMessages,
+    messages: summarizeWithMessages,
     message: summarizeMessage,
   } as const
 })
