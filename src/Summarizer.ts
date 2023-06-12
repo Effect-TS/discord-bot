@@ -117,8 +117,16 @@ ${messageContent.join("\n\n")}`,
         message.timestamp,
       ).toUTCString()}${smallClose}${smallClose}`
 
+      const images = message.attachments.filter(_ =>
+        _.content_type?.startsWith("image/"),
+      )
+      const imagesContent =
+        images.length > 0
+          ? "\n\n" + images.map(_ => `![Attachment](${_.url})`).join("\n")
+          : ""
+
       return `${header}<br />
-${message.content}`
+${message.content}${imagesContent}`
     })
 
   const followUpResponse = (
