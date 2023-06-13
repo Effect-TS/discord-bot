@@ -1,7 +1,3 @@
-import { Discord, Ix } from "dfx"
-import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
-import * as HtmlEnt from "html-entities"
-import * as Prettier from "prettier"
 import {
   Data,
   Duration,
@@ -12,9 +8,14 @@ import {
   Schedule,
   Schema,
   SchemaClass,
+  Tag,
   identity,
   pipe,
-} from "./_common.js"
+} from "bot/_common"
+import { Discord, Ix } from "dfx"
+import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
+import * as HtmlEnt from "html-entities"
+import * as Prettier from "prettier"
 
 const docUrls = [
   "https://effect-ts.github.io/cli",
@@ -177,16 +178,20 @@ const make = Effect.gen(function* (_) {
     .catchAllCause(Effect.logErrorCause)
 
   yield* _(registry.register(ix))
+
+  return { allDocs, search } as const
 })
 
+export interface DocsLookup extends Effect.Effect.Success<typeof make> {}
+export const DocsLookup = Tag<DocsLookup>()
 export const DocsLookupLive = Layer.provide(
   InteractionsRegistryLive,
-  Layer.effectDiscard(make),
+  Layer.effect(DocsLookup, make),
 )
 
 // schema
 
-class DocEntry extends SchemaClass({
+export class DocEntry extends SchemaClass({
   doc: Schema.string,
   title: Schema.string,
   content: Schema.string,
@@ -221,6 +226,10 @@ class DocEntry extends SchemaClass({
 
   get module() {
     return this.doc.replace(/\.ts$/, "")
+  }
+
+  get packageModule() {
+    return `${this.package}/${this.module}`
   }
 
   get signature() {
