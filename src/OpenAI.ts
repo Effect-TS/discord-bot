@@ -123,16 +123,25 @@ The title of this conversation is "${title}".`,
       call((_, signal) =>
         _.createChatCompletion(
           {
-            model: "gpt-3.5-turbo",
+            model: "gpt-3.5-turbo-16k",
             temperature: 0.25,
             messages: [
               {
                 role: "system",
-                content: `You are a helpful assistant for the Effect-TS typescript library.
+                content: `You are a helpful assistant for the Effect-TS ecosystem.
+
+The Effect-TS ecosystem includes the following libraries:
+
+- @effect/io
+- @effect/data
+- @effect/match
+- @effect/schema
+- @effect/stm
+- @effect/stream
 
 The title of this chat is "${title}".`,
               },
-              ...limitMessageTokens(messages, 3300).map(
+              ...limitMessageTokens(messages, 12000).map(
                 ({ content, bot, name }): ChatCompletionRequestMessage => ({
                   role: bot ? "assistant" : "user",
                   name,
@@ -142,7 +151,7 @@ The title of this chat is "${title}".`,
               {
                 role: "user",
                 content:
-                  "Summarize the conversation, then add some key takeaways.",
+                  "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate.",
               },
             ],
           },
