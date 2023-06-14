@@ -115,9 +115,10 @@ The title of this conversation is "${title}".`,
       _ => Option.fromNullable(_.data.choices[0]?.message?.content),
     )
 
-  const generateSummary = (
+  const generateDocs = (
     title: string,
     messages: ReadonlyArray<OpenAIMessage>,
+    instruction = "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate.",
   ) =>
     Effect.flatMap(
       call((_, signal) =>
@@ -150,8 +151,7 @@ The title of this chat is "${title}".`,
               ),
               {
                 role: "user",
-                content:
-                  "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate.",
+                content: instruction,
               },
             ],
           },
@@ -161,11 +161,22 @@ The title of this chat is "${title}".`,
       _ => Option.fromNullable(_.data.choices[0]?.message?.content),
     )
 
+  const generateSummary = (
+    title: string,
+    messages: ReadonlyArray<OpenAIMessage>,
+  ) =>
+    generateDocs(
+      title,
+      messages,
+      "Summarize the above messages. Also include some key takeaways.",
+    )
+
   return {
     client,
     call,
     generateTitle,
     generateReply,
+    generateDocs,
     generateSummary,
   } as const
 }
