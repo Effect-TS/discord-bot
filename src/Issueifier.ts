@@ -51,6 +51,10 @@ const make = ({ githubRepo }: IssueifierConfig) =>
         ),
         Effect.flatMap(({ openAiMessages, messages }) =>
           Effect.all({
+            article: openai.generateDocs(
+              channel.name!,
+              Chunk.toReadonlyArray(openAiMessages),
+            ),
             summary: openai.generateSummary(
               channel.name!,
               Chunk.toReadonlyArray(openAiMessages),
@@ -58,14 +62,19 @@ const make = ({ githubRepo }: IssueifierConfig) =>
             fullThread: summarizer.messages(channel, messages),
           }),
         ),
-        Effect.flatMap(({ summary, fullThread }) =>
+        Effect.flatMap(({ article, summary, fullThread }) =>
           createGithubIssue({
             owner: repoOwner,
             repo: repoName,
             title: `From Discord: ${channel.name}`,
-            body: `${summary}
+            body: `# Summary
+${summary}
 
-## Discord thread
+# Example article
+
+${article}
+
+# Discord thread
 
 <details>
 <summary>Click to expand</summary>
