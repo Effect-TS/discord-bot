@@ -2,7 +2,7 @@ import * as AutoThreads from "bot/AutoThreads"
 import { BotLive } from "bot/Bot"
 import { DocsLookupLive } from "bot/DocsLookup"
 import * as Github from "bot/Github"
-import * as Issueifier from "bot/Issueifier"
+import { IssueifierLive } from "bot/Issueifier"
 import { MentionsLive } from "bot/Mentions"
 import * as NoEmbed from "bot/NoEmbed"
 import * as OpenAI from "bot/OpenAI"
@@ -40,13 +40,6 @@ const NoEmbedLive = NoEmbed.makeLayer({
   topicKeyword: Config.withDefault(
     Config.string("NOEMBED_KEYWORD"),
     "[noembed]",
-  ),
-})
-
-const IssueifierLive = Issueifier.makeLayer({
-  githubRepo: Config.withDefault(
-    Config.string("ISSUEIFIER_REPO"),
-    "effect-ts/website",
   ),
 })
 
