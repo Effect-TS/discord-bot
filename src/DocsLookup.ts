@@ -204,7 +204,8 @@ class DocEntry extends SchemaClass({
     return (
       this.content.trim().length > 0 &&
       this.url.includes("#") &&
-      !this.title.includes(" overview")
+      !this.title.includes(" overview") &&
+      this.title !== "Module"
     )
   }
 
