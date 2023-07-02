@@ -3,7 +3,6 @@ import { BotLive } from "bot/Bot"
 import { DocsLookupLive } from "bot/DocsLookup"
 import * as Github from "bot/Github"
 import { IssueifierLive } from "bot/Issueifier"
-import { MentionsLive } from "bot/Mentions"
 import * as NoEmbed from "bot/NoEmbed"
 import * as OpenAI from "bot/OpenAI"
 import { SummarizerLive } from "bot/Summarizer"
@@ -55,7 +54,6 @@ const MainLive = pipe(
       DocsLookupLive,
       IssueifierLive,
       NoEmbedLive,
-      MentionsLive,
       SummarizerLive,
       BotLive,
     ),
