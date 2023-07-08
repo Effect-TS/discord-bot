@@ -28,10 +28,10 @@ const make = ({ token }: GithubConfig) => {
   type Endpoints = typeof rest
 
   const request = <A>(f: (_: Endpoints) => Promise<A>) =>
-    Effect.tryCatchPromise(
-      () => f(rest),
-      reason => new GithubError(reason),
-    )
+    Effect.tryPromise({
+      try: () => f(rest),
+      catch: reason => new GithubError(reason),
+    })
 
   const wrap =
     <A, Args extends any[]>(
@@ -39,10 +39,10 @@ const make = ({ token }: GithubConfig) => {
     ) =>
     (...args: Args) =>
       Effect.map(
-        Effect.tryCatchPromise(
-          () => f(rest)(...args),
-          reason => new GithubError(reason),
-        ),
+        Effect.tryPromise({
+          try: () => f(rest)(...args),
+          catch: reason => new GithubError(reason),
+        }),
         _ => _.data,
       )
 
@@ -51,10 +51,10 @@ const make = ({ token }: GithubConfig) => {
   ) =>
     Stream.paginateChunkEffect(0, page =>
       Effect.map(
-        Effect.tryCatchPromise(
-          () => f(rest, page),
-          reason => new GithubError(reason),
-        ),
+        Effect.tryPromise({
+          try: () => f(rest, page),
+          catch: reason => new GithubError(reason),
+        }),
         _ => [Chunk.fromIterable(_.data), maybeNextPage(page, _.headers.link)],
       ),
     )

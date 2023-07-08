@@ -25,19 +25,22 @@ const make = Effect.gen(function* (_) {
     message: Discord.MessageCreateEvent,
   ) =>
     pipe(
-      Effect.allPar({
-        openingMessage: Effect.flatMap(
-          rest.getChannelMessage(thread.parent_id!, thread.id),
-          _ => _.json,
-        ),
-        messages: Effect.flatMap(
-          rest.getChannelMessages(message.channel_id, {
-            before: message.id,
-            limit: 4,
-          }),
-          _ => _.json,
-        ),
-      }),
+      Effect.all(
+        {
+          openingMessage: Effect.flatMap(
+            rest.getChannelMessage(thread.parent_id!, thread.id),
+            _ => _.json,
+          ),
+          messages: Effect.flatMap(
+            rest.getChannelMessages(message.channel_id, {
+              before: message.id,
+              limit: 4,
+            }),
+            _ => _.json,
+          ),
+        },
+        { concurrency: "unbounded" },
+      ),
       Effect.map(({ openingMessage, messages }) =>
         [message, ...messages, openingMessage]
           .reverse()
@@ -93,10 +96,10 @@ const make = Effect.gen(function* (_) {
         }),
       ),
       Effect.catchTags({
-        NonEligibleMessage: _ => Effect.unit(),
-        NoSuchElementException: _ => Effect.unit(),
+        NonEligibleMessage: _ => Effect.unit,
+        NoSuchElementException: _ => Effect.unit,
       }),
-      Effect.catchAllCause(Effect.logErrorCause),
+      Effect.catchAllCause(Effect.logCause({ level: "Error" })),
     ),
   )
 

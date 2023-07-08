@@ -26,7 +26,7 @@ const retryPolicy = pipe(
   Schedule.whileInput(
     (_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError",
   ),
-  Schedule.compose(Schedule.elapsed()),
+  Schedule.compose(Schedule.elapsed),
   Schedule.whileOutput(Duration.lessThanOrEqualTo(seconds(3))),
 )
 
@@ -55,15 +55,18 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
     const registry = yield* _(InteractionsRegistry)
 
     const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
-      pipe(
-        Effect.allPar({
-          message: Effect.cond(
-            () => message.type === Discord.MessageType.DEFAULT,
-            () => message,
-            () => new NotValidMessageError({ reason: "non-default" }),
-          ),
+      Effect.all(
+        {
+          message: Effect.if(message.type === Discord.MessageType.DEFAULT, {
+            onTrue: Effect.succeed(message),
+            onFalse: Effect.fail(
+              new NotValidMessageError({ reason: "non-default" }),
+            ),
+          }),
           channel: channels.get(message.guild_id!, message.channel_id),
-        }),
+        },
+        { concurrency: "unbounded" },
+      ).pipe(
         Effect.filterOrFail(
           () => message.author.bot !== true,
           () => new NotValidMessageError({ reason: "from-bot" }),
@@ -120,9 +123,9 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
           }),
         ),
         Effect.catchTags({
-          NotValidMessageError: () => Effect.unit(),
+          NotValidMessageError: () => Effect.unit,
         }),
-        Effect.catchAllCause(Effect.logErrorCause),
+        Effect.catchAllCause(Effect.logCause({ level: "Error" })),
       ),
     )
 
@@ -175,11 +178,13 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
 
     const editSubmit = Ix.modalSubmit(
       Ix.id("edit"),
-      pipe(
-        Effect.allPar({
+      Effect.all(
+        {
           title: Ix.modalValue("title"),
           context: Ix.Interaction,
-        }),
+        },
+        { concurrency: "unbounded" },
+      ).pipe(
         Effect.tap(({ title, context }) =>
           rest.modifyChannel(context.channel_id!, { name: title }),
         ),
@@ -222,7 +227,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
           }),
         ),
       )
-      .catchAllCause(Effect.logErrorCause)
+      .catchAllCause(Effect.logCause({ level: "Error" }))
 
     yield* _(registry.register(ix))
     yield* _(handleMessages)

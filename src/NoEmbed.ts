@@ -26,7 +26,7 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
 
     const handleMessage = (message: Discord.MessageCreateEvent) =>
       pipe(
-        Effect.Do(),
+        Effect.Do,
         Effect.bind("channel", () =>
           getChannel(message.guild_id!, message.channel_id),
         ),
@@ -59,15 +59,16 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
           }),
         ),
         Effect.catchTags({
-          NotValidMessageError: () => Effect.unit(),
+          NotValidMessageError: () => Effect.unit,
         }),
-        Effect.catchAllCause(Effect.logErrorCause),
+        Effect.catchAllCause(Effect.logCause({ level: "Error" })),
       )
 
     yield* _(
-      Effect.allPar(
+      Effect.all(
         gateway.handleDispatch("MESSAGE_CREATE", handleMessage),
         gateway.handleDispatch("MESSAGE_UPDATE", handleMessage),
+        { concurrency: "unbounded" },
       ),
     )
   })

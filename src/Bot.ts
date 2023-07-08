@@ -12,10 +12,11 @@ const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
 
   yield* _(
-    Effect.allPar(
+    Effect.all(
       gateway.run,
       channels.run,
-      registry.run(Effect.logErrorCause),
+      registry.run(Effect.logCause({ level: "Error" })),
+      { concurrency: "unbounded", discard: true },
     ),
   )
 })

@@ -6,7 +6,6 @@ import {
   Layer,
   Option,
   Tag,
-  flow,
   pipe,
 } from "bot/_common"
 import * as Str from "bot/utils/String"
@@ -39,10 +38,10 @@ const make = (params: OpenAIOptions) => {
   const client = new OpenAIApi(config)
 
   const call = <A>(f: (api: OpenAIApi, signal: AbortSignal) => Promise<A>) =>
-    Effect.tryCatchPromiseInterrupt(
-      signal => f(client, signal),
-      error => new OpenAIError({ error }),
-    )
+    Effect.tryPromiseInterrupt({
+      try: signal => f(client, signal),
+      catch: error => new OpenAIError({ error }),
+    })
 
   const generateTitle = (prompt: string) =>
     Effect.flatMap(
@@ -186,7 +185,8 @@ export const OpenAI = Tag<OpenAI>()
 export const makeLayer = (config: Config.Config.Wrap<OpenAIOptions>) =>
   Layer.effect(OpenAI, Effect.map(Effect.config(Config.unwrap(config)), make))
 
-const cleanTitle = flow(Str.firstParagraph, Str.removeQuotes, Str.removePeriod)
+const cleanTitle = (_: string) =>
+  pipe(Str.firstParagraph(_), Str.removeQuotes, Str.removePeriod)
 
 const limitMessageTokens = (
   messages: ReadonlyArray<OpenAIMessage>,
