@@ -16,22 +16,24 @@ const make = Effect.gen(function* (_) {
   const replaceMentions = (guildId: Discord.Snowflake, content: string) =>
     Effect.gen(function* (_) {
       const mentions = yield* _(
-        Effect.forEachPar(content.matchAll(/<@(\d+)>/g), ([, userId]) =>
-          Effect.option(members.get(guildId, userId as Discord.Snowflake)),
+        Effect.forEach(
+          content.matchAll(/<@(\d+)>/g),
+          ([, userId]) =>
+            Effect.option(members.get(guildId, userId as Discord.Snowflake)),
+          { concurrency: "unbounded" },
         ),
       )
 
       return mentions.reduce(
         (content, member) =>
-          Option.match(
-            member,
-            () => content,
-            member =>
+          Option.match(member, {
+            onNone: () => content,
+            onSome: member =>
               content.replace(
                 new RegExp(`<@${member.user!.id}>`, "g"),
                 `**@${member.nick ?? member.user!.username}**`,
               ),
-          ),
+          }),
         content,
       )
     })

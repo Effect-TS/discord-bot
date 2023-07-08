@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -6,35 +6,35 @@ settings:
 
 dependencies:
   '@effect-http/client':
-    specifier: ^0.27.2
-    version: 0.27.2
+    specifier: ^0.29.0
+    version: 0.29.0
   '@effect/data':
-    specifier: ^0.12.9
-    version: 0.12.9
+    specifier: ^0.13.5
+    version: 0.13.5
   '@effect/io':
-    specifier: ^0.26.2
-    version: 0.26.2
+    specifier: ^0.31.3
+    version: 0.31.3
   '@effect/schema':
-    specifier: ^0.20.3
-    version: 0.20.3
+    specifier: ^0.25.0
+    version: 0.25.0
   '@effect/stream':
-    specifier: ^0.22.2
-    version: 0.22.2
+    specifier: ^0.25.1
+    version: 0.25.1
   dfx:
-    specifier: ^0.48.3
-    version: 0.48.3
+    specifier: ^0.51.0
+    version: 0.51.0
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
   effect-schema-class:
-    specifier: ^0.4.0
-    version: 0.4.0
+    specifier: ^0.5.0
+    version: 0.5.0
   gpt-tokenizer:
     specifier: ^2.1.1
     version: 2.1.1
   html-entities:
-    specifier: ^2.3.6
-    version: 2.3.6
+    specifier: ^2.4.0
+    version: 2.4.0
   octokit:
     specifier: ^2.1.0
     version: 2.1.0
@@ -42,61 +42,61 @@ dependencies:
     specifier: ^3.3.0
     version: 3.3.0
   prettier:
-    specifier: ^2.8.8
-    version: 2.8.8
+    specifier: ^3.0.0
+    version: 3.0.0
 
 devDependencies:
   '@octokit/types':
-    specifier: ^10.0.0
-    version: 10.0.0
+    specifier: ^11.0.0
+    version: 11.0.0
   '@types/node':
-    specifier: ^20.3.1
-    version: 20.3.1
+    specifier: ^20.4.1
+    version: 20.4.1
   '@types/prettier':
     specifier: ^2.7.3
     version: 2.7.3
   tsc-watch:
     specifier: ^6.0.4
-    version: 6.0.4(typescript@5.1.3)
+    version: 6.0.4(typescript@5.1.6)
   typescript:
-    specifier: ^5.1.3
-    version: 5.1.3
+    specifier: ^5.1.6
+    version: 5.1.6
 
 packages:
 
-  /@effect-http/client@0.27.2:
-    resolution: {integrity: sha512-C7IzwPXJpH8tQzvXnU863S6n1Dn3ZHIugMi0rpE43f3OO5AnnOIxCRokpaJ3aR3mVvpQf2jYmFJhgaKBsXbHPw==}
+  /@effect-http/client@0.29.0:
+    resolution: {integrity: sha512-OMDfR5/7PZGxg/s2GqlSBC6SYMXgdI0mx9dMlHA/Z8gYdI9FdFWggPc02ONWOSXsYdLELd3BkVk/K4I/fqDdLA==}
     requiresBuild: true
     dependencies:
-      '@effect/data': 0.12.9
-      '@effect/io': 0.26.2
-      '@effect/schema': 0.20.3
-      '@effect/stream': 0.22.2
+      '@effect/data': 0.13.5
+      '@effect/io': 0.31.3
+      '@effect/schema': 0.25.0
+      '@effect/stream': 0.25.1
     dev: false
 
-  /@effect/data@0.12.9:
-    resolution: {integrity: sha512-nuzFo+2LK4yG9H16WRv51MDhUAIuUGhmKYkuSrgCApwwLy2eUATaioQEbbR2rHOTprOiYpbIYKwvPsylEm/Fdw==}
+  /@effect/data@0.13.5:
+    resolution: {integrity: sha512-s9HYZkRHkN3doqOy+ICSKMr33hTe+YSod34Twt9oDI2OWgxoynsVjQ1gpM/BDn92SHv3Rgz6KTmVBKqYaqh/mQ==}
     dev: false
 
-  /@effect/io@0.26.2:
-    resolution: {integrity: sha512-PdqtgmfEw88kX1UKZZvK42dpMZPSCPmdWAAzN17yCzfEsA3HoPjjxo9jLyzfjtUcU+tWO0tF/GY7pcDVLcJZAg==}
+  /@effect/io@0.31.3:
+    resolution: {integrity: sha512-v8OltakxYj+TBUYk8ZnhrcebGd8xKavZZLjZm1p/uJqnqU8EgJq1aKCHaH7H5UdMsaZIunJG1W0NL2zDtdDYbw==}
     dependencies:
-      '@effect/data': 0.12.9
+      '@effect/data': 0.13.5
     dev: false
 
-  /@effect/schema@0.20.3:
-    resolution: {integrity: sha512-pjJW9QkHZd2/fq7Bhd6pAOidMJ0OUODOeUlesPDK0jpo62AaU9g+IGXt3v5NU8rXSX77igZgfK08XhmofwHn0A==}
+  /@effect/schema@0.25.0:
+    resolution: {integrity: sha512-nJ674r65cqlv6+5jgjUT28oeNnfG/xkk/XduVb0ZF6Cd5rX7GqZp8cKObNwVLTNLJjMqS4N2rHhS8JtgLv88aw==}
     dependencies:
-      '@effect/data': 0.12.9
-      '@effect/io': 0.26.2
-      fast-check: 3.10.0
+      '@effect/data': 0.13.5
+      '@effect/io': 0.31.3
+      fast-check: 3.11.0
     dev: false
 
-  /@effect/stream@0.22.2:
-    resolution: {integrity: sha512-86dww4iOSGPEYh0bOlsmCcXUbRAUQo/E9ioedfVvNs/XLuCV8yrrTE1yXuW9kMeXJOHZZgtHpSGhltlzari1zg==}
+  /@effect/stream@0.25.1:
+    resolution: {integrity: sha512-wvS/dgsa4D8luOIYFcjrHgmOb3EgTPClRoQZrbAxmgFOGJ9TTksZztHnnFdIO6QLvJtdIRVcItHMQmrdXDOr7g==}
     dependencies:
-      '@effect/data': 0.12.9
-      '@effect/io': 0.26.2
+      '@effect/data': 0.13.5
+      '@effect/io': 0.31.3
     dev: false
 
   /@octokit/app@13.1.8:
@@ -318,7 +318,7 @@ packages:
       '@octokit/request-error': 3.0.3
       '@octokit/types': 9.3.2
       is-plain-object: 5.0.0
-      node-fetch: 2.6.11
+      node-fetch: 2.6.12
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
@@ -332,6 +332,13 @@ packages:
     resolution: {integrity: sha512-Vm8IddVmhCgU1fxC1eyinpwqzXPEYu0NrYzD3YZjlGjyftdLBTeqNblRC0jmJmgxbJIsQlyogVeGnrNaaMVzIg==}
     dependencies:
       '@octokit/openapi-types': 18.0.0
+    dev: false
+
+  /@octokit/types@11.0.0:
+    resolution: {integrity: sha512-h4iyfMpQUdub1itwTn6y7z2a3EtPuer1paKfsIbZErv0LBbZYGq6haiPUPJys/LetPqgcX3ft33O16XuS03Anw==}
+    dependencies:
+      '@octokit/openapi-types': 18.0.0
+    dev: true
 
   /@octokit/types@9.3.2:
     resolution: {integrity: sha512-D4iHGTdAnEEVsB8fl95m1hiz7D5YiRdQ9b/OEb3BYRVwbLsGHcRVPz+u+BgRLNk0Q0/4iZCBqDN96j2XNxfXrA==}
@@ -366,7 +373,7 @@ packages:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 20.3.1
+      '@types/node': 20.4.1
     dev: false
 
   /@types/btoa-lite@1.0.0:
@@ -376,13 +383,13 @@ packages:
   /@types/connect@3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
-      '@types/node': 20.3.1
+      '@types/node': 20.4.1
     dev: false
 
   /@types/express-serve-static-core@4.17.35:
     resolution: {integrity: sha512-wALWQwrgiB2AWTT91CB62b6Yt0sNHpznUXeZEcnPU3DRdlDIz74x8Qg1UUYKSVFi+va5vKOLYRBI1bRKiLLKIg==}
     dependencies:
-      '@types/node': 20.3.1
+      '@types/node': 20.4.1
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
       '@types/send': 0.17.1
@@ -394,13 +401,17 @@ packages:
       '@types/body-parser': 1.19.2
       '@types/express-serve-static-core': 4.17.35
       '@types/qs': 6.9.7
-      '@types/serve-static': 1.15.1
+      '@types/serve-static': 1.15.2
+    dev: false
+
+  /@types/http-errors@2.0.1:
+    resolution: {integrity: sha512-/K3ds8TRAfBvi5vfjuz8y6+GiAYBZ0x4tXv1Av6CWBWn0IlADc+ZX9pMq7oU0fNQPnBwIZl3rmeLp6SBApbxSQ==}
     dev: false
 
   /@types/jsonwebtoken@9.0.2:
     resolution: {integrity: sha512-drE6uz7QBKq1fYqqoFKTDRdFCPHd5TCub75BM+D+cMx7NU9hUz7SESLfC2fSCXVFMO5Yj8sOWHuGqPgjc+fz0Q==}
     dependencies:
-      '@types/node': 20.3.1
+      '@types/node': 20.4.1
     dev: false
 
   /@types/mime@1.3.2:
@@ -411,8 +422,8 @@ packages:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
     dev: false
 
-  /@types/node@20.3.1:
-    resolution: {integrity: sha512-EhcH/wvidPy1WeML3TtYFGR83UzjxeWRen9V402T8aUGYsCHOmfoisV3ZSg03gAFIbLq8TnWOJ0f4cALtnSEUg==}
+  /@types/node@20.4.1:
+    resolution: {integrity: sha512-JIzsAvJeA/5iY6Y/OxZbv1lUcc8dNSE77lb2gnBH+/PJ3lFR1Ccvgwl5JWnHAkNHcRsT0TbpVOsiMKZ1F/yyJg==}
 
   /@types/prettier@2.7.3:
     resolution: {integrity: sha512-+68kP9yzs4LMp7VNh8gdzMSPZFL44MLGqiHWvttYJe+6qnuVr4Ek9wSBQoveqY/r+LwjCcU29kNVkidwim+kYA==}
@@ -430,14 +441,15 @@ packages:
     resolution: {integrity: sha512-Cwo8LE/0rnvX7kIIa3QHCkcuF21c05Ayb0ZfxPiv0W8VRiZiNW/WuRupHKpqqGVGf7SUA44QSOUKaEd9lIrd/Q==}
     dependencies:
       '@types/mime': 1.3.2
-      '@types/node': 20.3.1
+      '@types/node': 20.4.1
     dev: false
 
-  /@types/serve-static@1.15.1:
-    resolution: {integrity: sha512-NUo5XNiAdULrJENtJXZZ3fHtfMolzZwczzBbnAeBbqBwG+LaG6YaJtuwzwGSQZ2wsCrxjEhNNjAkKigy3n8teQ==}
+  /@types/serve-static@1.15.2:
+    resolution: {integrity: sha512-J2LqtvFYCzaj8pVYKw8klQXrLLk7TBZmQ4ShlcdkELFKGwGMfevMLneMMRkMgZxotOD9wg497LpC7O8PcvAmfw==}
     dependencies:
+      '@types/http-errors': 2.0.1
       '@types/mime': 3.0.1
-      '@types/node': 20.3.1
+      '@types/node': 20.4.1
     dev: false
 
   /aggregate-error@3.1.0:
@@ -515,14 +527,14 @@ packages:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
     dev: false
 
-  /dfx@0.48.3:
-    resolution: {integrity: sha512-pPp4cE7WfbFGCr7a7/GCTWe09f99XrNO884T2xZqplHNlhVjyEYYCS8iYM7nLVVjaxgVW9HoFtqMmhKjbouadA==}
+  /dfx@0.51.0:
+    resolution: {integrity: sha512-o1FCBV5PpdFADWEeQ2+HjsaxEuMVlBf71Q8+xN8gjQ36Qwr3pWrQPPhKK+uTJdEFgxyg1MDyZh06jx/Tzm5O9Q==}
     dependencies:
-      '@effect-http/client': 0.27.2
-      '@effect/data': 0.12.9
-      '@effect/io': 0.26.2
-      '@effect/stream': 0.22.2
-      discord-verify: 1.1.0
+      '@effect-http/client': 0.29.0
+      '@effect/data': 0.13.5
+      '@effect/io': 0.31.3
+      '@effect/stream': 0.25.1
+      discord-verify: 1.2.0
     optionalDependencies:
       bufferutil: 4.0.7
       isomorphic-ws: 5.0.0(ws@8.13.0)
@@ -530,8 +542,8 @@ packages:
       ws: 8.13.0(bufferutil@4.0.7)(utf-8-validate@6.0.3)
     dev: false
 
-  /discord-verify@1.1.0:
-    resolution: {integrity: sha512-Xn7dPRGOj9vg8kxxpHa4YbYak66lL6v+ZHetAEFF5k7fQzY5ptDneEjNmxP4jGrqgpP8cnHxP9i2X7wGoi/XlQ==}
+  /discord-verify@1.2.0:
+    resolution: {integrity: sha512-8qlrMROW8DhpzWWzgNq9kpeLDxKanWa4EDVoj/ASVv2nr+dSr4JPmu2tFSydf3hAGI/OIJTnZyD0JulMYIxx4w==}
     engines: {node: '>=16'}
     dependencies:
       '@types/express': 4.17.17
@@ -552,12 +564,12 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /effect-schema-class@0.4.0:
-    resolution: {integrity: sha512-LYO1AFK3+mXIrOi6iwHtjErKNj9LvM8Jcwj7fRs5nNEozbOgIWFbcy6voE95AznR4OVa8lUsnIHRUiOp0KHR4A==}
+  /effect-schema-class@0.5.0:
+    resolution: {integrity: sha512-d+TlF8JJ3+H/mEFYoagkuHVa2W/xbqWi3qxKuxuc37ogBcMHb1I6oxJnQcL8ijvAgUNw9Mr15qyNeivhdALNsw==}
     dependencies:
-      '@effect/data': 0.12.9
-      '@effect/io': 0.26.2
-      '@effect/schema': 0.20.3
+      '@effect/data': 0.13.5
+      '@effect/io': 0.31.3
+      '@effect/schema': 0.25.0
     dev: false
 
   /event-stream@3.3.4:
@@ -572,8 +584,8 @@ packages:
       through: 2.3.8
     dev: true
 
-  /fast-check@3.10.0:
-    resolution: {integrity: sha512-I2FldZwnCbcY6iL+H0rp9m4D+O3PotuFu9FasWjMCzUedYHMP89/37JbSt6/n7Yq/IZmJDW0B2h30sPYdzrfzw==}
+  /fast-check@3.11.0:
+    resolution: {integrity: sha512-H2tctb7AGfFQfz+DEr3UWhJ3s47LXsGp5g3jeJr5tHjnf4xUvpArIqiwcDmL2EXiv+auLHIpF5MqaIpIKvpxiA==}
     engines: {node: '>=8.0.0'}
     dependencies:
       pure-rand: 6.0.2
@@ -612,8 +624,8 @@ packages:
       rfc4648: 1.5.2
     dev: false
 
-  /html-entities@2.3.6:
-    resolution: {integrity: sha512-9o0+dcpIw2/HxkNuYKxSJUF/MMRZQECK4GnF+oQOmJ83yCVHTWgCH5aOXxK5bozNRmM8wtgryjHD3uloPBDEGw==}
+  /html-entities@2.4.0:
+    resolution: {integrity: sha512-igBTJcNNNhvZFRtm8uA6xMY6xYleeDwn3PeBCkDz7tHttv4F2hsDI2aPgNERWzvRcNYHNT3ymRaQzllmXj4YsQ==}
     dev: false
 
   /indent-string@4.0.0:
@@ -640,14 +652,14 @@ packages:
     dev: false
     optional: true
 
-  /jsonwebtoken@9.0.0:
-    resolution: {integrity: sha512-tuGfYXxkQGDPnLJ7SibiQgVgeDgfbPq2k2ICcbgqW8WxWLBAxKQM/ZCu/IT8SOSwmaYl4dpTFCW5xZv7YbbWUw==}
+  /jsonwebtoken@9.0.1:
+    resolution: {integrity: sha512-K8wx7eJ5TPvEjuiVSkv167EVboBDv9PZdDoF7BgeQnBLVvZWW9clr2PsQHVJDTKaEIH5JBIwHujGcHp7GgI2eg==}
     engines: {node: '>=12', npm: '>=6'}
     dependencies:
       jws: 3.2.2
       lodash: 4.17.21
       ms: 2.1.3
-      semver: 7.5.2
+      semver: 7.5.4
     dev: false
 
   /jwa@1.4.1:
@@ -705,8 +717,8 @@ packages:
     resolution: {integrity: sha512-qN8v/s2PAJwGUtr1/hYTpNKlD6Y9rc4p8KSmJXyGdYGZsDGKXrGThikLFP9OCHFeLeEpQzPwiAtdIvBLqm//Hw==}
     dev: true
 
-  /node-fetch@2.6.11:
-    resolution: {integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==}
+  /node-fetch@2.6.12:
+    resolution: {integrity: sha512-C/fGU2E8ToujUivIO0H+tpQ6HWo4eEmchoPIoXtxCrVghxdKq+QOHqEZW7tuP3KlV3bC8FRMO5nMCC7Zm1VP6g==}
     engines: {node: 4.x || >=6.0.0}
     peerDependencies:
       encoding: ^0.1.0
@@ -766,9 +778,9 @@ packages:
       through: 2.3.8
     dev: true
 
-  /prettier@2.8.8:
-    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
-    engines: {node: '>=10.13.0'}
+  /prettier@3.0.0:
+    resolution: {integrity: sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==}
+    engines: {node: '>=14'}
     hasBin: true
     dev: false
 
@@ -792,8 +804,8 @@ packages:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
     dev: false
 
-  /semver@7.5.2:
-    resolution: {integrity: sha512-SoftuTROv/cRjCze/scjGyiDtcUyxw1rgYQSZY7XTmtR5hX+dm76iDbTH8TkLPHCQmlbQVSSbNZCPM2hb0knnQ==}
+  /semver@7.5.4:
+    resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
@@ -837,7 +849,7 @@ packages:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: false
 
-  /tsc-watch@6.0.4(typescript@5.1.3):
+  /tsc-watch@6.0.4(typescript@5.1.6):
     resolution: {integrity: sha512-cHvbvhjO86w2aGlaHgSCeQRl+Aqw6X6XN4sQMPZKF88GoP30O+oTuh5lRIJr5pgFWrRpF1AgXnJJ2DoFEIPHyg==}
     engines: {node: '>=12.12.0'}
     hasBin: true
@@ -848,11 +860,11 @@ packages:
       node-cleanup: 2.1.2
       ps-tree: 1.2.0
       string-argv: 0.3.2
-      typescript: 5.1.3
+      typescript: 5.1.6
     dev: true
 
-  /typescript@5.1.3:
-    resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
+  /typescript@5.1.6:
+    resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -861,7 +873,7 @@ packages:
     resolution: {integrity: sha512-G33RTLrIBMFmlDV4u4CBF7dh71eWwykck4XgaxaIVeZKOYZRAAxvcGMRFTUclVY6xoUPQvO4Ne5wKGxYm/Yy9w==}
     dependencies:
       '@types/jsonwebtoken': 9.0.2
-      jsonwebtoken: 9.0.0
+      jsonwebtoken: 9.0.1
     dev: false
 
   /universal-user-agent@6.0.0:

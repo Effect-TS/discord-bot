@@ -31,7 +31,7 @@ const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
   const members = yield* _(MemberCache)
   const messages = yield* _(Messages)
-  const scope = yield* _(Effect.scope())
+  const scope = yield* _(Effect.scope)
   const application = yield* _(
     Effect.flatMap(rest.getCurrentBotApplicationInformation(), _ => _.json),
   )
@@ -69,18 +69,22 @@ const make = Effect.gen(function* (_) {
     small: boolean,
   ) =>
     Effect.map(
-      Effect.forEachParWithIndex(messages, (message, index) => {
-        const reply = pipe(
-          Option.fromNullable(message.message_reference),
-          Option.flatMap(ref =>
-            Chunk.findFirstIndex(messages, _ => _.id === ref.message_id),
-          ),
-          Option.map(
-            index => [Chunk.unsafeGet(messages, index), index + 1] as const,
-          ),
-        )
-        return summarizeMessage(thread, index + 1, message, reply, small)
-      }),
+      Effect.forEach(
+        messages,
+        (message, index) => {
+          const reply = pipe(
+            Option.fromNullable(message.message_reference),
+            Option.flatMap(ref =>
+              Chunk.findFirstIndex(messages, _ => _.id === ref.message_id),
+            ),
+            Option.map(
+              index => [Chunk.unsafeGet(messages, index), index + 1] as const,
+            ),
+          )
+          return summarizeMessage(thread, index + 1, message, reply, small)
+        },
+        { concurrency: "unbounded" },
+      ),
       messageContent =>
         `# ${thread.name}
 
@@ -107,18 +111,17 @@ ${messageContent.join("\n\n")}`,
       const smallOpen = small ? "<small>" : ""
       const smallClose = small ? "</small>" : ""
 
-      const reply = Option.match(
-        replyTo,
-        () => "",
-        ([, index]) => ` (replying to \\#${index})`,
-      )
+      const reply = Option.match(replyTo, {
+        onNone: () => "",
+        onSome: ([, index]) => ` (replying to \\#${index})`,
+      })
 
       const header = `${smallOpen}${index}: **${username}**${reply} ${smallOpen}&mdash; ${new Date(
         message.timestamp,
       ).toUTCString()}${smallClose}${smallClose}`
 
-      const images = message.attachments.filter(_ =>
-        _.content_type?.startsWith("image/"),
+      const images = message.attachments.filter(
+        _ => _.content_type?.startsWith("image/"),
       )
       const imagesContent =
         images.length > 0
@@ -179,7 +182,10 @@ ${message.content}${imagesContent}`
       pipe(
         Effect.all({
           context: Ix.Interaction,
-          small: Effect.someOrElse(ix.optionValueOptional("small"), () => true),
+          small: Effect.map(
+            ix.optionValueOptional("small"),
+            Option.getOrElse(() => true),
+          ),
         }),
         Effect.bind("channel", ({ context }) =>
           channels.get(context.guild_id!, context.channel_id!),
@@ -216,7 +222,7 @@ ${message.content}${imagesContent}`
         }),
       ),
     )
-    .catchAllCause(Effect.logErrorCause)
+    .catchAllCause(Effect.logCause({ level: "Error" }))
 
   yield* _(registry.register(ix))
 

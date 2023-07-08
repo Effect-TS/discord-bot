@@ -15,9 +15,12 @@ const make = Effect.gen(function* (_) {
   }> {}
 
   const cache = yield* _(
-    Cache.make(1000, Duration.days(1), ({ guildId, userId }: GetMember) =>
-      Effect.flatMap(rest.getGuildMember(guildId, userId), _ => _.json),
-    ),
+    Cache.make({
+      capacity: 1000,
+      timeToLive: Duration.days(1),
+      lookup: ({ guildId, userId }: GetMember) =>
+        Effect.flatMap(rest.getGuildMember(guildId, userId), _ => _.json),
+    }),
   )
 
   return {

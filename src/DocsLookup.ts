@@ -41,12 +41,15 @@ const make = Effect.gen(function* (_) {
     )
 
   const allDocs = yield* _(
-    Effect.forEachPar(docUrls, loadDocs),
+    Effect.forEach(docUrls, loadDocs, { concurrency: "unbounded" }),
     Effect.map(_ =>
-      _.flat().reduce((acc, entry) => {
-        acc[entry.searchTerm] = entry
-        return acc
-      }, {} as Record<string, DocEntry>),
+      _.flat().reduce(
+        (acc, entry) => {
+          acc[entry.searchTerm] = entry
+          return acc
+        },
+        {} as Record<string, DocEntry>,
+      ),
     ),
     Effect.map(map => ({
       forSearch: Object.entries(map).map(([key, entry]) => ({
@@ -65,14 +68,13 @@ const make = Effect.gen(function* (_) {
 
   const search = (query: string) => {
     query = query.toLowerCase()
-    return pipe(
-      Effect.logDebug("searching"),
+    return Effect.log("searching", { level: "Debug" }).pipe(
       Effect.zipRight(allDocs),
       Effect.map(({ forSearch }) =>
         forSearch.filter(_ => _.term.includes(query)),
       ),
-      Effect.logAnnotate("module", "DocsLookup"),
-      Effect.logAnnotate("query", query),
+      Effect.annotateLogs("module", "DocsLookup"),
+      Effect.annotateLogs("query", query),
     )
   }
 
@@ -92,7 +94,7 @@ const make = Effect.gen(function* (_) {
           type: Discord.ApplicationCommandOptionType.BOOLEAN,
           name: "public",
           description: "Make the results visible for everyone",
-          required: false,
+          required: true,
         },
       ],
     },
@@ -100,9 +102,9 @@ const make = Effect.gen(function* (_) {
       pipe(
         Effect.all({
           key: ix.optionValue("query"),
-          reveal: Effect.someOrElse(
+          reveal: Effect.map(
             ix.optionValueOptional("public"),
-            () => false,
+            Option.getOrElse(() => false),
           ),
           docs: allDocs,
         }),
@@ -139,9 +141,9 @@ const make = Effect.gen(function* (_) {
     Ix.option("docs", "query"),
     pipe(
       Ix.focusedOptionValue,
-      Effect.filterOrElseWith(
+      Effect.filterOrFail(
         _ => _.length >= 3,
-        _ => Effect.fail(new QueryTooShort({ actual: _.length, min: 3 })),
+        _ => new QueryTooShort({ actual: _.length, min: 3 }),
       ),
       Effect.flatMap(search),
       Effect.map(results =>
@@ -174,7 +176,7 @@ const make = Effect.gen(function* (_) {
   const ix = Ix.builder
     .add(command)
     .add(autocomplete)
-    .catchAllCause(Effect.logErrorCause)
+    .catchAllCause(Effect.logCause({ level: "Error" }))
 
   yield* _(registry.register(ix))
 })
@@ -267,7 +269,7 @@ class DocEntry extends SchemaClass({
   }
 }
 
-const decodeEntries = Schema.parseEffect(Schema.array(DocEntry.schema()))
+const decodeEntries = Schema.parse(Schema.array(DocEntry.schema()))
 
 // errors
 
@@ -282,7 +284,7 @@ const retryPolicy = Schedule.fixed(Duration.seconds(3))
 
 const wrapCodeBlock = (code: string) =>
   pipe(
-    Effect.try(() => {
+    Effect.tryPromise(() => {
       const codeWithNewlines = code
         .replace(
           / (<|\[|readonly|(?<!readonly |\()\b\w+\??:|\/\*\*|\*\/? |export declare)/g,

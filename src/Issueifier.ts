@@ -4,14 +4,12 @@ import { Messages, MessagesLive } from "bot/Messages"
 import { OpenAI, OpenAIMessage } from "bot/OpenAI"
 import {
   Chunk,
-  Config,
   Data,
   Effect,
   Layer,
   Option,
   ROA,
   Stream,
-  flow,
   pipe,
 } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
@@ -37,7 +35,7 @@ const make = Effect.gen(function* (_) {
   const openai = yield* _(OpenAI)
   const messages = yield* _(Messages)
   const registry = yield* _(InteractionsRegistry)
-  const scope = yield* _(Effect.scope())
+  const scope = yield* _(Effect.scope)
   const github = yield* _(Github)
 
   const createGithubIssue = github.wrap(_ => _.issues.create)
@@ -50,16 +48,14 @@ const make = Effect.gen(function* (_) {
     pipe(
       messages.cleanForChannel(channel),
       Stream.runCollect,
-      Effect.map(
-        flow(
-          Chunk.reverse,
-          Chunk.map(
-            (msg): OpenAIMessage => ({
-              bot: false,
-              name: msg.author.username,
-              content: msg.content,
-            }),
-          ),
+      Effect.map(chunk =>
+        Chunk.map(
+          Chunk.reverse(chunk),
+          (msg): OpenAIMessage => ({
+            bot: false,
+            name: msg.author.username,
+            content: msg.content,
+          }),
         ),
       ),
       Effect.flatMap(openAiMessages =>
@@ -110,7 +106,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       Effect.tapErrorCause(() =>
         rest.deleteOriginalInteractionResponse(application.id, context.token),
       ),
-      Effect.catchAllCause(Effect.logErrorCause),
+      Effect.catchAllCause(Effect.logCause({ level: "Error" })),
     )
 
   const command = Ix.global(
@@ -176,7 +172,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         }),
       ),
     )
-    .catchAllCause(Effect.logErrorCause)
+    .catchAllCause(Effect.logCause({ level: "Error" }))
 
   yield* _(registry.register(ix))
 })
