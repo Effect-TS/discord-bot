@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot
+  labels:
+    app: discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-bot
+  template:
+    metadata:
+      labels:
+        app: discord-bot
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: discord-bot
+          image: ghcr.io/effect-ts/discord-bot:main
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 0.25
+              memory: 150Mi
+            limits:
+              cpu: 1
+              memory: 300Mi
