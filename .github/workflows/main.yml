@@ -16,9 +16,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v3
-      - uses: pre-commit/action@v3.0.0
-
       - name: Install nix
         uses: cachix/install-nix-action@v20
         with:
