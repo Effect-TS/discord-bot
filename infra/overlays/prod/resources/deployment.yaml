@@ -28,7 +28,7 @@ spec:
               cpu: 1
               memory: 300Mi
           env:
-            - name: DISCORD_API_KEY
+            - name: DISCORD_BOT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: discord-bot-secrets
