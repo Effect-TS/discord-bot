@@ -64,6 +64,6 @@ jobs:
 
       - uses: actions-hub/kubectl@master
         env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONFIG: ${{ secrets.DEVBOX_KUBECONFIG }}
         with:
-          args: rollout restart deployment docs-ai -n docs-ai
+          args: rollout restart deployment discord-bot -n discord-bot
