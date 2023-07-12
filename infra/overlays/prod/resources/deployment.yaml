@@ -27,3 +27,19 @@ spec:
             limits:
               cpu: 1
               memory: 300Mi
+          env:
+            - name: DISCORD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: discord-bot-secrets
+                  key: discord-api-key
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: discord-bot-secrets
+                  key: openai-key
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: discord-bot-secrets
+                  key: github-token

@@ -1,0 +1,17 @@
+---
+keys:
+  # Personal SSH
+  - &admin_maxwellbrown age1usc2072gec0plj2q866m0uyeh2rly60xnxts4c3xxh50cwygte8s8avj8a
+  - &admin_mikearnaldi age15umcap7zkzq5g32zykcywjk0l6cwldxqk7e46t2ynkkwy0eghuas5rs6t7
+  - &admin_timsmart age1cqrnyaj8tcu6svafggn5f45juq5lnvghqlqsazvp5pvzt5wa2els9ak7pv
+  # K3s
+  - &k3s_sops_operator age1pwu309yva6z9qs5z4n5dytns3jze850das6y2qntqq5yc8wzc52sk4nufy
+creation_rules:
+  - encrypted_regex: ^(data|stringData)$
+    path_regex: infra/.*/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin_maxwellbrown
+          - *admin_mikearnaldi
+          - *admin_timsmart
+          - *k3s_sops_operator
