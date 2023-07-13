@@ -38,6 +38,11 @@ spec:
                 secretKeyRef:
                   name: discord-bot-secrets
                   key: openai-key
+            - name: OPENAI_ORGANIZATION
+              valueFrom:
+                secretKeyRef:
+                  name: discord-bot-secrets
+                  key: openai-org
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
