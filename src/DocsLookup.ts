@@ -17,11 +17,9 @@ import {
 } from "./_common.js"
 
 const docUrls = [
-  "https://effect-ts.github.io/cli",
   "https://effect-ts.github.io/data",
   "https://effect-ts.github.io/io",
-  "https://effect-ts.github.io/match",
-  "https://effect-ts.github.io/rpc",
+  "https://effect-ts.github.io/platform",
   "https://effect-ts.github.io/schema",
   "https://effect-ts.github.io/stm",
   "https://effect-ts.github.io/stream",
