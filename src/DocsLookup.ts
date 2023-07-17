@@ -1,20 +1,18 @@
+import { Http, Schema, SchemaClass } from "bot/_common"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
-import * as HtmlEnt from "html-entities"
-import * as Prettier from "prettier"
 import {
   Data,
   Duration,
   Effect,
-  Http,
   Layer,
   Option,
   Schedule,
-  Schema,
-  SchemaClass,
   identity,
   pipe,
-} from "./_common.js"
+} from "effect"
+import * as HtmlEnt from "html-entities"
+import * as Prettier from "prettier"
 
 const docUrls = [
   "https://effect-ts.github.io/data",
@@ -66,7 +64,7 @@ const make = Effect.gen(function* (_) {
 
   const search = (query: string) => {
     query = query.toLowerCase()
-    return Effect.log("searching", { level: "Debug" }).pipe(
+    return Effect.log("searching", "Debug").pipe(
       Effect.zipRight(allDocs),
       Effect.map(({ forSearch }) =>
         forSearch.filter(_ => _.term.includes(query)),
@@ -97,15 +95,14 @@ const make = Effect.gen(function* (_) {
       ],
     },
     ix =>
-      pipe(
-        Effect.all({
-          key: ix.optionValue("query"),
-          reveal: Effect.map(
-            ix.optionValueOptional("public"),
-            Option.getOrElse(() => false),
-          ),
-          docs: allDocs,
-        }),
+      Effect.all({
+        key: ix.optionValue("query"),
+        reveal: Effect.map(
+          ix.optionValueOptional("public"),
+          Option.getOrElse(() => false),
+        ),
+        docs: allDocs,
+      }).pipe(
         Effect.bind("entry", ({ key, docs }) =>
           Option.fromNullable(docs.map[key]),
         ),
@@ -137,8 +134,7 @@ const make = Effect.gen(function* (_) {
 
   const autocomplete = Ix.autocomplete(
     Ix.option("docs", "query"),
-    pipe(
-      Ix.focusedOptionValue,
+    Ix.focusedOptionValue.pipe(
       Effect.filterOrFail(
         _ => _.length >= 3,
         _ => new QueryTooShort({ actual: _.length, min: 3 }),
@@ -174,7 +170,7 @@ const make = Effect.gen(function* (_) {
   const ix = Ix.builder
     .add(command)
     .add(autocomplete)
-    .catchAllCause(Effect.logCause({ level: "Error" }))
+    .catchAllCause(Effect.logCause("Error"))
 
   yield* _(registry.register(ix))
 })

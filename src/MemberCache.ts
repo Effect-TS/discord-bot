@@ -1,5 +1,5 @@
-import { Cache, Data, Duration, Effect, Layer, Tag } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
+import { Cache, Context, Data, Duration, Effect, Layer } from "effect"
 
 export class GetMember extends Data.TaggedClass("GetMember")<{
   readonly guildId: Discord.Snowflake
@@ -30,5 +30,5 @@ const make = Effect.gen(function* (_) {
 })
 
 export interface MemberCache extends Effect.Effect.Success<typeof make> {}
-export const MemberCache = Tag<MemberCache>()
+export const MemberCache = Context.Tag<MemberCache>()
 export const MemberCacheLive = Layer.effect(MemberCache, make)

@@ -1,20 +1,19 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { MemberCache, MemberCacheLive } from "bot/MemberCache"
+import { Messages, MessagesLive } from "bot/Messages"
+import { Stream } from "bot/_common"
+import { Discord, DiscordREST, Http, Ix } from "dfx"
+import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
 import {
   Cause,
   Chunk,
+  Context,
   Data,
   Effect,
-  Http,
   Layer,
   Option,
-  Stream,
-  Tag,
   pipe,
-} from "bot/_common"
-import { Discord, DiscordREST, Ix } from "dfx"
-import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
-import { Messages, MessagesLive } from "bot/Messages"
+} from "effect"
 
 export class NotInThreadError extends Data.TaggedClass(
   "NotInThreadError",
@@ -222,7 +221,7 @@ ${message.content}${imagesContent}`
         }),
       ),
     )
-    .catchAllCause(Effect.logCause({ level: "Error" }))
+    .catchAllCause(Effect.logCause("Error"))
 
   yield* _(registry.register(ix))
 
@@ -234,7 +233,7 @@ ${message.content}${imagesContent}`
 })
 
 export interface Summarizer extends Effect.Effect.Success<typeof make> {}
-export const Summarizer = Tag<Summarizer>()
+export const Summarizer = Context.Tag<Summarizer>()
 export const SummarizerLive = Layer.provide(
   Layer.mergeAll(
     ChannelsCacheLive,

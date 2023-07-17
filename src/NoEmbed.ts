@@ -1,7 +1,7 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import { Config, Data, Effect, Layer, pipe } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
+import { Config, Data, Effect, Layer, pipe } from "effect"
 
 class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
   readonly reason: "disabled" | "no-embed" | "gif"
@@ -61,13 +61,15 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
         Effect.catchTags({
           NotValidMessageError: () => Effect.unit,
         }),
-        Effect.catchAllCause(Effect.logCause({ level: "Error" })),
+        Effect.catchAllCause(Effect.logCause("Error")),
       )
 
     yield* _(
       Effect.all(
-        gateway.handleDispatch("MESSAGE_CREATE", handleMessage),
-        gateway.handleDispatch("MESSAGE_UPDATE", handleMessage),
+        [
+          gateway.handleDispatch("MESSAGE_CREATE", handleMessage),
+          gateway.handleDispatch("MESSAGE_UPDATE", handleMessage),
+        ],
         { concurrency: "unbounded" },
       ),
     )

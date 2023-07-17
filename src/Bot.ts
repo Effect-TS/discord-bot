@@ -1,10 +1,10 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import { Effect, Layer, pipe } from "bot/_common"
 import {
   DiscordGateway,
   InteractionsRegistry,
   InteractionsRegistryLive,
 } from "dfx/gateway"
+import { Effect, Layer, pipe } from "effect"
 
 const make = Effect.gen(function* (_) {
   const gateway = yield* _(DiscordGateway)
@@ -13,9 +13,7 @@ const make = Effect.gen(function* (_) {
 
   yield* _(
     Effect.all(
-      gateway.run,
-      channels.run,
-      registry.run(Effect.logCause({ level: "Error" })),
+      [gateway.run, channels.run, registry.run(Effect.logCause("Error"))],
       { concurrency: "unbounded", discard: true },
     ),
   )

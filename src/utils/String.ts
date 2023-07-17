@@ -1,5 +1,4 @@
-import * as Option from "@effect/data/Option"
-import { pipe } from "bot/_common"
+import { Option, pipe } from "effect"
 
 export const firstParagraph = (str: string) => str.trim().split("\n")[0].trim()
 

@@ -6,14 +6,14 @@ import { IssueifierLive } from "bot/Issueifier"
 import * as NoEmbed from "bot/NoEmbed"
 import * as OpenAI from "bot/OpenAI"
 import { SummarizerLive } from "bot/Summarizer"
-import { Config, Effect, Layer, pipe } from "bot/_common"
 import { Intents } from "dfx"
-import { makeLive } from "dfx/gateway"
+import { gatewayLayer } from "dfx/gateway"
 import * as Dotenv from "dotenv"
+import { Config, Effect, Layer, pipe } from "effect"
 
 Dotenv.config()
 
-const DiscordLive = makeLive({
+const DiscordLive = gatewayLayer({
   token: Config.secret("DISCORD_BOT_TOKEN"),
   debug: Config.withDefault(Config.bool("DEBUG"), false),
   gateway: {
@@ -62,6 +62,6 @@ const MainLive = pipe(
 
 pipe(
   Layer.launch(MainLive),
-  Effect.tapErrorCause(Effect.logCause({ level: "Error" })),
+  Effect.tapErrorCause(Effect.logCause("Error")),
   Effect.runFork,
 )
