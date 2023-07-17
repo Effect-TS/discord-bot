@@ -1,15 +1,15 @@
 import type { OctokitResponse } from "@octokit/types"
+import { Stream } from "bot/_common"
 import {
   Chunk,
   Config,
   ConfigSecret,
+  Context,
   Effect,
   Layer,
   Option,
-  Stream,
-  Tag,
   pipe,
-} from "bot/_common"
+} from "effect"
 import { Octokit } from "octokit"
 
 export interface GithubConfig {
@@ -63,7 +63,7 @@ const make = ({ token }: GithubConfig) => {
 }
 
 export interface Github extends ReturnType<typeof make> {}
-export const Github = Tag<Github>()
+export const Github = Context.Tag<Github>()
 export const makeLayer = (_: Config.Config.Wrap<GithubConfig>) =>
   Layer.effect(Github, Effect.map(Effect.config(Config.unwrap(_)), make))
 

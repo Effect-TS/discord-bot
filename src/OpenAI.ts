@@ -1,16 +1,16 @@
+import * as Str from "bot/utils/String"
 import {
   Config,
   ConfigSecret,
+  Context,
   Data,
   Effect,
   Layer,
   Option,
-  Tag,
   pipe,
-} from "bot/_common"
-import * as Str from "bot/utils/String"
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai"
+} from "effect"
 import * as Tokenizer from "gpt-tokenizer"
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai"
 
 export interface OpenAIOptions {
   readonly apiKey: ConfigSecret.ConfigSecret
@@ -181,7 +181,7 @@ The title of this chat is "${title}".`,
 }
 
 export interface OpenAI extends ReturnType<typeof make> {}
-export const OpenAI = Tag<OpenAI>()
+export const OpenAI = Context.Tag<OpenAI>()
 export const makeLayer = (config: Config.Config.Wrap<OpenAIOptions>) =>
   Layer.effect(OpenAI, Effect.map(Effect.config(Config.unwrap(config)), make))
 

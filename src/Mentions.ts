@@ -1,9 +1,9 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIMessage } from "bot/OpenAI"
-import { Data, Effect, Layer, pipe } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
+import { Data, Effect, Layer, pipe } from "effect"
 
 class NonEligibleMessage extends Data.TaggedClass("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
@@ -99,7 +99,7 @@ const make = Effect.gen(function* (_) {
         NonEligibleMessage: _ => Effect.unit,
         NoSuchElementException: _ => Effect.unit,
       }),
-      Effect.catchAllCause(Effect.logCause({ level: "Error" })),
+      Effect.catchAllCause(Effect.logCause("Error")),
     ),
   )
 

@@ -2,18 +2,10 @@ import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { Github } from "bot/Github"
 import { Messages, MessagesLive } from "bot/Messages"
 import { OpenAI, OpenAIMessage } from "bot/OpenAI"
-import {
-  Chunk,
-  Data,
-  Effect,
-  Layer,
-  Option,
-  ROA,
-  Stream,
-  pipe,
-} from "bot/_common"
+import { Stream } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
+import { Chunk, Data, Effect, Layer, Option, ReadonlyArray, pipe } from "effect"
 
 export class NotInThreadError extends Data.TaggedClass(
   "NotInThreadError",
@@ -106,7 +98,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       Effect.tapErrorCause(() =>
         rest.deleteOriginalInteractionResponse(application.id, context.token),
       ),
-      Effect.catchAllCause(Effect.logCause({ level: "Error" })),
+      Effect.catchAllCause(Effect.logCause("Error")),
     )
 
   const command = Ix.global(
@@ -120,7 +112,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           name: "repository",
           description:
             "What repository to create the issue in. Defaults to /website",
-          choices: ROA.map(githubRepos, ({ label }, value) => ({
+          choices: ReadonlyArray.map(githubRepos, ({ label }, value) => ({
             name: label,
             value: value.toString(),
           })),
@@ -172,7 +164,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         }),
       ),
     )
-    .catchAllCause(Effect.logCause({ level: "Error" }))
+    .catchAllCause(Effect.logCause("Error"))
 
   yield* _(registry.register(ix))
 })

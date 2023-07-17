@@ -1,5 +1,12 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIError } from "bot/OpenAI"
+import * as Str from "bot/utils/String"
+import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
+import {
+  DiscordGateway,
+  InteractionsRegistry,
+  InteractionsRegistryLive,
+} from "dfx/gateway"
 import {
   Cause,
   Config,
@@ -9,25 +16,16 @@ import {
   Layer,
   Option,
   Schedule,
-  millis,
   pipe,
-  seconds,
-} from "bot/_common"
-import * as Str from "bot/utils/String"
-import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
-import {
-  DiscordGateway,
-  InteractionsRegistry,
-  InteractionsRegistryLive,
-} from "dfx/gateway"
+} from "effect"
 
 const retryPolicy = pipe(
-  Schedule.fixed(millis(500)),
+  Schedule.fixed(Duration.millis(500)),
   Schedule.whileInput(
     (_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError",
   ),
   Schedule.compose(Schedule.elapsed),
-  Schedule.whileOutput(Duration.lessThanOrEqualTo(seconds(3))),
+  Schedule.whileOutput(Duration.lessThanOrEqualTo(Duration.seconds(3))),
 )
 
 export class NotValidMessageError extends Data.TaggedClass(
@@ -125,7 +123,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
         Effect.catchTags({
           NotValidMessageError: () => Effect.unit,
         }),
-        Effect.catchAllCause(Effect.logCause({ level: "Error" })),
+        Effect.catchAllCause(Effect.logCause("Error")),
       ),
     )
 
@@ -227,7 +225,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
           }),
         ),
       )
-      .catchAllCause(Effect.logCause({ level: "Error" }))
+      .catchAllCause(Effect.logCause("Error"))
 
     yield* _(registry.register(ix))
     yield* _(handleMessages)
