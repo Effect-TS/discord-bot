@@ -98,7 +98,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       Effect.tapErrorCause(() =>
         rest.deleteOriginalInteractionResponse(application.id, context.token),
       ),
-      Effect.catchAllCause(Effect.logCause("Error")),
+      Effect.catchAllCause(Effect.logError),
     )
 
   const command = Ix.global(
@@ -164,7 +164,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         }),
       ),
     )
-    .catchAllCause(Effect.logCause("Error"))
+    .catchAllCause(Effect.logError)
 
   yield* _(registry.register(ix))
 })

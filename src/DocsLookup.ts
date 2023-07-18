@@ -64,7 +64,7 @@ const make = Effect.gen(function* (_) {
 
   const search = (query: string) => {
     query = query.toLowerCase()
-    return Effect.log("searching", "Debug").pipe(
+    return Effect.logDebug("searching").pipe(
       Effect.zipRight(allDocs),
       Effect.map(({ forSearch }) =>
         forSearch.filter(_ => _.term.includes(query)),
@@ -170,7 +170,7 @@ const make = Effect.gen(function* (_) {
   const ix = Ix.builder
     .add(command)
     .add(autocomplete)
-    .catchAllCause(Effect.logCause("Error"))
+    .catchAllCause(Effect.logError)
 
   yield* _(registry.register(ix))
 })

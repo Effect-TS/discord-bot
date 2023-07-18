@@ -62,6 +62,6 @@ const MainLive = pipe(
 
 pipe(
   Layer.launch(MainLive),
-  Effect.tapErrorCause(Effect.logCause("Error")),
+  Effect.tapErrorCause(Effect.logError),
   Effect.runFork,
 )

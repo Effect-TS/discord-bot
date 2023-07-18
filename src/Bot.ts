@@ -13,7 +13,7 @@ const make = Effect.gen(function* (_) {
 
   yield* _(
     Effect.all(
-      [gateway.run, channels.run, registry.run(Effect.logCause("Error"))],
+      [gateway.run, channels.run, registry.run(Effect.logError)],
       { concurrency: "unbounded", discard: true },
     ),
   )

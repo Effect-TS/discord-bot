@@ -99,7 +99,7 @@ const make = Effect.gen(function* (_) {
         NonEligibleMessage: _ => Effect.unit,
         NoSuchElementException: _ => Effect.unit,
       }),
-      Effect.catchAllCause(Effect.logCause("Error")),
+      Effect.catchAllCause(Effect.logError),
     ),
   )
 
