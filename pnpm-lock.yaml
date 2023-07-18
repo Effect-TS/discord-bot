@@ -6,26 +6,26 @@ settings:
 
 dependencies:
   '@effect-http/client':
-    specifier: ^0.32.0
-    version: 0.32.0
+    specifier: ^0.33.0
+    version: 0.33.0
   '@effect/schema':
-    specifier: ^0.27.0
-    version: 0.27.0
+    specifier: ^0.28.0
+    version: 0.28.0
   '@effect/stream':
-    specifier: ^0.27.0
-    version: 0.27.0
+    specifier: ^0.28.0
+    version: 0.28.0
   dfx:
-    specifier: ^0.54.0
-    version: 0.54.0
+    specifier: ^0.55.0
+    version: 0.55.0
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
   effect:
-    specifier: 2.0.0-next.17
-    version: 2.0.0-next.17
+    specifier: 2.0.0-next.18
+    version: 2.0.0-next.18
   effect-schema-class:
-    specifier: ^0.7.0
-    version: 0.7.0
+    specifier: ^0.8.0
+    version: 0.8.0
   gpt-tokenizer:
     specifier: ^2.1.1
     version: 2.1.1
@@ -61,39 +61,39 @@ devDependencies:
 
 packages:
 
-  /@effect-http/client@0.32.0:
-    resolution: {integrity: sha512-DTVQlfKPRYeb5Et91ock8W07XIFBqid02U4f/Ri62ojGDa20+qsOiNJ3TDX6KXojEPHKFz0zwKHTvIBI8t8rPg==}
+  /@effect-http/client@0.33.0:
+    resolution: {integrity: sha512-VaQMsP3gWS0RPSf+QbHz6rFnl/QUM9cd1Erv9yGd7J3/8x0RoAx2v3oVcYTpbag1bP3hxL832wOHqtBQfrncOw==}
     requiresBuild: true
     dependencies:
-      '@effect/data': 0.15.0
-      '@effect/io': 0.33.0
-      '@effect/schema': 0.27.0
-      '@effect/stream': 0.27.0
+      '@effect/data': 0.15.1
+      '@effect/io': 0.34.0
+      '@effect/schema': 0.28.0
+      '@effect/stream': 0.28.0
     dev: false
 
-  /@effect/data@0.15.0:
-    resolution: {integrity: sha512-l/I1s9mb8yhOJvBDtGHjEhKuhVAvjWoYF8TwzcjKypSRsZ1TNxEJS//9QQdLEESd2yvlPNWudFiqHxbgRqbQDw==}
+  /@effect/data@0.15.1:
+    resolution: {integrity: sha512-dYe3GL2Lq8M56Q+QvEOPRtpRovhy1QprlBRGIjaCRPZ8DbwRFQZSdPPOL+ZX6e7y3DPF0RW+DFLHYRMA6qGOCw==}
     dev: false
 
-  /@effect/io@0.33.0:
-    resolution: {integrity: sha512-CwEiAKLZG368t2lNti7u3sX2wi0SS5c+Z0Xb3QVE0fA0WoRidNqlVwzvjMyUqYW6Rtwn0vCqyhAsfK3YVze5FQ==}
+  /@effect/io@0.34.0:
+    resolution: {integrity: sha512-v3elB62xFAoHEXxgJIRwEChw1kLB6139TNO/wOY7nLmHrGyVbonhzfBGlXF6bYleCgSeeM4bfEyoVydm9qWNZQ==}
     dependencies:
-      '@effect/data': 0.15.0
+      '@effect/data': 0.15.1
     dev: false
 
-  /@effect/schema@0.27.0:
-    resolution: {integrity: sha512-NS0Fm12XsvQqYhgX7piBQxHT/XOOwQpwSwriPk9GXLJxCDmMcYsHSdG+2J2pWqoZ58Z+dZptxzrceiwt7yVcaw==}
+  /@effect/schema@0.28.0:
+    resolution: {integrity: sha512-HIMw//zc0aeHF8PLxtMm0wHo72X5njg8v+0nRGr2gM1nKfFWApuiGI/i/6PZGMg1hD/721vVjCUs+rI+eh8kiw==}
     dependencies:
-      '@effect/data': 0.15.0
-      '@effect/io': 0.33.0
+      '@effect/data': 0.15.1
+      '@effect/io': 0.34.0
       fast-check: 3.11.0
     dev: false
 
-  /@effect/stream@0.27.0:
-    resolution: {integrity: sha512-PghMcrb3bHxcfT09e5bJdrE75Y4B9GRNJ7A9TY3NbHm5GSnZdFkmjm+g6PDEhe4btXK/csOwCu9qxCspTA8sNg==}
+  /@effect/stream@0.28.0:
+    resolution: {integrity: sha512-Jn9YewdG/xYEDsbo4yWxicjjCM3aNGtcG5PafdpgcgyzJWeG5D9DbwJUYjPEDbbKv3GhawZLkdVc77MXmxcchQ==}
     dependencies:
-      '@effect/data': 0.15.0
-      '@effect/io': 0.33.0
+      '@effect/data': 0.15.1
+      '@effect/io': 0.34.0
     dev: false
 
   /@octokit/app@14.0.0:
@@ -484,13 +484,13 @@ packages:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
     dev: false
 
-  /dfx@0.54.0:
-    resolution: {integrity: sha512-uZ+JxQP47Xp48T7Q3EO18sEbaEuAiBx2qy2/yHMZNrhAAdftCkBBz5Gc2joj0ye9wMlejO/rn6aA6rtosYxO8A==}
+  /dfx@0.55.0:
+    resolution: {integrity: sha512-y7u3KdyFyCNsbouit0U4jhhMw+rD6aXSm8yHWjP/XlQDmOvlH4IP5FUqnBkTwWA9SEirAZKm/NemQ+b7hAongw==}
     dependencies:
-      '@effect-http/client': 0.32.0
-      '@effect/data': 0.15.0
-      '@effect/io': 0.33.0
-      '@effect/stream': 0.27.0
+      '@effect-http/client': 0.33.0
+      '@effect/data': 0.15.1
+      '@effect/io': 0.34.0
+      '@effect/stream': 0.28.0
       bufferutil: 4.0.7
       discord-verify: 1.2.0
       isomorphic-ws: 5.0.0(ws@8.13.0)
@@ -520,19 +520,19 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /effect-schema-class@0.7.0:
-    resolution: {integrity: sha512-H6UyaKqYM0mzKGwZjSWiS30A2hiO/BkRLAuLVI854ouglEZiz1nMFHq14lvYhPDFtFfGPY5oIzPAnWJOSMy19w==}
+  /effect-schema-class@0.8.0:
+    resolution: {integrity: sha512-2jTcOb7yoS+glsX/EVQgfW/iJtIp1uRCcDiczsFTgQGHskWnWGxKoWbPhf38/VwUFEEK3n2lHzX5pO2uLgBnWw==}
     dependencies:
-      '@effect/data': 0.15.0
-      '@effect/io': 0.33.0
-      '@effect/schema': 0.27.0
+      '@effect/data': 0.15.1
+      '@effect/io': 0.34.0
+      '@effect/schema': 0.28.0
     dev: false
 
-  /effect@2.0.0-next.17:
-    resolution: {integrity: sha512-OYYuZ497/zRlFSKThnyiTdi7ycyGIEWlWqJ9ILHW4P4BabIIL9MDif9V14UKFHJ8HuAVLDEI0Odk9HqnP//qRw==}
+  /effect@2.0.0-next.18:
+    resolution: {integrity: sha512-5i/YElIU1BP4ELzDtTkPJmbH9zCB/OWRq/GOl5pgzzADR8dM1UMhRu3n72yKXp8y4m1/f108dCoI4vmkQVyZfw==}
     dependencies:
-      '@effect/data': 0.15.0
-      '@effect/io': 0.33.0
+      '@effect/data': 0.15.1
+      '@effect/io': 0.34.0
     dev: false
 
   /event-stream@3.3.4:

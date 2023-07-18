@@ -61,7 +61,7 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
         Effect.catchTags({
           NotValidMessageError: () => Effect.unit,
         }),
-        Effect.catchAllCause(Effect.logCause("Error")),
+        Effect.catchAllCause(Effect.logError),
       )
 
     yield* _(

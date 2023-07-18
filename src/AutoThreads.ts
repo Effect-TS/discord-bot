@@ -123,7 +123,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
         Effect.catchTags({
           NotValidMessageError: () => Effect.unit,
         }),
-        Effect.catchAllCause(Effect.logCause("Error")),
+        Effect.catchAllCause(Effect.logError),
       ),
     )
 
@@ -225,7 +225,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
           }),
         ),
       )
-      .catchAllCause(Effect.logCause("Error"))
+      .catchAllCause(Effect.logError)
 
     yield* _(registry.register(ix))
     yield* _(handleMessages)

@@ -221,7 +221,7 @@ ${message.content}${imagesContent}`
         }),
       ),
     )
-    .catchAllCause(Effect.logCause("Error"))
+    .catchAllCause(Effect.logError)
 
   yield* _(registry.register(ix))
 
