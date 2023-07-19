@@ -15,7 +15,7 @@ Dotenv.config()
 
 const DiscordLive = gatewayLayer({
   token: Config.secret("DISCORD_BOT_TOKEN"),
-  debug: Config.withDefault(Config.bool("DEBUG"), false),
+  debug: Config.withDefault(Config.boolean("DEBUG"), false),
   gateway: {
     intents: Config.succeed(
       Intents.fromList(["GUILD_MESSAGES", "MESSAGE_CONTENT", "GUILDS"]),
@@ -25,7 +25,7 @@ const DiscordLive = gatewayLayer({
 
 const OpenAILive = OpenAI.makeLayer({
   apiKey: Config.secret("OPENAI_API_KEY"),
-  organization: Config.optional(Config.secret("OPENAI_ORGANIZATION")),
+  organization: Config.option(Config.secret("OPENAI_ORGANIZATION")),
 })
 
 const AutoThreadsLive = AutoThreads.makeLayer({
