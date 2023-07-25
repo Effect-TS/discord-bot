@@ -1,7 +1,6 @@
 import { MemberCache, MemberCacheLive } from "bot/MemberCache"
-import { Stream } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
-import { Chunk, Context, Effect, Layer, Option, pipe } from "effect"
+import { Chunk, Context, Effect, Layer, Option, Stream, pipe } from "effect"
 
 export const cleanupMarkdown = (content: string) =>
   content
@@ -63,7 +62,7 @@ const make = Effect.gen(function* (_) {
       ),
 
       // only include normal messages
-      Stream.flatMapPar(Number.MAX_SAFE_INTEGER, msg => {
+      Stream.flatMap(msg => {
         if (msg.type === Discord.MessageType.THREAD_STARTER_MESSAGE) {
           return Effect.flatMap(
             rest.getChannelMessage(
@@ -81,7 +80,7 @@ const make = Effect.gen(function* (_) {
         }
 
         return Stream.empty
-      }),
+      }, { concurrency: "unbounded"}),
     )
 
   const cleanForChannel = (channel: Discord.Channel) =>
@@ -91,7 +90,7 @@ const make = Effect.gen(function* (_) {
         ...msg,
         content: cleanupMarkdown(msg.content),
       })),
-      Stream.flatMapPar(Number.MAX_SAFE_INTEGER, msg =>
+      Stream.mapEffect(msg =>
         Effect.map(
           replaceMentions(channel.guild_id!, msg.content),
           (content): Discord.Message => ({
@@ -99,7 +98,7 @@ const make = Effect.gen(function* (_) {
             content,
           }),
         ),
-      ),
+      { concurrency: "unbounded"}),
     )
 
   return {

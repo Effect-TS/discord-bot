@@ -2,10 +2,9 @@ import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { Github } from "bot/Github"
 import { Messages, MessagesLive } from "bot/Messages"
 import { OpenAI, OpenAIMessage } from "bot/OpenAI"
-import { Stream } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
-import { Chunk, Data, Effect, Layer, Option, ReadonlyArray, pipe } from "effect"
+import { Chunk, Data, Effect, Layer, Option, ReadonlyArray, Stream, pipe } from "effect"
 
 export class NotInThreadError extends Data.TaggedClass(
   "NotInThreadError",
