@@ -1,7 +1,6 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { MemberCache, MemberCacheLive } from "bot/MemberCache"
 import { Messages, MessagesLive } from "bot/Messages"
-import { Stream } from "bot/_common"
 import { Discord, DiscordREST, Http, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
 import {
@@ -12,6 +11,7 @@ import {
   Effect,
   Layer,
   Option,
+  Stream,
   pipe,
 } from "effect"
 

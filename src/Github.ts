@@ -1,5 +1,4 @@
 import type { OctokitResponse } from "@octokit/types"
-import { Stream } from "bot/_common"
 import {
   Chunk,
   Config,
@@ -8,6 +7,7 @@ import {
   Effect,
   Layer,
   Option,
+  Stream,
   pipe,
 } from "effect"
 import { Octokit } from "octokit"
