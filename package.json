@@ -23,15 +23,15 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@effect-http/client": "^0.37.0",
-    "@effect/schema": "^0.30.3",
-    "dfx": "^0.58.1",
+    "@effect-http/client": "^0.38.0",
+    "@effect/schema": "^0.31.0",
+    "dfx": "^0.59.0",
     "dotenv": "^16.3.1",
-    "effect": "2.0.0-next.21",
-    "effect-schema-class": "^0.10.2",
+    "effect": "2.0.0-next.22",
+    "effect-schema-class": "^0.11.0",
     "gpt-tokenizer": "^2.1.1",
     "html-entities": "^2.4.0",
-    "octokit": "^3.0.0",
+    "octokit": "^3.1.0",
     "openai": "^3.3.0",
     "prettier": "^3.0.0"
   }
