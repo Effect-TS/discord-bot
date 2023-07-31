@@ -38,7 +38,7 @@ const make = (params: OpenAIOptions) => {
   const client = new OpenAIApi(config)
 
   const call = <A>(f: (api: OpenAIApi, signal: AbortSignal) => Promise<A>) =>
-    Effect.tryPromiseInterrupt({
+    Effect.tryPromise({
       try: signal => f(client, signal),
       catch: error => new OpenAIError({ error }),
     })
