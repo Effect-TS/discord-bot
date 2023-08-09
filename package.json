@@ -25,7 +25,7 @@
   "dependencies": {
     "@effect/platform-node": "^0.11.4",
     "@effect/schema": "^0.33.1",
-    "dfx": "^0.61.2",
+    "dfx": "^0.61.3",
     "dotenv": "^16.3.1",
     "effect": "2.0.0-next.24",
     "gpt-tokenizer": "^2.1.1",
