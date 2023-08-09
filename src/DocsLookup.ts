@@ -31,7 +31,7 @@ const make = Effect.gen(function* (_) {
     Http.client.retry(retryPolicy),
     Http.client.mapEffect(_ => _.json),
     Http.client.map(_ => Object.values(_ as object)),
-    Http.client.mapEffect(decodeEntries),
+    Http.client.mapEffect(DocEntry.parseArray),
     Http.client.map(entries => entries.filter(_ => _.isSignature)),
   )
 
@@ -198,6 +198,9 @@ class DocEntry extends Schema.Class({
   ),
   relUrl: Schema.string,
 }) {
+  static readonly parse = Schema.parse(this.schema())
+  static readonly parseArray = Schema.parse(Schema.array(this.schema()))
+
   get isSignature() {
     return (
       this.content.trim().length > 0 &&
@@ -264,8 +267,6 @@ class DocEntry extends Schema.Class({
     )
   }
 }
-
-const decodeEntries = Schema.parse(Schema.array(DocEntry.schema()))
 
 // errors
 
