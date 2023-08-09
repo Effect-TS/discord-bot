@@ -1,7 +1,8 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { MemberCache, MemberCacheLive } from "bot/MemberCache"
 import { Messages, MessagesLive } from "bot/Messages"
-import { Discord, DiscordREST, Http, Ix } from "dfx"
+import { Http } from "bot/_common"
+import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
 import {
   Cause,
