@@ -26,15 +26,17 @@ const docUrls = [
 const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
 
+  const docsClient = pipe(
+    Http.client.fetchOk(),
+    Http.client.retry(retryPolicy),
+    Http.client.mapEffect(_ => _.json),
+    Http.client.map(_ => Object.values(_ as object)),
+    Http.client.mapEffect(decodeEntries),
+    Http.client.map(entries => entries.filter(_ => _.isSignature)),
+  )
+
   const loadDocs = (baseUrl: string) =>
-    pipe(
-      Http.get(`${baseUrl}/assets/js/search-data.json`),
-      Http.fetchJson(),
-      Effect.retry(retryPolicy),
-      Effect.map(_ => Object.values(_ as object)),
-      Effect.flatMap(decodeEntries),
-      Effect.map(entries => entries.filter(_ => _.isSignature)),
-    )
+    docsClient(Http.request.get(`${baseUrl}/assets/js/search-data.json`))
 
   const allDocs = yield* _(
     Effect.forEach(docUrls, loadDocs, { concurrency: "unbounded" }),
