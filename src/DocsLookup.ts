@@ -1,4 +1,4 @@
-import { Http, Schema, SchemaClass } from "bot/_common"
+import { Http, Schema } from "bot/_common"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
 import {
@@ -184,7 +184,7 @@ export const DocsLookupLive = Layer.provide(
 
 // schema
 
-class DocEntry extends SchemaClass({
+class DocEntry extends Schema.Class({
   doc: Schema.string,
   title: Schema.string,
   content: Schema.string,
