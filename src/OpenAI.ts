@@ -10,7 +10,7 @@ import {
   pipe,
 } from "effect"
 import * as Tokenizer from "gpt-tokenizer"
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai"
+import * as OAI from "openai"
 
 export interface OpenAIOptions {
   readonly apiKey: ConfigSecret.ConfigSecret
@@ -28,16 +28,14 @@ export interface OpenAIMessage {
 }
 
 const make = (params: OpenAIOptions) => {
-  const config = new Configuration({
+  const client = new OAI.OpenAI({
     apiKey: ConfigSecret.value(params.apiKey),
     organization: Option.getOrUndefined(
       Option.map(params.organization, ConfigSecret.value),
     ),
   })
 
-  const client = new OpenAIApi(config)
-
-  const call = <A>(f: (api: OpenAIApi, signal: AbortSignal) => Promise<A>) =>
+  const call = <A>(f: (api: OAI.OpenAI, signal: AbortSignal) => Promise<A>) =>
     Effect.tryPromise({
       try: signal => f(client, signal),
       catch: error => new OpenAIError({ error }),
@@ -46,7 +44,7 @@ const make = (params: OpenAIOptions) => {
   const generateTitle = (prompt: string) =>
     Effect.flatMap(
       call((_, signal) =>
-        _.createChatCompletion(
+        _.chat.completions.create(
           {
             model: "gpt-3.5-turbo",
             messages: [
@@ -68,7 +66,7 @@ ${Str.truncateWords(prompt, 75)}`,
       ),
       _ =>
         pipe(
-          Option.fromNullable(_.data.choices[0]?.message?.content),
+          Option.fromNullable(_.choices[0]?.message?.content),
           Option.map(cleanTitle),
         ),
     )
@@ -79,7 +77,7 @@ ${Str.truncateWords(prompt, 75)}`,
   ) =>
     Effect.flatMap(
       call((_, signal) =>
-        _.createChatCompletion(
+        _.chat.completions.create(
           {
             model: "gpt-3.5-turbo",
             temperature: 1,
@@ -101,7 +99,10 @@ Please keep responses under 2000 characters.
 The title of this conversation is "${title}".`,
               },
               ...messages.map(
-                ({ content, bot }): ChatCompletionRequestMessage => ({
+                ({
+                  content,
+                  bot,
+                }): OAI.OpenAI.Chat.CreateChatCompletionRequestMessage => ({
                   role: bot ? "assistant" : "user",
                   content: Str.truncateWords(content, 100),
                 }),
@@ -111,7 +112,7 @@ The title of this conversation is "${title}".`,
           { signal },
         ),
       ),
-      _ => Option.fromNullable(_.data.choices[0]?.message?.content),
+      _ => Option.fromNullable(_.choices[0]?.message?.content),
     )
 
   const generateDocs = (
@@ -121,7 +122,7 @@ The title of this conversation is "${title}".`,
   ) =>
     Effect.flatMap(
       call((_, signal) =>
-        _.createChatCompletion(
+        _.chat.completions.create(
           {
             model: "gpt-3.5-turbo-16k",
             temperature: 0.25,
@@ -142,7 +143,11 @@ The Effect-TS ecosystem includes the following libraries:
 The title of this chat is "${title}".`,
               },
               ...limitMessageTokens(messages, 12000).map(
-                ({ content, bot, name }): ChatCompletionRequestMessage => ({
+                ({
+                  content,
+                  bot,
+                  name,
+                }): OAI.OpenAI.Chat.CreateChatCompletionRequestMessage => ({
                   role: bot ? "assistant" : "user",
                   name,
                   content,
@@ -157,7 +162,7 @@ The title of this chat is "${title}".`,
           { signal },
         ),
       ),
-      _ => Option.fromNullable(_.data.choices[0]?.message?.content),
+      _ => Option.fromNullable(_.choices[0]?.message?.content),
     )
 
   const generateSummary = (

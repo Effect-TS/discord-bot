@@ -8,7 +8,7 @@
     "./*": "./dist/*.js"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist *.tsbuildinfo && tsc",
     "dev": "tsc-watch --onSuccess \"node --enable-source-maps dist/main.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,21 +17,21 @@
   "license": "ISC",
   "devDependencies": {
     "@octokit/types": "^11.1.0",
-    "@types/node": "^20.4.9",
+    "@types/node": "^20.5.0",
     "@types/prettier": "^3.0.0",
     "tsc-watch": "^6.0.4",
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@effect/platform-node": "^0.11.4",
+    "@effect/platform-node": "^0.13.0",
     "@effect/schema": "^0.33.1",
-    "dfx": "^0.61.3",
+    "dfx": "^0.61.4",
     "dotenv": "^16.3.1",
-    "effect": "2.0.0-next.24",
+    "effect": "2.0.0-next.25",
     "gpt-tokenizer": "^2.1.1",
     "html-entities": "^2.4.0",
     "octokit": "^3.1.0",
-    "openai": "^3.3.0",
-    "prettier": "^3.0.1"
+    "openai": "^4.0.0",
+    "prettier": "^3.0.2"
   }
 }
