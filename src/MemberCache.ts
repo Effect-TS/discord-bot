@@ -9,11 +9,6 @@ export class GetMember extends Data.TaggedClass("GetMember")<{
 const make = Effect.gen(function* (_) {
   const rest = yield* _(DiscordREST)
 
-  class GetMember extends Data.TaggedClass("GetMember")<{
-    readonly guildId: Discord.Snowflake
-    readonly userId: Discord.Snowflake
-  }> {}
-
   const cache = yield* _(
     Cache.make({
       capacity: 1000,
