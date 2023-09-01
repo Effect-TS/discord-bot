@@ -15,6 +15,7 @@ const githubRepos = [
   { label: "/data", owner: "effect-ts", repo: "data" },
   { label: "/io", owner: "effect-ts", repo: "io" },
   { label: "/match", owner: "effect-ts", repo: "match" },
+  { label: "/platform", owner: "effect-ts", repo: "platform" },
   { label: "/schema", owner: "effect-ts", repo: "schema" },
   { label: "/stream", owner: "effect-ts", repo: "stream" },
 ]
