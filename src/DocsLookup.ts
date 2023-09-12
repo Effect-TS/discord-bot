@@ -184,7 +184,7 @@ export const DocsLookupLive = Layer.provide(
 
 // schema
 
-class DocEntry extends Schema.Class({
+class DocEntry extends Schema.Class<DocEntry>()({
   doc: Schema.string,
   title: Schema.string,
   content: Schema.string,
@@ -198,8 +198,8 @@ class DocEntry extends Schema.Class({
   ),
   relUrl: Schema.string,
 }) {
-  static readonly parse = Schema.parse(this.schema())
-  static readonly parseArray = Schema.parse(Schema.array(this.schema()))
+  static readonly parse = Schema.parse(this)
+  static readonly parseArray = Schema.parse(Schema.array(this))
 
   get isSignature() {
     return (
