@@ -4,14 +4,15 @@ import { DiscordGateway } from "dfx/gateway"
 import { Config, Data, Effect, Layer, pipe } from "effect"
 
 class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
-  readonly reason: "disabled" | "no-embed" | "gif"
+  readonly reason: "disabled" | "no-embed" | "gif" | "whitelist"
 }> {}
 
 export interface NoEmbedOptions {
   readonly topicKeyword: string
+  readonly urlWhitelist: readonly string[]
 }
 
-const make = ({ topicKeyword }: NoEmbedOptions) =>
+const make = ({ topicKeyword, urlWhitelist }: NoEmbedOptions) =>
   Effect.gen(function* (_) {
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)
@@ -45,13 +46,20 @@ const make = ({ topicKeyword }: NoEmbedOptions) =>
         Effect.filterOrFail(
           ({ message }) =>
             message.embeds.length > 0 &&
-            !!message.embeds[0].url &&
+            typeof message.embeds[0].url === "string" &&
             message.content.includes(message.embeds[0].url),
           () => new NotValidMessageError({ reason: "no-embed" }),
         ),
         Effect.filterOrFail(
           ({ message }) => message.embeds[0].type !== Discord.EmbedType.GIFV,
           () => new NotValidMessageError({ reason: "gif" }),
+        ),
+        Effect.filterOrFail(
+          ({ message }) =>
+            urlWhitelist.some(
+              _ => message.embeds[0].url?.includes(_) === true,
+            ) === false,
+          () => new NotValidMessageError({ reason: "whitelist" }),
         ),
         Effect.flatMap(({ message }) =>
           rest.editMessage(message.channel_id, message.id, {
