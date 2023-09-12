@@ -40,6 +40,7 @@ const NoEmbedLive = NoEmbed.makeLayer({
     Config.string("NOEMBED_KEYWORD"),
     "[noembed]",
   ),
+  urlWhitelist: Config.succeed(["effect.website"]),
 })
 
 const GithubLive = Github.makeLayer({
