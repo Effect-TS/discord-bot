@@ -15,12 +15,9 @@ import * as HtmlEnt from "html-entities"
 import * as Prettier from "prettier"
 
 const docUrls = [
-  "https://effect-ts.github.io/data",
-  "https://effect-ts.github.io/io",
+  "https://effect-ts.github.io/effect",
   "https://effect-ts.github.io/platform",
   "https://effect-ts.github.io/schema",
-  "https://effect-ts.github.io/stm",
-  "https://effect-ts.github.io/stream",
 ]
 
 const make = Effect.gen(function* (_) {
@@ -218,7 +215,9 @@ class DocEntry extends Schema.Class<DocEntry>()({
   }
 
   get package() {
-    return `@effect/${this.subpackage}`
+    return this.subpackage === "effect"
+      ? "effect"
+      : `@effect/${this.subpackage}`
   }
 
   get module() {
