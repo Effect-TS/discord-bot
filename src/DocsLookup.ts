@@ -2,9 +2,9 @@ import { Http, Schema } from "bot/_common"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
 import {
-  Data,
   Duration,
   Effect,
+  Error,
   Layer,
   Option,
   Schedule,
@@ -270,7 +270,7 @@ class DocEntry extends Schema.Class<DocEntry>()({
 
 // errors
 
-class QueryTooShort extends Data.TaggedClass("QueryTooShort")<{
+class QueryTooShort extends Error.Tagged("QueryTooShort")<{
   readonly actual: number
   readonly min: number
 }> {}

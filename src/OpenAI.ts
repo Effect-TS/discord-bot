@@ -3,8 +3,8 @@ import {
   Config,
   ConfigSecret,
   Context,
-  Data,
   Effect,
+  Error,
   Layer,
   Option,
   pipe,
@@ -17,7 +17,7 @@ export interface OpenAIOptions {
   readonly organization: Option.Option<ConfigSecret.ConfigSecret>
 }
 
-export class OpenAIError extends Data.TaggedClass("OpenAIError")<{
+export class OpenAIError extends Error.Tagged("OpenAIError")<{
   readonly error: unknown
 }> {}
 

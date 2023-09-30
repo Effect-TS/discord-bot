@@ -8,19 +8,17 @@ import {
   Cause,
   Chunk,
   Context,
-  Data,
   Effect,
+  Error,
   Layer,
   Option,
   Stream,
   pipe,
 } from "effect"
 
-export class NotInThreadError extends Data.TaggedClass(
-  "NotInThreadError",
-)<{}> {}
+export class NotInThreadError extends Error.Tagged("NotInThreadError")<{}> {}
 
-export class PermissionsError extends Data.TaggedClass("PermissionsError")<{
+export class PermissionsError extends Error.Tagged("PermissionsError")<{
   readonly action: string
   readonly subject: string
 }> {}

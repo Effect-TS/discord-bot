@@ -4,11 +4,18 @@ import { Messages, MessagesLive } from "bot/Messages"
 import { OpenAI, OpenAIMessage } from "bot/OpenAI"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
-import { Chunk, Data, Effect, Layer, Option, ReadonlyArray, Stream, pipe } from "effect"
+import {
+  Chunk,
+  Effect,
+  Error,
+  Layer,
+  Option,
+  ReadonlyArray,
+  Stream,
+  pipe,
+} from "effect"
 
-export class NotInThreadError extends Data.TaggedClass(
-  "NotInThreadError",
-)<{}> {}
+export class NotInThreadError extends Error.Tagged("NotInThreadError")<{}> {}
 
 const githubRepos = [
   { label: "/website", owner: "effect-ts", repo: "website" },
