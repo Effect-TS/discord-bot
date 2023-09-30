@@ -3,9 +3,9 @@ import { OpenAI, OpenAIMessage } from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
-import { Data, Effect, Layer, pipe } from "effect"
+import { Effect, Error, Layer, pipe } from "effect"
 
-class NonEligibleMessage extends Data.TaggedClass("NonEligibleMessage")<{
+class NonEligibleMessage extends Error.Tagged("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
 }> {}
 

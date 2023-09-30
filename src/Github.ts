@@ -5,6 +5,7 @@ import {
   ConfigSecret,
   Context,
   Effect,
+  Error,
   Layer,
   Option,
   Stream,
@@ -16,10 +17,9 @@ export interface GithubConfig {
   readonly token: ConfigSecret.ConfigSecret
 }
 
-export class GithubError {
-  readonly _tag = "GithubError"
-  constructor(readonly reason: unknown) {}
-}
+export class GithubError extends Error.Tagged("GithubError")<{
+  readonly reason: unknown
+}> {}
 
 const make = ({ token }: GithubConfig) => {
   const octokit = new Octokit({ auth: ConfigSecret.value(token) })
@@ -30,7 +30,7 @@ const make = ({ token }: GithubConfig) => {
   const request = <A>(f: (_: Endpoints) => Promise<A>) =>
     Effect.tryPromise({
       try: () => f(rest),
-      catch: reason => new GithubError(reason),
+      catch: reason => new GithubError({ reason }),
     })
 
   const wrap =
@@ -41,7 +41,7 @@ const make = ({ token }: GithubConfig) => {
       Effect.map(
         Effect.tryPromise({
           try: () => f(rest)(...args),
-          catch: reason => new GithubError(reason),
+          catch: reason => new GithubError({ reason }),
         }),
         _ => _.data,
       )
@@ -53,7 +53,7 @@ const make = ({ token }: GithubConfig) => {
       Effect.map(
         Effect.tryPromise({
           try: () => f(rest, page),
-          catch: reason => new GithubError(reason),
+          catch: reason => new GithubError({ reason }),
         }),
         _ => [Chunk.fromIterable(_.data), maybeNextPage(page, _.headers.link)],
       ),

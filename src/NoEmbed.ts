@@ -1,9 +1,9 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
-import { Config, Data, Effect, Layer, pipe } from "effect"
+import { Config, Effect, Error, Layer, pipe } from "effect"
 
-class NotValidMessageError extends Data.TaggedClass("NotValidMessageError")<{
+class NotValidMessageError extends Error.Tagged("NotValidMessageError")<{
   readonly reason: "disabled" | "no-embed" | "gif" | "whitelist"
 }> {}
 

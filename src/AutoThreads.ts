@@ -10,9 +10,9 @@ import {
 import {
   Cause,
   Config,
-  Data,
   Duration,
   Effect,
+  Error,
   Layer,
   Option,
   Schedule,
@@ -28,13 +28,11 @@ const retryPolicy = pipe(
   Schedule.whileOutput(Duration.lessThanOrEqualTo(Duration.seconds(3))),
 )
 
-export class NotValidMessageError extends Data.TaggedClass(
-  "NotValidMessageError",
-)<{
+export class NotValidMessageError extends Error.Tagged("NotValidMessageError")<{
   readonly reason: "non-default" | "from-bot" | "non-text-channel" | "disabled"
 }> {}
 
-export class PermissionsError extends Data.TaggedClass("PermissionsError")<{
+export class PermissionsError extends Error.Tagged("PermissionsError")<{
   readonly action: string
   readonly subject: string
 }> {}
@@ -57,9 +55,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
         {
           message: Effect.if(message.type === Discord.MessageType.DEFAULT, {
             onTrue: Effect.succeed(message),
-            onFalse: Effect.fail(
-              new NotValidMessageError({ reason: "non-default" }),
-            ),
+            onFalse: new NotValidMessageError({ reason: "non-default" }),
           }),
           channel: channels.get(message.guild_id!, message.channel_id),
         },
@@ -138,11 +134,7 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
           authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
 
         if (!canEdit) {
-          yield* _(
-            Effect.fail(
-              new PermissionsError({ action: "edit", subject: "thread" }),
-            ),
-          )
+          yield* _(new PermissionsError({ action: "edit", subject: "thread" }))
         }
 
         return yield* $(self)
