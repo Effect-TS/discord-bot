@@ -19,12 +19,10 @@ export class NotInThreadError extends Error.Tagged("NotInThreadError")<{}> {}
 
 const githubRepos = [
   { label: "/website", owner: "effect-ts", repo: "website" },
-  { label: "/data", owner: "effect-ts", repo: "data" },
-  { label: "/io", owner: "effect-ts", repo: "io" },
+  { label: "/effect", owner: "effect-ts", repo: "effect" },
   { label: "/match", owner: "effect-ts", repo: "match" },
   { label: "/platform", owner: "effect-ts", repo: "platform" },
   { label: "/schema", owner: "effect-ts", repo: "schema" },
-  { label: "/stream", owner: "effect-ts", repo: "stream" },
 ]
 type GithubRepo = (typeof githubRepos)[number]
 
@@ -84,8 +82,7 @@ ${article}
 # Discord thread
 
 https://discord.com/channels/${channel.guild_id}/${channel.id}
-
-</details>`,
+`,
         }),
       ),
     )
