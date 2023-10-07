@@ -20,11 +20,6 @@ export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError",
 )<{}> {}
 
-export class PermissionsError extends Data.TaggedError("PermissionsError")<{
-  readonly action: string
-  readonly subject: string
-}> {}
-
 const make = Effect.gen(function* (_) {
   const rest = yield* _(DiscordREST)
   const channels = yield* _(ChannelsCache)

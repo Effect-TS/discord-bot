@@ -1,11 +1,8 @@
+import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 import { Config, Effect, Data, Layer, pipe } from "effect"
-
-class NotValidMessageError extends Data.TaggedError("NotValidMessageError")<{
-  readonly reason: "disabled" | "no-embed" | "gif" | "whitelist"
-}> {}
 
 export interface NoEmbedOptions {
   readonly topicKeyword: string
@@ -25,49 +22,62 @@ const make = ({ topicKeyword, urlWhitelist }: NoEmbedOptions) =>
           : Effect.succeed(_),
       )
 
+    const EligibleChannel = Schema.struct({
+      topic: Schema.string.pipe(Schema.includes(topicKeyword)),
+    }).pipe(Schema.parse)
+
+    const EligibleMessage = Schema.struct({
+      id: Schema.string,
+      channel_id: Schema.string,
+      flags: Schema.optional(Schema.number).withDefault(() => 0),
+      content: Schema.string,
+      embeds: Schema.nonEmptyArray(
+        Schema.struct({
+          url: Schema.string.pipe(
+            Schema.filter(
+              _ => urlWhitelist.some(url => _.includes(url)) === false,
+              { message: () => "url is whitelisted" },
+            ),
+          ),
+          type: Schema.string.pipe(
+            Schema.filter(_ => _ !== Discord.EmbedType.GIFV, {
+              message: () => "embed type is gif",
+            }),
+          ),
+        }),
+      ),
+    }).pipe(
+      Schema.filter(_ => _.content.includes(_.embeds[0].url), {
+        message: () => "message content does not include embed url",
+      }),
+      Schema.parse,
+    )
+
     const handleMessage = (message: Discord.MessageCreateEvent) =>
       pipe(
         Effect.Do,
         Effect.bind("channel", () =>
-          getChannel(message.guild_id!, message.channel_id),
-        ),
-        Effect.filterOrFail(
-          ({ channel }) => channel.topic?.includes(topicKeyword) === true,
-          () => new NotValidMessageError({ reason: "disabled" }),
+          getChannel(message.guild_id!, message.channel_id).pipe(
+            Effect.flatMap(EligibleChannel),
+          ),
         ),
         Effect.bind("message", () =>
-          message.content
+          (message.content
             ? Effect.succeed(message)
             : Effect.flatMap(
                 rest.getChannelMessage(message.channel_id, message.id),
                 _ => _.json,
-              ),
-        ),
-        Effect.filterOrFail(
-          ({ message }) =>
-            message.embeds.length > 0 &&
-            typeof message.embeds[0].url === "string" &&
-            message.content.includes(message.embeds[0].url),
-          () => new NotValidMessageError({ reason: "no-embed" }),
-        ),
-        Effect.filterOrFail(
-          ({ message }) => message.embeds[0].type !== Discord.EmbedType.GIFV,
-          () => new NotValidMessageError({ reason: "gif" }),
-        ),
-        Effect.filterOrFail(
-          ({ message }) =>
-            urlWhitelist.some(
-              _ => message.embeds[0].url?.includes(_) === true,
-            ) === false,
-          () => new NotValidMessageError({ reason: "whitelist" }),
+              )
+          ).pipe(Effect.flatMap(EligibleMessage)),
         ),
         Effect.flatMap(({ message }) =>
           rest.editMessage(message.channel_id, message.id, {
-            flags: Number(message.flags) | Discord.MessageFlag.SUPPRESS_EMBEDS,
+            flags: message.flags | Discord.MessageFlag.SUPPRESS_EMBEDS,
           }),
         ),
         Effect.catchTags({
-          NotValidMessageError: () => Effect.unit,
+          ParseError: error =>
+            Effect.logDebug(TreeFormatter.formatErrors(error.errors)),
         }),
         Effect.catchAllCause(Effect.logError),
       )
