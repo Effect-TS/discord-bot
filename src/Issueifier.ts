@@ -7,7 +7,7 @@ import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
 import {
   Chunk,
   Effect,
-  Error,
+  Data,
   Layer,
   Option,
   ReadonlyArray,
@@ -15,12 +15,13 @@ import {
   pipe,
 } from "effect"
 
-export class NotInThreadError extends Error.Tagged("NotInThreadError")<{}> {}
+export class NotInThreadError extends Data.TaggedError(
+  "NotInThreadError",
+)<{}> {}
 
 const githubRepos = [
   { label: "/website", owner: "effect-ts", repo: "website" },
   { label: "/effect", owner: "effect-ts", repo: "effect" },
-  { label: "/match", owner: "effect-ts", repo: "match" },
   { label: "/platform", owner: "effect-ts", repo: "platform" },
   { label: "/schema", owner: "effect-ts", repo: "schema" },
 ]
@@ -56,28 +57,18 @@ const make = Effect.gen(function* (_) {
         ),
       ),
       Effect.flatMap(openAiMessages =>
-        Effect.all({
-          article: openai.generateDocs(
-            channel.name!,
-            Chunk.toReadonlyArray(openAiMessages),
-          ),
-          summary: openai.generateSummary(
-            channel.name!,
-            Chunk.toReadonlyArray(openAiMessages),
-          ),
-        }),
+        openai.generateSummary(
+          channel.name!,
+          Chunk.toReadonlyArray(openAiMessages),
+        ),
       ),
-      Effect.flatMap(({ article, summary }) =>
+      Effect.flatMap(summary =>
         createGithubIssue({
           owner: repo.owner,
           repo: repo.repo,
           title: `From Discord: ${channel.name}`,
           body: `# Summary
 ${summary}
-
-# Example article
-
-${article}
 
 # Discord thread
 

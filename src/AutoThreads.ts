@@ -10,9 +10,9 @@ import {
 import {
   Cause,
   Config,
+  Data,
   Duration,
   Effect,
-  Error,
   Layer,
   Option,
   Schedule,
@@ -28,11 +28,13 @@ const retryPolicy = pipe(
   Schedule.whileOutput(Duration.lessThanOrEqualTo(Duration.seconds(3))),
 )
 
-export class NotValidMessageError extends Error.Tagged("NotValidMessageError")<{
+export class NotValidMessageError extends Data.TaggedError(
+  "NotValidMessageError",
+)<{
   readonly reason: "non-default" | "from-bot" | "non-text-channel" | "disabled"
 }> {}
 
-export class PermissionsError extends Error.Tagged("PermissionsError")<{
+export class PermissionsError extends Data.TaggedError("PermissionsError")<{
   readonly action: string
   readonly subject: string
 }> {}

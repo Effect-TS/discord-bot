@@ -4,7 +4,7 @@ import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
 import {
   Duration,
   Effect,
-  Error,
+  Data,
   Layer,
   Option,
   Schedule,
@@ -269,7 +269,7 @@ class DocEntry extends Schema.Class<DocEntry>()({
 
 // errors
 
-class QueryTooShort extends Error.Tagged("QueryTooShort")<{
+class QueryTooShort extends Data.TaggedError("QueryTooShort")<{
   readonly actual: number
   readonly min: number
 }> {}
