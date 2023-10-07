@@ -1,3 +1,4 @@
+import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { OpenAI, OpenAIError } from "bot/OpenAI"
 import * as Str from "bot/utils/String"
@@ -52,29 +53,28 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
     const channels = yield* _(ChannelsCache)
     const registry = yield* _(InteractionsRegistry)
 
+    const EligibleChannel = Schema.struct({
+      id: Schema.string,
+      topic: Schema.string.pipe(Schema.includes(topicKeyword)),
+      type: Schema.literal(Discord.ChannelType.GUILD_TEXT),
+    }).pipe(Schema.parse)
+
+    const EligibleMessage = Schema.struct({
+      id: Schema.string,
+      channel_id: Schema.string,
+      type: Schema.literal(Discord.MessageType.DEFAULT),
+    }).pipe(Schema.parse)
+
     const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
       Effect.all(
         {
-          message: Effect.if(message.type === Discord.MessageType.DEFAULT, {
-            onTrue: Effect.succeed(message),
-            onFalse: new NotValidMessageError({ reason: "non-default" }),
-          }),
-          channel: channels.get(message.guild_id!, message.channel_id),
+          message: EligibleMessage(message),
+          channel: channels
+            .get(message.guild_id!, message.channel_id)
+            .pipe(Effect.flatMap(EligibleChannel)),
         },
         { concurrency: "unbounded" },
       ).pipe(
-        Effect.filterOrFail(
-          () => message.author.bot !== true,
-          () => new NotValidMessageError({ reason: "from-bot" }),
-        ),
-        Effect.filterOrFail(
-          ({ channel }) => channel.type === Discord.ChannelType.GUILD_TEXT,
-          () => new NotValidMessageError({ reason: "non-text-channel" }),
-        ),
-        Effect.filterOrFail(
-          ({ channel }) => channel.topic?.includes(topicKeyword) === true,
-          () => new NotValidMessageError({ reason: "disabled" }),
-        ),
         Effect.bind("title", () =>
           pipe(
             Str.nonEmpty(message.content),
@@ -119,7 +119,8 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
           }),
         ),
         Effect.catchTags({
-          NotValidMessageError: () => Effect.unit,
+          ParseError: error =>
+            Effect.logDebug(TreeFormatter.formatErrors(error.errors)),
         }),
         Effect.catchAllCause(Effect.logError),
       ),
