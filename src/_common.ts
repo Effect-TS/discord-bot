@@ -1,3 +1,3 @@
 export * as Http from "@effect/platform-node/HttpClient"
-export * as Schema from "@effect/schema/Schema"
+export { Schema, ParseResult, TreeFormatter } from "@effect/schema"
 export { Discord } from "dfx"

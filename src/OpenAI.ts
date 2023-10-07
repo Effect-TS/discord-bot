@@ -3,8 +3,8 @@ import {
   Config,
   ConfigSecret,
   Context,
+  Data,
   Effect,
-  Error,
   Layer,
   Option,
   pipe,
@@ -17,7 +17,7 @@ export interface OpenAIOptions {
   readonly organization: Option.Option<ConfigSecret.ConfigSecret>
 }
 
-export class OpenAIError extends Error.Tagged("OpenAIError")<{
+export class OpenAIError extends Data.TaggedError("OpenAIError")<{
   readonly error: unknown
 }> {}
 
@@ -102,7 +102,7 @@ The title of this conversation is "${title}".`,
                 ({
                   content,
                   bot,
-                }): OAI.OpenAI.Chat.CreateChatCompletionRequestMessage => ({
+                }): OAI.OpenAI.Chat.ChatCompletionMessageParam => ({
                   role: bot ? "assistant" : "user",
                   content: Str.truncateWords(content, 100),
                 }),
@@ -131,15 +131,6 @@ The title of this conversation is "${title}".`,
                 role: "system",
                 content: `You are a helpful assistant for the Effect-TS ecosystem.
 
-The Effect-TS ecosystem includes the following libraries:
-
-- @effect/io
-- @effect/data
-- @effect/match
-- @effect/schema
-- @effect/stm
-- @effect/stream
-
 The title of this chat is "${title}".`,
               },
               ...limitMessageTokens(messages, 12000).map(
@@ -147,9 +138,9 @@ The title of this chat is "${title}".`,
                   content,
                   bot,
                   name,
-                }): OAI.OpenAI.Chat.CreateChatCompletionRequestMessage => ({
+                }): OAI.OpenAI.Chat.ChatCompletionMessageParam => ({
                   role: bot ? "assistant" : "user",
-                  name,
+                  name: name ? safeName(name) : undefined,
                   content,
                 }),
               ),
@@ -209,3 +200,6 @@ const limitMessageTokens = (
   }
   return newMessages
 }
+
+const safeName = (name: string) =>
+  name.replace(/[^a-zA-Z0-9\-_]/g, "_").replace(/_+/g, "_")

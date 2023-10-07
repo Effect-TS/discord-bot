@@ -5,7 +5,7 @@ import {
   ConfigSecret,
   Context,
   Effect,
-  Error,
+  Data,
   Layer,
   Option,
   Stream,
@@ -17,7 +17,7 @@ export interface GithubConfig {
   readonly token: ConfigSecret.ConfigSecret
 }
 
-export class GithubError extends Error.Tagged("GithubError")<{
+export class GithubError extends Data.TaggedError("GithubError")<{
   readonly reason: unknown
 }> {}
 
