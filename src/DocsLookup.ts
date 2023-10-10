@@ -96,14 +96,11 @@ const make = Effect.gen(function* (_) {
     ix =>
       Effect.all({
         key: ix.optionValue("query"),
-        reveal: Effect.map(
-          ix.optionValueOptional("public"),
-          Option.getOrElse(() => false),
-        ),
+        reveal: ix.optionValue("public"),
         docs: allDocs,
       }).pipe(
         Effect.bind("entry", ({ key, docs }) =>
-          Option.fromNullable(docs.map[key]),
+          Effect.fromNullable(docs.map[key]),
         ),
         Effect.bind("embed", ({ entry }) => entry.embed),
         Effect.map(({ embed, reveal }) =>
