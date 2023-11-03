@@ -1,16 +1,7 @@
 import { Http, Schema } from "bot/_common"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
-import {
-  Duration,
-  Effect,
-  Data,
-  Layer,
-  Option,
-  Schedule,
-  identity,
-  pipe,
-} from "effect"
+import { Duration, Effect, Data, Layer, Schedule, identity, pipe } from "effect"
 import * as HtmlEnt from "html-entities"
 import * as Prettier from "prettier"
 
