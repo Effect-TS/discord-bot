@@ -13,6 +13,7 @@ import {
   ReadonlyArray,
   Stream,
   pipe,
+  Cause,
 } from "effect"
 
 export class NotInThreadError extends Data.TaggedError(
@@ -20,10 +21,12 @@ export class NotInThreadError extends Data.TaggedError(
 )<{}> {}
 
 const githubRepos = [
-  { label: "/website", owner: "effect-ts", repo: "website" },
+  { label: "/website", owner: "tim-smart", repo: "dotfiles" },
   { label: "/effect", owner: "effect-ts", repo: "effect" },
-  { label: "/platform", owner: "effect-ts", repo: "platform" },
   { label: "/schema", owner: "effect-ts", repo: "schema" },
+  { label: "/platform", owner: "effect-ts", repo: "platform" },
+  { label: "/opentelemetry", owner: "effect-ts", repo: "opentelemetry" },
+  { label: "/rpc", owner: "effect-ts", repo: "rpc" },
 ]
 type GithubRepo = (typeof githubRepos)[number]
 
@@ -90,10 +93,25 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           content: `Created Github issue for thread: ${issue.html_url}`,
         }),
       ),
-      Effect.tapErrorCause(() =>
-        rest.deleteOriginalInteractionResponse(application.id, context.token),
+      Effect.tapErrorCause(Effect.logError),
+      Effect.catchAllCause(cause =>
+        rest
+          .editOriginalInteractionResponse(application.id, context.token, {
+            content:
+              "Failed to create Github issue:\n\n```\n" +
+              Cause.pretty(cause) +
+              "\n```",
+          })
+          .pipe(
+            Effect.zipLeft(Effect.sleep("1 minutes")),
+            Effect.zipRight(
+              rest.deleteOriginalInteractionResponse(
+                application.id,
+                context.token,
+              ),
+            ),
+          ),
       ),
-      Effect.catchAllCause(Effect.logError),
     )
 
   const command = Ix.global(
@@ -116,34 +134,30 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       ],
     },
     ix =>
-      pipe(
-        Effect.all({
-          context: Ix.Interaction,
-          repoIndex: Effect.map(
-            ix.optionValueOptional("repository"),
-            Option.getOrElse(() => 0),
-          ),
-        }),
-        Effect.let("repo", ({ repoIndex }) => githubRepos[repoIndex]!),
-        Effect.bind("channel", ({ context }) =>
+      Effect.gen(function* (_) {
+        const context = yield* _(Ix.Interaction)
+        const repoIndex = yield* _(
+          ix.optionValueOptional("repository"),
+          Effect.map(Option.getOrElse(() => 0)),
+        )
+        const repo = githubRepos[repoIndex]
+        const channel = yield* _(
           channels.get(context.guild_id!, context.channel_id!),
-        ),
-        Effect.filterOrFail(
-          ({ channel }) => channel.type === Discord.ChannelType.PUBLIC_THREAD,
-          () => new NotInThreadError(),
-        ),
-        Effect.tap(({ context, channel, repo }) =>
-          Effect.forkIn(followUp(context, channel, repo), scope),
-        ),
-        Effect.as(
-          Ix.response({
-            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              content: "Creating issue on Github...",
-            },
-          }),
-        ),
-      ),
+        )
+        if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
+          return yield* _(new NotInThreadError())
+        }
+        yield* _(
+          followUp(context, channel, repo),
+          Effect.annotateLogs("repo", repo.label),
+          Effect.annotateLogs("thread", channel.id),
+          Effect.forkIn(scope),
+        )
+        return Ix.response({
+          type: Discord.InteractionCallbackType
+            .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+        })
+      }).pipe(Effect.annotateLogs("command", "issueify")),
   )
 
   const ix = Ix.builder
