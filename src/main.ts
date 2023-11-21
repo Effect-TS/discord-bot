@@ -10,6 +10,7 @@ import { Intents } from "dfx"
 import { gatewayLayer } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 import { Config, Effect, Layer, pipe } from "effect"
+import { RemindersLive } from "./Reminders.js"
 
 Dotenv.config()
 
@@ -55,6 +56,7 @@ const MainLive = pipe(
       DocsLookupLive,
       IssueifierLive,
       NoEmbedLive,
+      RemindersLive,
       SummarizerLive,
       BotLive,
     ),
