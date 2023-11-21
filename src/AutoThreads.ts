@@ -63,6 +63,9 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
       id: Schema.string,
       channel_id: Schema.string,
       type: Schema.literal(Discord.MessageType.DEFAULT),
+      author: Schema.struct({
+        bot: Schema.optional(Schema.literal(false)),
+      }),
     }).pipe(Schema.parse)
 
     const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
