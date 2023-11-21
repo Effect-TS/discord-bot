@@ -4,29 +4,32 @@ import { DiscordGateway } from "dfx/gateway"
 import CronParser from "cron-parser"
 import { Discord } from "dfx/index"
 
-const topicPattern = /\[reminder:(.+?):(.+?)\]/
-
 class MissingTopic extends Data.TaggedError("MissingTopic")<{}> {}
 
 class InvalidTopic extends Data.TaggedError("InvalidTopic")<{
   readonly reason: string
+  readonly match: string
 }> {}
 
 const parseTopic = (topic: string) =>
-  Effect.fromNullable(topicPattern.exec(topic)).pipe(
-    Effect.mapError(() => new MissingTopic()),
-    Effect.tryMap({
-      try: ([, expression, message]) => {
-        const cron = CronParser.parseExpression(expression.trim())
-        const sleep = Effect.suspend(() => {
-          const ts = cron.next().getTime()
-          return Effect.sleep(ts - Date.now())
-        })
-        return [sleep, message] as const
-      },
-      catch: err => new InvalidTopic({ reason: `${err}` }),
-    }),
+  Effect.partition(
+    topic.matchAll(/\[reminder:(.+?):(.+?)\]/g),
+    ([match, expression, message]) =>
+      parseExpression(match, expression, message),
   )
+
+const parseExpression = (match: string, expression: string, message: string) =>
+  Effect.try({
+    try: () => {
+      const cron = CronParser.parseExpression(expression.trim())
+      const sleep = Effect.suspend(() => {
+        const ts = cron.next().getTime()
+        return Effect.sleep(ts - Date.now())
+      })
+      return [sleep, message] as const
+    },
+    catch: err => new InvalidTopic({ reason: `${err}`, match }),
+  })
 
 const createThreadPolicy = Schedule.spaced("1 seconds").pipe(
   Schedule.compose(Schedule.recurs(3)),
@@ -61,14 +64,31 @@ const make = Effect.gen(function* (_) {
     Effect.gen(function* (_) {
       yield* _(remove(channel.id))
 
-      const [sleep, message] = yield* _(parseTopic(channel.topic ?? ""))
+      const [errors, matches] = yield* _(parseTopic(channel.topic ?? ""))
+      yield* _(Effect.forEach(errors, err => Effect.logInfo(err)))
+      if (matches.length === 0) {
+        return yield* _(new MissingTopic())
+      }
 
-      yield* _(Effect.log("scheduling reminder"))
+      yield* _(
+        Effect.log("scheduling reminders").pipe(
+          Effect.annotateLogs(
+            "messages",
+            matches.map(_ => _[1]),
+          ),
+        ),
+      )
 
       const fiber = yield* _(
-        sleep,
-        Effect.zipRight(createThread(channel.id, message)),
-        Effect.forever,
+        Effect.forEach(
+          matches,
+          ([sleep, message]) =>
+            sleep.pipe(
+              Effect.zipRight(createThread(channel.id, message)),
+              Effect.forever,
+            ),
+          { discard: true, concurrency: "unbounded" },
+        ),
         Effect.ensuring(remove(channel.id)),
         Effect.catchAllCause(Effect.logError),
         Effect.forkDaemon,
@@ -78,12 +98,10 @@ const make = Effect.gen(function* (_) {
     }).pipe(
       Effect.catchTags({
         MissingTopic: () => Effect.unit,
-        InvalidTopic: err => Effect.logInfo(err),
       }),
       Effect.annotateLogs({
         service: "Reminders",
         channelId: channel.id,
-        channelTopic: channel.topic,
       }),
     )
 
