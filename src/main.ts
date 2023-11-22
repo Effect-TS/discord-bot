@@ -1,5 +1,4 @@
 import * as AutoThreads from "bot/AutoThreads"
-import { BotLive } from "bot/Bot"
 import { DocsLookupLive } from "bot/DocsLookup"
 import * as Github from "bot/Github"
 import { IssueifierLive } from "bot/Issueifier"
@@ -7,7 +6,7 @@ import * as NoEmbed from "bot/NoEmbed"
 import * as OpenAI from "bot/OpenAI"
 import { SummarizerLive } from "bot/Summarizer"
 import { Intents } from "dfx"
-import { gatewayLayer } from "dfx/gateway"
+import { InteractionsRegistryLive, gatewayLayer } from "dfx/gateway"
 import * as Dotenv from "dotenv"
 import { Config, Effect, Layer, pipe } from "effect"
 import { RemindersLive } from "./Reminders.js"
@@ -48,19 +47,18 @@ const GithubLive = Github.makeLayer({
   token: Config.secret("GITHUB_TOKEN"),
 })
 
-const MainLive = pipe(
-  Layer.mergeAll(DiscordLive, GithubLive, OpenAILive),
-  Layer.provide(
-    Layer.mergeAll(
-      AutoThreadsLive,
-      DocsLookupLive,
-      IssueifierLive,
-      NoEmbedLive,
-      RemindersLive,
-      SummarizerLive,
-      BotLive,
-    ),
-  ),
+const MainLive = Layer.mergeAll(
+  AutoThreadsLive,
+  DocsLookupLive,
+  IssueifierLive,
+  NoEmbedLive,
+  RemindersLive,
+  SummarizerLive,
+).pipe(
+  Layer.use(InteractionsRegistryLive()),
+  Layer.use(DiscordLive),
+  Layer.use(OpenAILive),
+  Layer.use(GithubLive),
 )
 
 pipe(

@@ -179,6 +179,6 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 })
 
 export const IssueifierLive = Layer.provide(
-  Layer.mergeAll(ChannelsCacheLive, InteractionsRegistryLive, MessagesLive),
+  Layer.mergeAll(ChannelsCacheLive, MessagesLive),
   Layer.scopedDiscard(make),
 )

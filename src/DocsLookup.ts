@@ -163,10 +163,7 @@ const make = Effect.gen(function* (_) {
   yield* _(registry.register(ix))
 })
 
-export const DocsLookupLive = Layer.provide(
-  InteractionsRegistryLive,
-  Layer.effectDiscard(make),
-)
+export const DocsLookupLive = Layer.effectDiscard(make)
 
 // schema
 

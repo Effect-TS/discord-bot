@@ -226,13 +226,10 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
       .catchAllCause(Effect.logError)
 
     yield* _(registry.register(ix))
-    yield* _(handleMessages)
+    yield* _(handleMessages, Effect.forkScoped)
   })
 
 export const makeLayer = (config: Config.Config.Wrap<AutoThreadsOptions>) =>
-  Layer.provide(
-    Layer.mergeAll(ChannelsCacheLive, InteractionsRegistryLive),
-    Layer.effectDiscard(
-      Effect.flatMap(Effect.config(Config.unwrap(config)), make),
-    ),
-  )
+  Layer.scopedDiscard(
+    Effect.flatMap(Effect.config(Config.unwrap(config)), make),
+  ).pipe(Layer.use(ChannelsCacheLive))
