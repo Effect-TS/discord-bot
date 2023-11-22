@@ -15,8 +15,8 @@ dependencies:
     specifier: ^4.9.0
     version: 4.9.0
   dfx:
-    specifier: ^0.74.0
-    version: 0.74.0(@effect/platform@0.31.0)(effect@2.0.0-next.56)
+    specifier: ^0.75.0
+    version: 0.75.0(@effect/platform@0.31.0)(effect@2.0.0-next.56)
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -546,8 +546,8 @@ packages:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
     dev: false
 
-  /dfx@0.74.0(@effect/platform@0.31.0)(effect@2.0.0-next.56):
-    resolution: {integrity: sha512-XOaZEtN4/TC5Q8wCo7PXf4+lmhz885LwA1933I7vyPf75Qt10daqWJH8o0lgZ4rH8rwei6l7To1MjG25XcUxBA==}
+  /dfx@0.75.0(@effect/platform@0.31.0)(effect@2.0.0-next.56):
+    resolution: {integrity: sha512-xvmoLGyY/U29GMBbAIf5S0SLBhqfTydx8BZkAuv3+v4TRwwQJn/5+wnTOpls3Ihsn+5eh58iDH6cLvy5Fv3Z2g==}
     peerDependencies:
       '@effect/platform': ^0.31.0
       effect: 2.0.0-next.56

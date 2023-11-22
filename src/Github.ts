@@ -55,7 +55,10 @@ const make = ({ token }: GithubConfig) => {
           try: () => f(rest, page),
           catch: reason => new GithubError({ reason }),
         }),
-        _ => [Chunk.fromIterable(_.data), maybeNextPage(page, _.headers.link)],
+        _ => [
+          Chunk.unsafeFromArray(_.data),
+          maybeNextPage(page, _.headers.link),
+        ],
       ),
     )
 
