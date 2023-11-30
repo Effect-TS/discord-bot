@@ -231,6 +231,6 @@ ${message.content}${imagesContent}`
 export interface Summarizer extends Effect.Effect.Success<typeof make> {}
 export const Summarizer = Context.Tag<Summarizer>()
 export const SummarizerLive = Layer.provide(
-  Layer.mergeAll(ChannelsCacheLive, MemberCacheLive, MessagesLive),
   Layer.scoped(Summarizer, make),
+  Layer.mergeAll(ChannelsCacheLive, MemberCacheLive, MessagesLive),
 )

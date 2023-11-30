@@ -62,25 +62,28 @@ const make = Effect.gen(function* (_) {
       ),
 
       // only include normal messages
-      Stream.flatMap(msg => {
-        if (msg.type === Discord.MessageType.THREAD_STARTER_MESSAGE) {
-          return Effect.flatMap(
-            rest.getChannelMessage(
-              msg.message_reference!.channel_id!,
-              msg.message_reference!.message_id!,
-            ),
-            _ => _.json,
-          )
-        } else if (
-          msg.content !== "" &&
-          (msg.type === Discord.MessageType.REPLY ||
-            msg.type === Discord.MessageType.DEFAULT)
-        ) {
-          return Stream.succeed(msg)
-        }
+      Stream.flatMap(
+        msg => {
+          if (msg.type === Discord.MessageType.THREAD_STARTER_MESSAGE) {
+            return Effect.flatMap(
+              rest.getChannelMessage(
+                msg.message_reference!.channel_id!,
+                msg.message_reference!.message_id!,
+              ),
+              _ => _.json,
+            )
+          } else if (
+            msg.content !== "" &&
+            (msg.type === Discord.MessageType.REPLY ||
+              msg.type === Discord.MessageType.DEFAULT)
+          ) {
+            return Stream.succeed(msg)
+          }
 
-        return Stream.empty
-      }, { concurrency: "unbounded"}),
+          return Stream.empty
+        },
+        { concurrency: "unbounded" },
+      ),
     )
 
   const cleanForChannel = (channel: Discord.Channel) =>
@@ -90,15 +93,17 @@ const make = Effect.gen(function* (_) {
         ...msg,
         content: cleanupMarkdown(msg.content),
       })),
-      Stream.mapEffect(msg =>
-        Effect.map(
-          replaceMentions(channel.guild_id!, msg.content),
-          (content): Discord.Message => ({
-            ...msg,
-            content,
-          }),
-        ),
-      { concurrency: "unbounded"}),
+      Stream.mapEffect(
+        msg =>
+          Effect.map(
+            replaceMentions(channel.guild_id!, msg.content),
+            (content): Discord.Message => ({
+              ...msg,
+              content,
+            }),
+          ),
+        { concurrency: "unbounded" },
+      ),
     )
 
   return {
@@ -111,6 +116,6 @@ const make = Effect.gen(function* (_) {
 export interface Messages extends Effect.Effect.Success<typeof make> {}
 export const Messages = Context.Tag<Messages>()
 export const MessagesLive = Layer.provide(
-  Layer.mergeAll(MemberCacheLive),
   Layer.effect(Messages, make),
+  Layer.mergeAll(MemberCacheLive),
 )

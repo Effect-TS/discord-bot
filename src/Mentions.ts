@@ -1,5 +1,5 @@
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import { OpenAI, OpenAIMessage } from "bot/OpenAI"
+import * as OpenAI from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
@@ -13,7 +13,7 @@ const make = Effect.gen(function* (_) {
   const rest = yield* _(DiscordREST)
   const gateway = yield* _(DiscordGateway)
   const channels = yield* _(ChannelsCache)
-  const openai = yield* _(OpenAI)
+  const openai = yield* _(OpenAI.OpenAI)
 
   const botUser = yield* _(
     rest.getCurrentUser(),
@@ -51,7 +51,7 @@ const make = Effect.gen(function* (_) {
           )
           .filter(msg => msg.content.trim().length > 0)
           .map(
-            (msg): OpenAIMessage => ({
+            (msg): OpenAI.Message => ({
               content: msg.content,
               name:
                 msg.author.id === botUser.id
@@ -106,7 +106,7 @@ const make = Effect.gen(function* (_) {
   yield* _(run)
 })
 
-export const MentionsLive = Layer.provide(
-  ChannelsCacheLive,
-  Layer.effectDiscard(make),
+export const MentionsLive = Layer.effectDiscard(make).pipe(
+  Layer.provide(ChannelsCacheLive),
+  Layer.provide(OpenAI.layer),
 )
