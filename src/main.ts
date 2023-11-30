@@ -23,19 +23,19 @@ const DiscordLive = gatewayLayer({
   },
 })
 
-const OpenAILive = OpenAI.makeLayer({
+const OpenAIOptions = OpenAI.layerOptions({
   apiKey: Config.secret("OPENAI_API_KEY"),
   organization: Config.option(Config.secret("OPENAI_ORGANIZATION")),
 })
 
-const AutoThreadsLive = AutoThreads.makeLayer({
+const AutoThreadsOptions = AutoThreads.layerOptions({
   topicKeyword: Config.withDefault(
     Config.string("AUTOTHREADS_KEYWORD"),
     "[threads]",
   ),
 })
 
-const NoEmbedLive = NoEmbed.makeLayer({
+const NoEmbedOptions = NoEmbed.layerOptions({
   topicKeyword: Config.withDefault(
     Config.string("NOEMBED_KEYWORD"),
     "[noembed]",
@@ -43,22 +43,24 @@ const NoEmbedLive = NoEmbed.makeLayer({
   urlWhitelist: Config.succeed(["effect.website"]),
 })
 
-const GithubLive = Github.makeLayer({
+const GithubConfig = Github.layerConfig({
   token: Config.secret("GITHUB_TOKEN"),
 })
 
 const MainLive = Layer.mergeAll(
-  AutoThreadsLive,
+  AutoThreads.layer,
+  NoEmbed.layer,
   DocsLookupLive,
   IssueifierLive,
-  NoEmbedLive,
   RemindersLive,
   SummarizerLive,
 ).pipe(
-  Layer.use(InteractionsRegistryLive()),
-  Layer.use(DiscordLive),
-  Layer.use(OpenAILive),
-  Layer.use(GithubLive),
+  Layer.provide(InteractionsRegistryLive()),
+  Layer.provide(DiscordLive),
+  Layer.provide(AutoThreadsOptions),
+  Layer.provide(NoEmbedOptions),
+  Layer.provide(OpenAIOptions),
+  Layer.provide(GithubConfig),
 )
 
 pipe(

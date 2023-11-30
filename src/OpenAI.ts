@@ -1,3 +1,4 @@
+import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import {
   Config,
@@ -21,7 +22,7 @@ export class OpenAIError extends Data.TaggedError("OpenAIError")<{
   readonly error: unknown
 }> {}
 
-export interface OpenAIMessage {
+export interface Message {
   readonly bot: boolean
   readonly name?: string
   readonly content: string
@@ -71,10 +72,7 @@ ${Str.truncateWords(prompt, 75)}`,
         ),
     )
 
-  const generateReply = (
-    title: string,
-    messages: ReadonlyArray<OpenAIMessage>,
-  ) =>
+  const generateReply = (title: string, messages: ReadonlyArray<Message>) =>
     Effect.flatMap(
       call((_, signal) =>
         _.chat.completions.create(
@@ -117,7 +115,7 @@ The title of this conversation is "${title}".`,
 
   const generateDocs = (
     title: string,
-    messages: ReadonlyArray<OpenAIMessage>,
+    messages: ReadonlyArray<Message>,
     instruction = "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate.",
   ) =>
     Effect.flatMap(
@@ -156,10 +154,7 @@ The title of this chat is "${title}".`,
       _ => Option.fromNullable(_.choices[0]?.message?.content),
     )
 
-  const generateSummary = (
-    title: string,
-    messages: ReadonlyArray<OpenAIMessage>,
-  ) =>
+  const generateSummary = (title: string, messages: ReadonlyArray<Message>) =>
     generateDocs(
       title,
       messages,
@@ -176,20 +171,22 @@ The title of this chat is "${title}".`,
   } as const
 }
 
+export const OpenAIOptions = Context.Tag<OpenAIOptions>()
+export const layerOptions = LayerUtils.config(OpenAIOptions)
+
 export interface OpenAI extends ReturnType<typeof make> {}
 export const OpenAI = Context.Tag<OpenAI>()
-export const makeLayer = (config: Config.Config.Wrap<OpenAIOptions>) =>
-  Layer.effect(OpenAI, Effect.map(Effect.config(Config.unwrap(config)), make))
+export const layer = Layer.effect(OpenAI, Effect.map(OpenAIOptions, make))
 
 const cleanTitle = (_: string) =>
   pipe(Str.firstParagraph(_), Str.removeQuotes, Str.removePeriod)
 
 const limitMessageTokens = (
-  messages: ReadonlyArray<OpenAIMessage>,
+  messages: ReadonlyArray<Message>,
   count: number,
-): ReadonlyArray<OpenAIMessage> => {
+): ReadonlyArray<Message> => {
   let content = ""
-  const newMessages: OpenAIMessage[] = []
+  const newMessages: Message[] = []
   for (const message of messages) {
     content += message.content
     const tokens = Tokenizer.encode(content).length

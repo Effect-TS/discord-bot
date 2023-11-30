@@ -1,16 +1,13 @@
 import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import { OpenAI, OpenAIError } from "bot/OpenAI"
+import * as OpenAI from "bot/OpenAI"
+import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
-import {
-  DiscordGateway,
-  InteractionsRegistry,
-  InteractionsRegistryLive,
-} from "dfx/gateway"
+import { DiscordGateway, InteractionsRegistry } from "dfx/gateway"
 import {
   Cause,
-  Config,
+  Context,
   Data,
   Duration,
   Effect,
@@ -23,7 +20,8 @@ import {
 const retryPolicy = pipe(
   Schedule.fixed(Duration.millis(500)),
   Schedule.whileInput(
-    (_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError",
+    (_: OpenAI.OpenAIError | Cause.NoSuchElementException) =>
+      _._tag === "OpenAIError",
   ),
   Schedule.compose(Schedule.elapsed),
   Schedule.whileOutput(Duration.lessThanOrEqualTo(Duration.seconds(3))),
@@ -47,7 +45,7 @@ export interface AutoThreadsOptions {
 const make = ({ topicKeyword }: AutoThreadsOptions) =>
   Effect.gen(function* (_) {
     const log = yield* _(Log.Log)
-    const openai = yield* _(OpenAI)
+    const openai = yield* _(OpenAI.OpenAI)
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)
     const channels = yield* _(ChannelsCache)
@@ -229,7 +227,8 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
     yield* _(handleMessages, Effect.forkScoped)
   })
 
-export const makeLayer = (config: Config.Config.Wrap<AutoThreadsOptions>) =>
-  Layer.scopedDiscard(
-    Effect.flatMap(Effect.config(Config.unwrap(config)), make),
-  ).pipe(Layer.use(ChannelsCacheLive))
+export const AutoThreadsOptions = Context.Tag<AutoThreadsOptions>()
+export const layerOptions = LayerUtils.config(AutoThreadsOptions)
+export const layer = Layer.scopedDiscard(
+  Effect.flatMap(AutoThreadsOptions, make),
+).pipe(Layer.provide(ChannelsCacheLive), Layer.provide(OpenAI.layer))

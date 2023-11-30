@@ -1,8 +1,9 @@
 import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
+import { LayerUtils } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
-import { Config, Effect, Data, Layer, pipe } from "effect"
+import { Config, Effect, Data, Layer, pipe, Context } from "effect"
 
 export interface NoEmbedOptions {
   readonly topicKeyword: string
@@ -93,10 +94,9 @@ const make = ({ topicKeyword, urlWhitelist }: NoEmbedOptions) =>
     )
   })
 
-export const makeLayer = (config: Config.Config.Wrap<NoEmbedOptions>) =>
-  Layer.provide(
-    ChannelsCacheLive,
-    Layer.effectDiscard(
-      Effect.flatMap(Effect.config(Config.unwrap(config)), make),
-    ),
-  )
+export const NoEmbedOptions = Context.Tag<NoEmbedOptions>()
+export const layerOptions = LayerUtils.config(NoEmbedOptions)
+
+export const layer = Layer.effectDiscard(
+  Effect.flatMap(NoEmbedOptions, make),
+).pipe(Layer.provide(ChannelsCacheLive))
