@@ -3,7 +3,11 @@ import { MemberCache, MemberCacheLive } from "bot/MemberCache"
 import { Messages, MessagesLive } from "bot/Messages"
 import { Http } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
-import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
+import {
+  DiscordIxLive,
+  InteractionsRegistry,
+  InteractionsRegistryLive,
+} from "dfx/gateway"
 import {
   Cause,
   Chunk,
@@ -230,7 +234,13 @@ ${message.content}${imagesContent}`
 
 export interface Summarizer extends Effect.Effect.Success<typeof make> {}
 export const Summarizer = Context.Tag<Summarizer>()
-export const SummarizerLive = Layer.provide(
-  Layer.scoped(Summarizer, make),
-  Layer.mergeAll(ChannelsCacheLive, MemberCacheLive, MessagesLive),
+export const SummarizerLive = Layer.scoped(Summarizer, make).pipe(
+  Layer.provide(
+    Layer.mergeAll(
+      ChannelsCacheLive,
+      MemberCacheLive,
+      MessagesLive,
+      DiscordIxLive,
+    ),
+  ),
 )

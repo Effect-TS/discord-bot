@@ -1,4 +1,5 @@
 import { Discord, DiscordREST } from "dfx"
+import { DiscordLive } from "dfx/gateway"
 import { Cache, Context, Data, Duration, Effect, Layer } from "effect"
 
 export class GetMember extends Data.TaggedClass("GetMember")<{
@@ -26,4 +27,6 @@ const make = Effect.gen(function* (_) {
 
 export interface MemberCache extends Effect.Effect.Success<typeof make> {}
 export const MemberCache = Context.Tag<MemberCache>()
-export const MemberCacheLive = Layer.effect(MemberCache, make)
+export const MemberCacheLive = Layer.effect(MemberCache, make).pipe(
+  Layer.provide(DiscordLive),
+)

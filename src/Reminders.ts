@@ -1,6 +1,6 @@
 import { DiscordREST } from "dfx/DiscordREST"
 import { Data, Effect, Fiber, Layer, Schedule } from "effect"
-import { DiscordGateway } from "dfx/gateway"
+import { DiscordGateway, DiscordLive } from "dfx/gateway"
 import CronParser from "cron-parser"
 import { Discord } from "dfx/index"
 
@@ -52,10 +52,8 @@ const make = Effect.gen(function* (_) {
     Effect.suspend(() => {
       const fiber = fibers.get(channelId)
       if (fiber) {
-        return Effect.zipRight(
-          Effect.sync(() => fibers.delete(channelId)),
-          Fiber.interrupt(fiber),
-        )
+        fibers.delete(channelId)
+        return Fiber.interrupt(fiber)
       }
       return Effect.unit
     })
@@ -71,11 +69,10 @@ const make = Effect.gen(function* (_) {
       }
 
       yield* _(
-        Effect.log("scheduling reminders").pipe(
-          Effect.annotateLogs(
-            "messages",
-            matches.map(_ => _[1]),
-          ),
+        Effect.log("scheduling reminders"),
+        Effect.annotateLogs(
+          "messages",
+          matches.map(_ => _[1]),
         ),
       )
 
@@ -141,4 +138,6 @@ const make = Effect.gen(function* (_) {
   )
 })
 
-export const RemindersLive = Layer.scopedDiscard(make)
+export const RemindersLive = Layer.scopedDiscard(make).pipe(
+  Layer.provide(DiscordLive),
+)

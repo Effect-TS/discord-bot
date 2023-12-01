@@ -3,6 +3,7 @@ import * as OpenAI from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
+import { DiscordLive } from "dfx/gateway"
 import { Effect, Data, Layer, pipe } from "effect"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
@@ -109,4 +110,5 @@ const make = Effect.gen(function* (_) {
 export const MentionsLive = Layer.effectDiscard(make).pipe(
   Layer.provide(ChannelsCacheLive),
   Layer.provide(OpenAI.layer),
+  Layer.provide(DiscordLive),
 )
