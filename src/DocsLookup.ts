@@ -1,6 +1,6 @@
 import { Http, Schema } from "bot/_common"
 import { Discord, Ix } from "dfx"
-import { InteractionsRegistry } from "dfx/gateway"
+import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import { Duration, Effect, Data, Layer, Schedule, identity, pipe } from "effect"
 import * as HtmlEnt from "html-entities"
 import * as Prettier from "prettier"
@@ -163,7 +163,9 @@ const make = Effect.gen(function* (_) {
   yield* _(registry.register(ix))
 })
 
-export const DocsLookupLive = Layer.effectDiscard(make)
+export const DocsLookupLive = Layer.effectDiscard(make).pipe(
+  Layer.provide(DiscordIxLive),
+)
 
 // schema
 

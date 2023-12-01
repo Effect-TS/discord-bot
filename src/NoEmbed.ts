@@ -2,7 +2,7 @@ import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { LayerUtils } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
-import { DiscordGateway } from "dfx/gateway"
+import { DiscordGateway, DiscordLive } from "dfx/gateway"
 import { Config, Effect, Data, Layer, pipe, Context } from "effect"
 
 export interface NoEmbedOptions {
@@ -99,4 +99,4 @@ export const layerOptions = LayerUtils.config(NoEmbedOptions)
 
 export const layer = Layer.effectDiscard(
   Effect.flatMap(NoEmbedOptions, make),
-).pipe(Layer.provide(ChannelsCacheLive))
+).pipe(Layer.provide(ChannelsCacheLive), Layer.provide(DiscordLive))

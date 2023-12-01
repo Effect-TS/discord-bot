@@ -5,15 +5,14 @@ import { IssueifierLive } from "bot/Issueifier"
 import * as NoEmbed from "bot/NoEmbed"
 import * as OpenAI from "bot/OpenAI"
 import { SummarizerLive } from "bot/Summarizer"
-import { Intents } from "dfx"
-import { InteractionsRegistryLive, gatewayLayer } from "dfx/gateway"
+import { DiscordConfig, Intents } from "dfx"
 import * as Dotenv from "dotenv"
 import { Config, Effect, Layer, pipe } from "effect"
 import { RemindersLive } from "./Reminders.js"
 
 Dotenv.config()
 
-const DiscordLive = gatewayLayer({
+const DiscordConfigLive = DiscordConfig.layerConfig({
   token: Config.secret("DISCORD_BOT_TOKEN"),
   debug: Config.withDefault(Config.boolean("DEBUG"), false),
   gateway: {
@@ -55,8 +54,7 @@ const MainLive = Layer.mergeAll(
   RemindersLive,
   SummarizerLive,
 ).pipe(
-  Layer.provide(InteractionsRegistryLive()),
-  Layer.provide(DiscordLive),
+  Layer.provide(DiscordConfigLive),
   Layer.provide(AutoThreadsOptions),
   Layer.provide(NoEmbedOptions),
   Layer.provide(OpenAIOptions),

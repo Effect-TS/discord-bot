@@ -4,7 +4,11 @@ import * as OpenAI from "bot/OpenAI"
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
-import { DiscordGateway, InteractionsRegistry } from "dfx/gateway"
+import {
+  DiscordGateway,
+  DiscordIxLive,
+  InteractionsRegistry,
+} from "dfx/gateway"
 import {
   Cause,
   Context,
@@ -231,4 +235,8 @@ export const AutoThreadsOptions = Context.Tag<AutoThreadsOptions>()
 export const layerOptions = LayerUtils.config(AutoThreadsOptions)
 export const layer = Layer.scopedDiscard(
   Effect.flatMap(AutoThreadsOptions, make),
-).pipe(Layer.provide(ChannelsCacheLive), Layer.provide(OpenAI.layer))
+).pipe(
+  Layer.provide(ChannelsCacheLive),
+  Layer.provide(OpenAI.layer),
+  Layer.provide(DiscordIxLive),
+)

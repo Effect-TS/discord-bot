@@ -1,5 +1,6 @@
 import { MemberCache, MemberCacheLive } from "bot/MemberCache"
 import { Discord, DiscordREST } from "dfx"
+import { DiscordLive } from "dfx/gateway"
 import { Chunk, Context, Effect, Layer, Option, Stream, pipe } from "effect"
 
 export const cleanupMarkdown = (content: string) =>
@@ -115,7 +116,7 @@ const make = Effect.gen(function* (_) {
 
 export interface Messages extends Effect.Effect.Success<typeof make> {}
 export const Messages = Context.Tag<Messages>()
-export const MessagesLive = Layer.provide(
-  Layer.effect(Messages, make),
-  Layer.mergeAll(MemberCacheLive),
+export const MessagesLive = Layer.effect(Messages, make).pipe(
+  Layer.provide(MemberCacheLive),
+  Layer.provide(DiscordLive),
 )

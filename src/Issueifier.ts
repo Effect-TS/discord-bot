@@ -3,7 +3,7 @@ import * as Github from "bot/Github"
 import { Messages, MessagesLive } from "bot/Messages"
 import * as OpenAI from "bot/OpenAI"
 import { Discord, DiscordREST, Ix } from "dfx"
-import { InteractionsRegistry, InteractionsRegistryLive } from "dfx/gateway"
+import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import {
   Chunk,
   Effect,
@@ -179,6 +179,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 })
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
+  Layer.provide(DiscordIxLive),
   Layer.provide(ChannelsCacheLive),
   Layer.provide(MessagesLive),
   Layer.provide(OpenAI.layer),

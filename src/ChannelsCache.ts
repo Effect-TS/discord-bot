@@ -1,5 +1,5 @@
 import { Cache } from "dfx"
-import { CachePrelude } from "dfx/gateway"
+import { CachePrelude, DiscordLive } from "dfx/gateway"
 import { Context, Duration, Effect, Layer } from "effect"
 
 const makeChannelsCache = CachePrelude.channels(
@@ -12,4 +12,7 @@ interface ChannelsCache
   extends Effect.Effect.Success<typeof makeChannelsCache> {}
 
 export const ChannelsCache = Context.Tag<ChannelsCache>()
-export const ChannelsCacheLive = Layer.scoped(ChannelsCache, makeChannelsCache)
+export const ChannelsCacheLive = Layer.scoped(
+  ChannelsCache,
+  makeChannelsCache,
+).pipe(Layer.provide(DiscordLive))
