@@ -1,7 +1,6 @@
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import {
-  Config,
   ConfigSecret,
   Context,
   Data,
@@ -171,12 +170,15 @@ The title of this chat is "${title}".`,
   } as const
 }
 
-export const OpenAIOptions = Context.Tag<OpenAIOptions>()
-export const layerOptions = LayerUtils.config(OpenAIOptions)
+export interface OpenAIConfig {
+  readonly _: unique symbol
+}
+export const OpenAIConfig = Context.Tag<OpenAIConfig, OpenAIOptions>()
+export const layerConfig = LayerUtils.config(OpenAIConfig)
 
 export interface OpenAI extends ReturnType<typeof make> {}
 export const OpenAI = Context.Tag<OpenAI>()
-export const layer = Layer.effect(OpenAI, Effect.map(OpenAIOptions, make))
+export const layer = Layer.effect(OpenAI, Effect.map(OpenAIConfig, make))
 
 const cleanTitle = (_: string) =>
   pipe(Str.firstParagraph(_), Str.removeQuotes, Str.removePeriod)

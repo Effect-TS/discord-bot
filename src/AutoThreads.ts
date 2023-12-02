@@ -231,10 +231,16 @@ const make = ({ topicKeyword }: AutoThreadsOptions) =>
     yield* _(handleMessages, Effect.forkScoped)
   })
 
-export const AutoThreadsOptions = Context.Tag<AutoThreadsOptions>()
-export const layerOptions = LayerUtils.config(AutoThreadsOptions)
+export interface AutoThreadsConfig {
+  readonly _: unique symbol
+}
+export const AutoThreadsConfig = Context.Tag<
+  AutoThreadsConfig,
+  AutoThreadsOptions
+>()
+export const layerConfig = LayerUtils.config(AutoThreadsConfig)
 export const layer = Layer.scopedDiscard(
-  Effect.flatMap(AutoThreadsOptions, make),
+  Effect.flatMap(AutoThreadsConfig, make),
 ).pipe(
   Layer.provide(ChannelsCacheLive),
   Layer.provide(OpenAI.layer),

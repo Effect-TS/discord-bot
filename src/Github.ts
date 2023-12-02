@@ -2,7 +2,6 @@ import type { OctokitResponse } from "@octokit/types"
 import { LayerUtils } from "bot/_common"
 import {
   Chunk,
-  Config,
   ConfigSecret,
   Context,
   Effect,
@@ -14,7 +13,7 @@ import {
 } from "effect"
 import { Octokit } from "octokit"
 
-export interface GithubConfig {
+export interface GithubConfigValue {
   readonly token: ConfigSecret.ConfigSecret
 }
 
@@ -22,7 +21,7 @@ export class GithubError extends Data.TaggedError("GithubError")<{
   readonly reason: unknown
 }> {}
 
-const make = ({ token }: GithubConfig) => {
+const make = ({ token }: GithubConfigValue) => {
   const octokit = new Octokit({ auth: ConfigSecret.value(token) })
 
   const rest = octokit.rest
@@ -66,7 +65,10 @@ const make = ({ token }: GithubConfig) => {
   return { octokit, token, request, wrap, stream }
 }
 
-export const GithubConfig = Context.Tag<GithubConfig>()
+export interface GithubConfig {
+  readonly _: unique symbol
+}
+export const GithubConfig = Context.Tag<GithubConfig, GithubConfigValue>()
 export const layerConfig = LayerUtils.config(GithubConfig)
 
 export interface Github extends ReturnType<typeof make> {}

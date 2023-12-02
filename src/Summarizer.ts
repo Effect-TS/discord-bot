@@ -3,11 +3,7 @@ import { MemberCache, MemberCacheLive } from "bot/MemberCache"
 import { Messages, MessagesLive } from "bot/Messages"
 import { Http } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
-import {
-  DiscordIxLive,
-  InteractionsRegistry,
-  InteractionsRegistryLive,
-} from "dfx/gateway"
+import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import {
   Cause,
   Chunk,

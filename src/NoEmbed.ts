@@ -3,7 +3,7 @@ import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { LayerUtils } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
-import { Config, Effect, Data, Layer, pipe, Context } from "effect"
+import { Context, Effect, Layer, pipe } from "effect"
 
 export interface NoEmbedOptions {
   readonly topicKeyword: string
@@ -94,9 +94,12 @@ const make = ({ topicKeyword, urlWhitelist }: NoEmbedOptions) =>
     )
   })
 
-export const NoEmbedOptions = Context.Tag<NoEmbedOptions>()
-export const layerOptions = LayerUtils.config(NoEmbedOptions)
+export interface NoEmbedConfig {
+  readonly _: unique symbol
+}
+export const NoEmbedConfig = Context.Tag<NoEmbedConfig, NoEmbedOptions>()
+export const layerConfig = LayerUtils.config(NoEmbedConfig)
 
 export const layer = Layer.effectDiscard(
-  Effect.flatMap(NoEmbedOptions, make),
+  Effect.flatMap(NoEmbedConfig, make),
 ).pipe(Layer.provide(ChannelsCacheLive), Layer.provide(DiscordLive))
