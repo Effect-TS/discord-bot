@@ -22,19 +22,19 @@ const DiscordConfigLive = DiscordConfig.layerConfig({
   },
 })
 
-const OpenAIOptions = OpenAI.layerOptions({
+const OpenAIOptions = OpenAI.layerConfig({
   apiKey: Config.secret("OPENAI_API_KEY"),
   organization: Config.option(Config.secret("OPENAI_ORGANIZATION")),
 })
 
-const AutoThreadsOptions = AutoThreads.layerOptions({
+const AutoThreadsOptions = AutoThreads.layerConfig({
   topicKeyword: Config.withDefault(
     Config.string("AUTOTHREADS_KEYWORD"),
     "[threads]",
   ),
 })
 
-const NoEmbedOptions = NoEmbed.layerOptions({
+const NoEmbedOptions = NoEmbed.layerConfig({
   topicKeyword: Config.withDefault(
     Config.string("NOEMBED_KEYWORD"),
     "[noembed]",
