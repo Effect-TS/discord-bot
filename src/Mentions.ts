@@ -104,10 +104,10 @@ const make = Effect.gen(function* (_) {
     ),
   )
 
-  yield* _(run)
+  yield* _(run, Effect.forkScoped)
 })
 
-export const MentionsLive = Layer.effectDiscard(make).pipe(
+export const MentionsLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(ChannelsCacheLive),
   Layer.provide(OpenAI.layer),
   Layer.provide(DiscordLive),
