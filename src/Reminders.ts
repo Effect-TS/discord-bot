@@ -97,7 +97,6 @@ const make = Effect.gen(function* (_) {
         MissingTopic: () => Effect.unit,
       }),
       Effect.annotateLogs({
-        service: "Reminders",
         channelId: channel.id,
       }),
     )
@@ -136,7 +135,7 @@ const make = Effect.gen(function* (_) {
     gateway.handleDispatch("CHANNEL_DELETE", ({ id }) => remove(id)),
     Effect.forkScoped,
   )
-})
+}).pipe(Effect.annotateLogs({ service: "Reminders" }))
 
 export const RemindersLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(DiscordLive),

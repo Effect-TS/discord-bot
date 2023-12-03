@@ -15,8 +15,8 @@ dependencies:
     specifier: ^4.9.0
     version: 4.9.0
   dfx:
-    specifier: ^0.77.3
-    version: 0.77.3(@effect/platform@0.32.2)(effect@2.0.0-next.58)
+    specifier: ^0.78.0
+    version: 0.78.0(@effect/platform@0.32.2)(effect@2.0.0-next.58)
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -544,8 +544,8 @@ packages:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
     dev: false
 
-  /dfx@0.77.3(@effect/platform@0.32.2)(effect@2.0.0-next.58):
-    resolution: {integrity: sha512-lOSq2gFHsguJ4LOg1toEigQLUh/5xBIcrzVx605VRYkhQEu661D7Um3KSg4ncwHjRV03MTLr6EtXE74FcsJUTg==}
+  /dfx@0.78.0(@effect/platform@0.32.2)(effect@2.0.0-next.58):
+    resolution: {integrity: sha512-3aA2OuV5mOiNlyIZo/DUA8bZpHyPLQFQqx/FuES3iS9uU3K7ZJL27XVZNY/jZDaQH18AWBKBpUTvzJVPWPy4hg==}
     peerDependencies:
       '@effect/platform': ^0.32.1
       effect: 2.0.0-next.58
@@ -849,6 +849,7 @@ packages:
   /node-gyp-build@4.7.1:
     resolution: {integrity: sha512-wTSrZ+8lsRRa3I3H8Xr65dLWSgCvY2l4AOnaeKdPA9TB/WYMPaTcrzf3rXvFoVvjKNVnu0CcWSx54qq9GKRUYg==}
     hasBin: true
+    requiresBuild: true
     dev: false
 
   /octokit@3.1.2:
