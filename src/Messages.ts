@@ -114,8 +114,13 @@ const make = Effect.gen(function* (_) {
   } as const
 })
 
-export interface Messages extends Effect.Effect.Success<typeof make> {}
-export const Messages = Context.Tag<Messages>()
+export interface Messages {
+  readonly _: unique symbol
+}
+export const Messages = Context.Tag<
+  Messages,
+  Effect.Effect.Success<typeof make>
+>()
 export const MessagesLive = Layer.effect(Messages, make).pipe(
   Layer.provide(MemberCacheLive),
   Layer.provide(DiscordLive),

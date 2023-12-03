@@ -228,8 +228,13 @@ ${message.content}${imagesContent}`
   } as const
 })
 
-export interface Summarizer extends Effect.Effect.Success<typeof make> {}
-export const Summarizer = Context.Tag<Summarizer>()
+export interface Summarizer {
+  readonly _: unique symbol
+}
+export const Summarizer = Context.Tag<
+  Summarizer,
+  Effect.Effect.Success<typeof make>
+>()
 export const SummarizerLive = Layer.scoped(Summarizer, make).pipe(
   Layer.provide(
     Layer.mergeAll(

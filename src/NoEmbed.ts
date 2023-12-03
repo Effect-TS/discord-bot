@@ -5,12 +5,10 @@ import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
 import { Context, Effect, Layer, Schedule, pipe } from "effect"
 
-export interface NoEmbedOptions {
+const make = ({ topicKeyword, urlWhitelist }: {
   readonly topicKeyword: string
   readonly urlWhitelist: readonly string[]
-}
-
-const make = ({ topicKeyword, urlWhitelist }: NoEmbedOptions) =>
+}) =>
   Effect.gen(function* (_) {
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)
@@ -99,7 +97,7 @@ const make = ({ topicKeyword, urlWhitelist }: NoEmbedOptions) =>
 export interface NoEmbedConfig {
   readonly _: unique symbol
 }
-export const NoEmbedConfig = Context.Tag<NoEmbedConfig, NoEmbedOptions>()
+export const NoEmbedConfig = Context.Tag<NoEmbedConfig, Parameters<typeof make>[0]>()
 export const layerConfig = LayerUtils.config(NoEmbedConfig)
 
 export const layer = Layer.scopedDiscard(

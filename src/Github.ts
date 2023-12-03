@@ -13,15 +13,11 @@ import {
 } from "effect"
 import { Octokit } from "octokit"
 
-export interface GithubConfigValue {
-  readonly token: ConfigSecret.ConfigSecret
-}
-
 export class GithubError extends Data.TaggedError("GithubError")<{
   readonly reason: unknown
 }> {}
 
-const make = ({ token }: GithubConfigValue) => {
+const make = ({ token }: { readonly token: ConfigSecret.ConfigSecret }) => {
   const octokit = new Octokit({ auth: ConfigSecret.value(token) })
 
   const rest = octokit.rest
@@ -68,7 +64,10 @@ const make = ({ token }: GithubConfigValue) => {
 export interface GithubConfig {
   readonly _: unique symbol
 }
-export const GithubConfig = Context.Tag<GithubConfig, GithubConfigValue>()
+export const GithubConfig = Context.Tag<
+  GithubConfig,
+  Parameters<typeof make>[0]
+>()
 export const layerConfig = LayerUtils.config(GithubConfig)
 
 export interface Github extends ReturnType<typeof make> {}

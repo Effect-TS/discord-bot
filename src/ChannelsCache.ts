@@ -8,10 +8,15 @@ const makeChannelsCache = CachePrelude.channels(
     strategy: "activity",
   }),
 )
-interface ChannelsCache
-  extends Effect.Effect.Success<typeof makeChannelsCache> {}
 
-export const ChannelsCache = Context.Tag<ChannelsCache>()
+interface ChannelsCache {
+  readonly _: unique symbol
+}
+
+export const ChannelsCache = Context.Tag<
+  ChannelsCache,
+  Effect.Effect.Success<typeof makeChannelsCache>
+>()
 export const ChannelsCacheLive = Layer.scoped(
   ChannelsCache,
   makeChannelsCache,

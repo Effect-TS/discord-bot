@@ -25,8 +25,13 @@ const make = Effect.gen(function* (_) {
   } as const
 })
 
-export interface MemberCache extends Effect.Effect.Success<typeof make> {}
-export const MemberCache = Context.Tag<MemberCache>()
+export interface MemberCache {
+  readonly _: unique symbol
+}
+export const MemberCache = Context.Tag<
+  MemberCache,
+  Effect.Effect.Success<typeof make>
+>()
 export const MemberCacheLive = Layer.effect(MemberCache, make).pipe(
   Layer.provide(DiscordLive),
 )
