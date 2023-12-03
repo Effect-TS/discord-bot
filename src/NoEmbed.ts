@@ -5,7 +5,10 @@ import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
 import { Context, Effect, Layer, Schedule, pipe } from "effect"
 
-const make = ({ topicKeyword, urlWhitelist }: {
+const make = ({
+  topicKeyword,
+  urlWhitelist,
+}: {
   readonly topicKeyword: string
   readonly urlWhitelist: readonly string[]
 }) =>
@@ -92,12 +95,19 @@ const make = ({ topicKeyword, urlWhitelist }: {
       Effect.retry(Schedule.spaced("1 seconds")),
       Effect.forkScoped,
     )
-  })
+  }).pipe(
+    Effect.annotateLogs({
+      service: "NoEmbed",
+    }),
+  )
 
 export interface NoEmbedConfig {
   readonly _: unique symbol
 }
-export const NoEmbedConfig = Context.Tag<NoEmbedConfig, Parameters<typeof make>[0]>()
+export const NoEmbedConfig = Context.Tag<
+  NoEmbedConfig,
+  Parameters<typeof make>[0]
+>()
 export const layerConfig = LayerUtils.config(NoEmbedConfig)
 
 export const layer = Layer.scopedDiscard(

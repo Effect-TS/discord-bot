@@ -3,7 +3,7 @@ import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import * as OpenAI from "bot/OpenAI"
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
-import { Discord, DiscordREST, Ix, Log, Perms, UI } from "dfx"
+import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
 import {
   DiscordGateway,
   DiscordIxLive,
@@ -44,7 +44,6 @@ export class PermissionsError extends Data.TaggedError("PermissionsError")<{
 
 const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
   Effect.gen(function* (_) {
-    const log = yield* _(Log.Log)
     const openai = yield* _(OpenAI.OpenAI)
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)
@@ -83,7 +82,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
               pipe(
                 openai.generateTitle(content),
                 Effect.retry(retryPolicy),
-                Effect.tapError(_ => log.info(_)),
+                Effect.tapErrorCause(_ => Effect.log(_)),
               ),
             ),
             Effect.orElseSucceed(() =>
@@ -225,7 +224,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
 
     yield* _(registry.register(ix))
     yield* _(handleMessages, Effect.forkScoped)
-  })
+  }).pipe(Effect.annotateLogs({ service: "AutoThreads" }))
 
 export interface AutoThreadsConfig {
   readonly _: unique symbol

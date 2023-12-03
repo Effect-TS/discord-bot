@@ -7,20 +7,29 @@ import * as OpenAI from "bot/OpenAI"
 import { SummarizerLive } from "bot/Summarizer"
 import { DiscordConfig, Intents } from "dfx"
 import * as Dotenv from "dotenv"
-import { Config, Effect, Layer, pipe } from "effect"
+import { Config, Effect, Layer, LogLevel, Logger, pipe } from "effect"
 import { RemindersLive } from "./Reminders.js"
 
 Dotenv.config()
 
 const DiscordConfigLive = DiscordConfig.layerConfig({
   token: Config.secret("DISCORD_BOT_TOKEN"),
-  debug: Config.withDefault(Config.boolean("DEBUG"), false),
   gateway: {
     intents: Config.succeed(
       Intents.fromList(["GUILD_MESSAGES", "MESSAGE_CONTENT", "GUILDS"]),
     ),
   },
 })
+
+const LogLevelLive = Layer.unwrapEffect(
+  Effect.gen(function* (_) {
+    const debug = yield* _(
+      Effect.config(Config.withDefault(Config.boolean("DEBUG"), false)),
+    )
+    const level = debug ? LogLevel.All : LogLevel.Info
+    return Logger.minimumLogLevel(level)
+  }),
+)
 
 const OpenAIOptions = OpenAI.layerConfig({
   apiKey: Config.secret("OPENAI_API_KEY"),
@@ -59,6 +68,7 @@ const MainLive = Layer.mergeAll(
   Layer.provide(NoEmbedOptions),
   Layer.provide(OpenAIOptions),
   Layer.provide(GithubConfig),
+  Layer.provide(LogLevelLive),
 )
 
 pipe(
