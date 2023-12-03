@@ -58,7 +58,7 @@ const make = ({ token }: { readonly token: ConfigSecret.ConfigSecret }) => {
       ),
     )
 
-  return { octokit, token, request, wrap, stream }
+  return { octokit, token, request, wrap, stream } as const
 }
 
 export interface GithubConfig {
@@ -70,8 +70,10 @@ export const GithubConfig = Context.Tag<
 >()
 export const layerConfig = LayerUtils.config(GithubConfig)
 
-export interface Github extends ReturnType<typeof make> {}
-export const Github = Context.Tag<Github>()
+export interface Github {
+  readonly _: unique symbol
+}
+export const Github = Context.Tag<Github, ReturnType<typeof make>>()
 export const layer = Layer.effect(Github, Effect.map(GithubConfig, make))
 
 // == helpers
