@@ -3,7 +3,7 @@ import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
 import { LayerUtils } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
-import { Context, Effect, Layer, pipe } from "effect"
+import { Context, Effect, Layer, Schedule, pipe } from "effect"
 
 export interface NoEmbedOptions {
   readonly topicKeyword: string
@@ -84,13 +84,15 @@ const make = ({ topicKeyword, urlWhitelist }: NoEmbedOptions) =>
       )
 
     yield* _(
-      Effect.all(
-        [
-          gateway.handleDispatch("MESSAGE_CREATE", handleMessage),
-          gateway.handleDispatch("MESSAGE_UPDATE", handleMessage),
-        ],
-        { concurrency: "unbounded" },
-      ),
+      gateway.handleDispatch("MESSAGE_CREATE", handleMessage),
+      Effect.retry(Schedule.spaced("1 seconds")),
+      Effect.forkScoped,
+    )
+
+    yield* _(
+      gateway.handleDispatch("MESSAGE_UPDATE", handleMessage),
+      Effect.retry(Schedule.spaced("1 seconds")),
+      Effect.forkScoped,
     )
   })
 
@@ -100,6 +102,6 @@ export interface NoEmbedConfig {
 export const NoEmbedConfig = Context.Tag<NoEmbedConfig, NoEmbedOptions>()
 export const layerConfig = LayerUtils.config(NoEmbedConfig)
 
-export const layer = Layer.effectDiscard(
+export const layer = Layer.scopedDiscard(
   Effect.flatMap(NoEmbedConfig, make),
 ).pipe(Layer.provide(ChannelsCacheLive), Layer.provide(DiscordLive))
