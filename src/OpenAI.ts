@@ -12,11 +12,6 @@ import {
 import * as Tokenizer from "gpt-tokenizer"
 import * as OAI from "openai"
 
-export interface OpenAIOptions {
-  readonly apiKey: ConfigSecret.ConfigSecret
-  readonly organization: Option.Option<ConfigSecret.ConfigSecret>
-}
-
 export class OpenAIError extends Data.TaggedError("OpenAIError")<{
   readonly error: unknown
 }> {}
@@ -27,7 +22,10 @@ export interface Message {
   readonly content: string
 }
 
-const make = (params: OpenAIOptions) => {
+const make = (params: {
+  readonly apiKey: ConfigSecret.ConfigSecret
+  readonly organization: Option.Option<ConfigSecret.ConfigSecret>
+}) => {
   const client = new OAI.OpenAI({
     apiKey: ConfigSecret.value(params.apiKey),
     organization: Option.getOrUndefined(
@@ -173,11 +171,16 @@ The title of this chat is "${title}".`,
 export interface OpenAIConfig {
   readonly _: unique symbol
 }
-export const OpenAIConfig = Context.Tag<OpenAIConfig, OpenAIOptions>()
+export const OpenAIConfig = Context.Tag<
+  OpenAIConfig,
+  Parameters<typeof make>[0]
+>()
 export const layerConfig = LayerUtils.config(OpenAIConfig)
 
-export interface OpenAI extends ReturnType<typeof make> {}
-export const OpenAI = Context.Tag<OpenAI>()
+export interface OpenAI {
+  readonly _: unique symbol
+}
+export const OpenAI = Context.Tag<OpenAI, ReturnType<typeof make>>()
 export const layer = Layer.effect(OpenAI, Effect.map(OpenAIConfig, make))
 
 const cleanTitle = (_: string) =>

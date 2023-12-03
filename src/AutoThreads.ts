@@ -42,11 +42,7 @@ export class PermissionsError extends Data.TaggedError("PermissionsError")<{
   readonly subject: string
 }> {}
 
-export interface AutoThreadsOptions {
-  readonly topicKeyword: string
-}
-
-const make = ({ topicKeyword }: AutoThreadsOptions) =>
+const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
   Effect.gen(function* (_) {
     const log = yield* _(Log.Log)
     const openai = yield* _(OpenAI.OpenAI)
@@ -236,7 +232,7 @@ export interface AutoThreadsConfig {
 }
 export const AutoThreadsConfig = Context.Tag<
   AutoThreadsConfig,
-  AutoThreadsOptions
+  Parameters<typeof make>[0]
 >()
 export const layerConfig = LayerUtils.config(AutoThreadsConfig)
 export const layer = Layer.scopedDiscard(
