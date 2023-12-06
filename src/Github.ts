@@ -2,7 +2,7 @@ import type { OctokitResponse } from "@octokit/types"
 import { LayerUtils } from "bot/_common"
 import {
   Chunk,
-  ConfigSecret,
+  Secret,
   Context,
   Effect,
   Data,
@@ -17,8 +17,8 @@ export class GithubError extends Data.TaggedError("GithubError")<{
   readonly reason: unknown
 }> {}
 
-const make = ({ token }: { readonly token: ConfigSecret.ConfigSecret }) => {
-  const octokit = new Octokit({ auth: ConfigSecret.value(token) })
+const make = ({ token }: { readonly token: Secret.Secret }) => {
+  const octokit = new Octokit({ auth: Secret.value(token) })
 
   const rest = octokit.rest
   type Endpoints = typeof rest
