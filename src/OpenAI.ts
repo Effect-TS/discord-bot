@@ -1,14 +1,6 @@
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
-import {
-  ConfigSecret,
-  Context,
-  Data,
-  Effect,
-  Layer,
-  Option,
-  pipe,
-} from "effect"
+import { Secret, Context, Data, Effect, Layer, Option, pipe } from "effect"
 import * as Tokenizer from "gpt-tokenizer"
 import * as OAI from "openai"
 
@@ -23,13 +15,13 @@ export interface Message {
 }
 
 const make = (params: {
-  readonly apiKey: ConfigSecret.ConfigSecret
-  readonly organization: Option.Option<ConfigSecret.ConfigSecret>
+  readonly apiKey: Secret.Secret
+  readonly organization: Option.Option<Secret.Secret>
 }) => {
   const client = new OAI.OpenAI({
-    apiKey: ConfigSecret.value(params.apiKey),
+    apiKey: Secret.value(params.apiKey),
     organization: Option.getOrUndefined(
-      Option.map(params.organization, ConfigSecret.value),
+      Option.map(params.organization, Secret.value),
     ),
   })
 
