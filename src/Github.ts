@@ -67,13 +67,13 @@ export interface GithubConfig {
 export const GithubConfig = Context.Tag<
   GithubConfig,
   Parameters<typeof make>[0]
->()
+>("app/GithubConfig")
 export const layerConfig = LayerUtils.config(GithubConfig)
 
 export interface Github {
   readonly _: unique symbol
 }
-export const Github = Context.Tag<Github, ReturnType<typeof make>>()
+export const Github = Context.Tag<Github, ReturnType<typeof make>>("app/Github")
 export const layer = Layer.effect(Github, Effect.map(GithubConfig, make))
 
 // == helpers

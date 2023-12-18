@@ -107,7 +107,7 @@ export interface NoEmbedConfig {
 export const NoEmbedConfig = Context.Tag<
   NoEmbedConfig,
   Parameters<typeof make>[0]
->()
+>("app/NoEmbedConfig")
 export const layerConfig = LayerUtils.config(NoEmbedConfig)
 
 export const layer = Layer.scopedDiscard(

@@ -234,7 +234,7 @@ export interface Summarizer {
 export const Summarizer = Context.Tag<
   Summarizer,
   Effect.Effect.Success<typeof make>
->()
+>("app/Summarizer")
 export const SummarizerLive = Layer.scoped(Summarizer, make).pipe(
   Layer.provide(
     Layer.mergeAll(

@@ -16,7 +16,7 @@ interface ChannelsCache {
 export const ChannelsCache = Context.Tag<
   ChannelsCache,
   Effect.Effect.Success<typeof makeChannelsCache>
->()
+>("app/ChannelsCache")
 export const ChannelsCacheLive = Layer.scoped(
   ChannelsCache,
   makeChannelsCache,
