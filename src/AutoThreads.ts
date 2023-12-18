@@ -66,15 +66,12 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
     }).pipe(Schema.parse)
 
     const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
-      Effect.all(
-        {
-          message: EligibleMessage(message),
-          channel: channels
-            .get(message.guild_id!, message.channel_id)
-            .pipe(Effect.flatMap(EligibleChannel)),
-        },
-        { concurrency: "unbounded" },
-      ).pipe(
+      Effect.all({
+        message: EligibleMessage(message),
+        channel: channels
+          .get(message.guild_id!, message.channel_id)
+          .pipe(Effect.flatMap(EligibleChannel)),
+      }).pipe(
         Effect.bind("title", () =>
           pipe(
             Str.nonEmpty(message.content),
@@ -232,7 +229,7 @@ export interface AutoThreadsConfig {
 export const AutoThreadsConfig = Context.Tag<
   AutoThreadsConfig,
   Parameters<typeof make>[0]
->()
+>("app/AutoThreadsConfig")
 export const layerConfig = LayerUtils.config(AutoThreadsConfig)
 export const layer = Layer.scopedDiscard(
   Effect.flatMap(AutoThreadsConfig, make),

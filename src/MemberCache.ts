@@ -31,7 +31,7 @@ export interface MemberCache {
 export const MemberCache = Context.Tag<
   MemberCache,
   Effect.Effect.Success<typeof make>
->()
+>("app/MemberCache")
 export const MemberCacheLive = Layer.effect(MemberCache, make).pipe(
   Layer.provide(DiscordLive),
 )

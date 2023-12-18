@@ -13,6 +13,13 @@
       "remoteRoot": "/app",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+    },
+    {
+      "name": "Launch",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "args": ["node_modules/tsx/dist/cli.mjs", "--watch", "src/main.ts"]
     }
   ]
 }

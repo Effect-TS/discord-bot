@@ -166,13 +166,13 @@ export interface OpenAIConfig {
 export const OpenAIConfig = Context.Tag<
   OpenAIConfig,
   Parameters<typeof make>[0]
->()
+>("app/OpenAIConfig")
 export const layerConfig = LayerUtils.config(OpenAIConfig)
 
 export interface OpenAI {
   readonly _: unique symbol
 }
-export const OpenAI = Context.Tag<OpenAI, ReturnType<typeof make>>()
+export const OpenAI = Context.Tag<OpenAI, ReturnType<typeof make>>("app/OpenAI")
 export const layer = Layer.effect(OpenAI, Effect.map(OpenAIConfig, make))
 
 const cleanTitle = (_: string) =>

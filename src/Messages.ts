@@ -120,7 +120,7 @@ export interface Messages {
 export const Messages = Context.Tag<
   Messages,
   Effect.Effect.Success<typeof make>
->()
+>("app/Messages")
 export const MessagesLive = Layer.effect(Messages, make).pipe(
   Layer.provide(MemberCacheLive),
   Layer.provide(DiscordLive),
