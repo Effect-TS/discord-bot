@@ -31,7 +31,7 @@ const make = ({
     const EligibleMessage = Schema.struct({
       id: Schema.string,
       channel_id: Schema.string,
-      flags: Schema.optional(Schema.number).withDefault(() => 0),
+      flags: Schema.optional(Schema.number, { default: () => 0 }),
       content: Schema.string,
       embeds: Schema.nonEmptyArray(
         Schema.struct({
