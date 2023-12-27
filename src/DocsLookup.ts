@@ -195,7 +195,7 @@ class DocEntry extends Schema.Class<DocEntry>()({
   get subpackage() {
     const [, subpackage, suffix] = this.url.match(/github\.io\/(.+?)\/(.+?)\//)!
     return suffix !== "modules" && subpackage !== suffix
-      ? `${subpackage}-${suffix}`
+      ? subpackage === 'effect' ? suffix : `${subpackage}-${suffix}`
       : subpackage
   }
 
