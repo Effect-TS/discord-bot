@@ -7,9 +7,6 @@ import * as Prettier from "prettier"
 
 const docUrls = [
   "https://effect-ts.github.io/effect",
-  "https://effect-ts.github.io/opentelemetry",
-  "https://effect-ts.github.io/platform",
-  "https://effect-ts.github.io/schema",
 ]
 
 const make = Effect.gen(function* (_) {
