@@ -17,21 +17,21 @@
   "license": "ISC",
   "devDependencies": {
     "@octokit/types": "^12.4.0",
-    "@types/node": "^20.10.5",
+    "@types/node": "^20.10.7",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@effect/platform-node": "^0.39.0",
-    "@effect/schema": "^0.56.0",
+    "@effect/platform-node": "^0.40.1",
+    "@effect/schema": "^0.57.1",
     "cron-parser": "^4.9.0",
-    "dfx": "^0.82.1",
+    "dfx": "^0.83.0",
     "dotenv": "^16.3.1",
-    "effect": "2.0.0-next.62",
+    "effect": "2.0.1",
     "gpt-tokenizer": "^2.1.2",
     "html-entities": "^2.4.0",
     "octokit": "^3.1.2",
-    "openai": "^4.24.0",
+    "openai": "^4.24.1",
     "prettier": "^3.1.1"
   }
 }
