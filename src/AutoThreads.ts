@@ -117,7 +117,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
         ),
         Effect.catchTags({
           ParseError: error =>
-            Effect.logDebug(TreeFormatter.formatErrors(error.errors)),
+            Effect.logDebug(TreeFormatter.formatIssue(error.error)),
         }),
         Effect.catchAllCause(Effect.logError),
       ),
