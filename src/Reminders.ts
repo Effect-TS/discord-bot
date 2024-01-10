@@ -1,7 +1,6 @@
 import { DiscordREST } from "dfx/DiscordREST"
-import { Data, Effect, Fiber, Layer, Schedule } from "effect"
+import { Cron, Data, Effect, Fiber, Layer, Schedule } from "effect"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
-import CronParser from "cron-parser"
 import { Discord } from "dfx/index"
 
 class MissingTopic extends Data.TaggedError("MissingTopic")<{}> {}
@@ -19,17 +18,10 @@ const parseTopic = (topic: string) =>
   )
 
 const parseExpression = (match: string, expression: string, message: string) =>
-  Effect.try({
-    try: () => {
-      const cron = CronParser.parseExpression(expression.trim())
-      const sleep = Effect.suspend(() => {
-        const ts = cron.next().getTime()
-        return Effect.sleep(ts - Date.now())
-      })
-      return [sleep, message] as const
-    },
-    catch: err => new InvalidTopic({ reason: `${err}`, match }),
-  })
+  Cron.parse(expression.trim()).pipe(
+    Effect.as([expression.trim(), message] as const),
+    Effect.mapError(() => new InvalidTopic({ reason: "invalid cron", match })),
+  )
 
 const createThreadPolicy = Schedule.spaced("1 seconds").pipe(
   Schedule.compose(Schedule.recurs(3)),
@@ -79,10 +71,10 @@ const make = Effect.gen(function* (_) {
       const fiber = yield* _(
         Effect.forEach(
           matches,
-          ([sleep, message]) =>
-            sleep.pipe(
-              Effect.zipRight(createThread(channel.id, message)),
-              Effect.forever,
+          ([expression, message]) =>
+            Effect.schedule(
+              createThread(channel.id, message),
+              Schedule.cron(expression),
             ),
           { discard: true, concurrency: "unbounded" },
         ),
