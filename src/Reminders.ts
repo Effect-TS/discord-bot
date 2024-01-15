@@ -1,7 +1,7 @@
 import { DiscordREST } from "dfx/DiscordREST"
-import { Cron, Data, Effect, Fiber, Layer, Schedule } from "effect"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
 import { Discord } from "dfx/index"
+import { Cron, Data, Effect, FiberMap, Layer, Schedule } from "effect"
 
 class MissingTopic extends Data.TaggedError("MissingTopic")<{}> {}
 
@@ -19,7 +19,7 @@ const parseTopic = (topic: string) =>
 
 const parseExpression = (match: string, expression: string, message: string) =>
   Cron.parse(expression.trim()).pipe(
-    Effect.as([expression.trim(), message] as const),
+    Effect.map(cron => [cron, message] as const),
     Effect.mapError(() => new InvalidTopic({ reason: "invalid cron", match })),
   )
 
@@ -30,29 +30,11 @@ const createThreadPolicy = Schedule.spaced("1 seconds").pipe(
 const make = Effect.gen(function* (_) {
   const rest = yield* _(DiscordREST)
   const gateway = yield* _(DiscordGateway)
-
-  const fibers = new Map<Discord.Snowflake, Fiber.RuntimeFiber<never, void>>()
-  yield* _(
-    Effect.addFinalizer(() =>
-      Effect.forEach(fibers.values(), Fiber.interrupt, { discard: true }).pipe(
-        Effect.tap(() => fibers.clear()),
-      ),
-    ),
-  )
-
-  const remove = (channelId: Discord.Snowflake) =>
-    Effect.suspend(() => {
-      const fiber = fibers.get(channelId)
-      if (fiber) {
-        fibers.delete(channelId)
-        return Fiber.interrupt(fiber)
-      }
-      return Effect.unit
-    })
+  const fibers = yield* _(FiberMap.make<Discord.Snowflake>())
 
   const handleChannel = (channel: Discord.Channel) =>
     Effect.gen(function* (_) {
-      yield* _(remove(channel.id))
+      yield* _(FiberMap.remove(fibers, channel.id))
 
       const [errors, matches] = yield* _(parseTopic(channel.topic ?? ""))
       yield* _(Effect.forEach(errors, err => Effect.logInfo(err)))
@@ -78,12 +60,11 @@ const make = Effect.gen(function* (_) {
             ),
           { discard: true, concurrency: "unbounded" },
         ),
-        Effect.ensuring(remove(channel.id)),
         Effect.catchAllCause(Effect.logError),
         Effect.forkDaemon,
       )
 
-      fibers.set(channel.id, fiber)
+      yield* _(FiberMap.set(fibers, channel.id, fiber))
     }).pipe(
       Effect.catchTags({
         MissingTopic: () => Effect.unit,
@@ -124,7 +105,9 @@ const make = Effect.gen(function* (_) {
     Effect.forkScoped,
   )
   yield* _(
-    gateway.handleDispatch("CHANNEL_DELETE", ({ id }) => remove(id)),
+    gateway.handleDispatch("CHANNEL_DELETE", ({ id }) =>
+      FiberMap.remove(fibers, id),
+    ),
     Effect.forkScoped,
   )
 }).pipe(Effect.annotateLogs({ service: "Reminders" }))
