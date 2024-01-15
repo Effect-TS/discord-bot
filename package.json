@@ -17,16 +17,16 @@
   "license": "ISC",
   "devDependencies": {
     "@octokit/types": "^12.4.0",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.11.3",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@effect/platform-node": "^0.41.2",
-    "@effect/schema": "^0.60.1",
-    "dfx": "^0.84.0",
+    "@effect/platform-node": "^0.41.3",
+    "@effect/schema": "^0.60.2",
+    "dfx": "^0.85.0",
     "dotenv": "^16.3.1",
-    "effect": "2.0.5",
+    "effect": "2.1.0",
     "gpt-tokenizer": "^2.1.2",
     "html-entities": "^2.4.0",
     "octokit": "^3.1.2",
