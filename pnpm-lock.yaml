@@ -6,20 +6,20 @@ settings:
 
 dependencies:
   '@effect/platform-node':
-    specifier: ^0.41.3
-    version: 0.41.3(@effect/platform@0.42.2)(effect@2.1.0)
+    specifier: ^0.41.8
+    version: 0.41.8(@effect/platform@0.42.7)(effect@2.2.0)
   '@effect/schema':
-    specifier: ^0.60.2
-    version: 0.60.2(effect@2.1.0)(fast-check@3.15.0)
+    specifier: ^0.60.7
+    version: 0.60.7(effect@2.2.0)(fast-check@3.15.0)
   dfx:
-    specifier: ^0.85.0
-    version: 0.85.0(@effect/platform@0.42.2)(effect@2.1.0)
+    specifier: ^0.86.0
+    version: 0.86.0(@effect/platform@0.42.7)(effect@2.2.0)
   dotenv:
-    specifier: ^16.3.1
-    version: 16.3.1
+    specifier: ^16.3.2
+    version: 16.3.2
   effect:
-    specifier: 2.1.0
-    version: 2.1.0
+    specifier: 2.2.0
+    version: 2.2.0
   gpt-tokenizer:
     specifier: ^2.1.2
     version: 2.1.2
@@ -30,19 +30,19 @@ dependencies:
     specifier: ^3.1.2
     version: 3.1.2
   openai:
-    specifier: ^4.24.7
-    version: 4.24.7
+    specifier: ^4.25.0
+    version: 4.25.0
   prettier:
-    specifier: ^3.2.2
-    version: 3.2.2
+    specifier: ^3.2.4
+    version: 3.2.4
 
 devDependencies:
   '@octokit/types':
     specifier: ^12.4.0
     version: 12.4.0
   '@types/node':
-    specifier: ^20.11.3
-    version: 20.11.3
+    specifier: ^20.11.5
+    version: 20.11.5
   tsx:
     specifier: ^4.7.0
     version: 4.7.0
@@ -52,38 +52,38 @@ devDependencies:
 
 packages:
 
-  /@effect/platform-node@0.41.3(@effect/platform@0.42.2)(effect@2.1.0):
-    resolution: {integrity: sha512-nzmDzYPfEKO0ew0PrInFtQK/wUpRytxGS5utS/5pmaa9bqkO6Z1q9GkQTK1HaWg9tSADVoNr7KYNYOXrLuZuRw==}
+  /@effect/platform-node@0.41.8(@effect/platform@0.42.7)(effect@2.2.0):
+    resolution: {integrity: sha512-6gXmYuPm4T1r/J5X4cEZg3/K1FEK25PQHfrZbwFF3pDFw9gBy2xrfKddwOcnh/l5hecMu6yS+NB99uxuZDF/HQ==}
     peerDependencies:
-      '@effect/platform': ^0.42.2
-      effect: ^2.1.0
+      '@effect/platform': ^0.42.7
+      effect: ^2.2.0
     dependencies:
-      '@effect/platform': 0.42.2(@effect/schema@0.60.2)(effect@2.1.0)
-      effect: 2.1.0
+      '@effect/platform': 0.42.7(@effect/schema@0.60.7)(effect@2.2.0)
+      effect: 2.2.0
       mime: 3.0.0
       multipasta: 0.1.21
     dev: false
 
-  /@effect/platform@0.42.2(@effect/schema@0.60.2)(effect@2.1.0):
-    resolution: {integrity: sha512-L+6amgskg3k1PID87i7jCjldUeUZKyyJdhTLGVSKLnFkEmxXYENuvboMAT3+vWyJK/NOH8Fh2LgdIdrzG3jK2w==}
+  /@effect/platform@0.42.7(@effect/schema@0.60.7)(effect@2.2.0):
+    resolution: {integrity: sha512-CpkC0uRL0TjOH2ut5lcAU9v4HfUVveWdc4XAzmwuX417kiegOxRSAP82xYwRimUHRz0U4QMgojvGgWfW5f7dXA==}
     peerDependencies:
-      '@effect/schema': ^0.60.2
-      effect: ^2.1.0
+      '@effect/schema': ^0.60.7
+      effect: ^2.2.0
     dependencies:
-      '@effect/schema': 0.60.2(effect@2.1.0)(fast-check@3.15.0)
-      effect: 2.1.0
+      '@effect/schema': 0.60.7(effect@2.2.0)(fast-check@3.15.0)
+      effect: 2.2.0
       find-my-way-ts: 0.1.1
       multipasta: 0.1.21
       path-browserify: 1.0.1
     dev: false
 
-  /@effect/schema@0.60.2(effect@2.1.0)(fast-check@3.15.0):
-    resolution: {integrity: sha512-JBNODnYbk6/rMSNW6rxJTI/fy69WS4e8WiX6e3NYQ22s6YEqlYemhyiaQSjX2/JZd4fVgIjJvr7QtFv54ENg3A==}
+  /@effect/schema@0.60.7(effect@2.2.0)(fast-check@3.15.0):
+    resolution: {integrity: sha512-YSRGyOeR6b932VM4SoR7QjcXPPgfylbE0hY2F3lPGz5rPIG3jpp5yIt58RBcItkQ1tSdGsuPpfLpLWBOhx4VJA==}
     peerDependencies:
-      effect: ^2.1.0
+      effect: ^2.2.0
       fast-check: ^3.13.2
     dependencies:
-      effect: 2.1.0
+      effect: 2.2.0
       fast-check: 3.15.0
     dev: false
 
@@ -537,7 +537,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.11.3
+      '@types/node': 20.11.5
     dev: false
     optional: true
 
@@ -549,7 +549,7 @@ packages:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     requiresBuild: true
     dependencies:
-      '@types/node': 20.11.3
+      '@types/node': 20.11.5
     dev: false
     optional: true
 
@@ -557,7 +557,7 @@ packages:
     resolution: {integrity: sha512-OaJ7XLaelTgrvlZD8/aa0vvvxZdUmlCn6MtWeB7TkiKW70BQLc9XEPpDLPdbo52ZhXUCrznlWdCHWxJWtdyajA==}
     requiresBuild: true
     dependencies:
-      '@types/node': 20.11.3
+      '@types/node': 20.11.5
       '@types/qs': 6.9.11
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -584,7 +584,7 @@ packages:
   /@types/jsonwebtoken@9.0.5:
     resolution: {integrity: sha512-VRLSGzik+Unrup6BsouBeHsf4d1hOEgYWTm/7Nmw1sXoN1+tRly/Gy/po3yeahnP4jfnQWWAhQAqcNfH7ngOkA==}
     dependencies:
-      '@types/node': 20.11.3
+      '@types/node': 20.11.5
     dev: false
 
   /@types/mime@1.3.5:
@@ -599,21 +599,21 @@ packages:
     dev: false
     optional: true
 
-  /@types/node-fetch@2.6.10:
-    resolution: {integrity: sha512-PPpPK6F9ALFTn59Ka3BaL+qGuipRfxNE8qVgkp0bVixeiR2c2/L+IVOiBdu9JhhT22sWnQEp6YyHGI2b2+CMcA==}
+  /@types/node-fetch@2.6.11:
+    resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
     dependencies:
-      '@types/node': 20.11.3
+      '@types/node': 20.11.5
       form-data: 4.0.0
     dev: false
 
-  /@types/node@18.19.7:
-    resolution: {integrity: sha512-IGRJfoNX10N/PfrReRZ1br/7SQ+2vF/tK3KXNwzXz82D32z5dMQEoOlFew18nLSN+vMNcLY4GrKfzwi/yWI8/w==}
+  /@types/node@18.19.8:
+    resolution: {integrity: sha512-g1pZtPhsvGVTwmeVoexWZLTQaOvXwoSq//pTL0DHeNzUDrFnir4fgETdhjhIxjVnN+hKOuh98+E1eMLnUXstFg==}
     dependencies:
       undici-types: 5.26.5
     dev: false
 
-  /@types/node@20.11.3:
-    resolution: {integrity: sha512-nrlmbvGPNGaj84IJZXMPhQuCMEVTT/hXZMJJG/aIqVL9fKxqk814sGGtJA4GI6hpJSLQjpi6cn0Qx9eOf9SDVg==}
+  /@types/node@20.11.5:
+    resolution: {integrity: sha512-g557vgQjUUfN76MZAN/dt1z3dzcUsimuysco0KeluHgrPdJXkP/XdAURgyO2W9fZWHRtRBiVKzKn8vyOAwlG+w==}
     dependencies:
       undici-types: 5.26.5
 
@@ -634,7 +634,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.11.3
+      '@types/node': 20.11.5
     dev: false
     optional: true
 
@@ -644,7 +644,7 @@ packages:
     dependencies:
       '@types/http-errors': 2.0.4
       '@types/mime': 3.0.4
-      '@types/node': 20.11.3
+      '@types/node': 20.11.5
     dev: false
     optional: true
 
@@ -731,14 +731,14 @@ packages:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
     dev: false
 
-  /dfx@0.85.0(@effect/platform@0.42.2)(effect@2.1.0):
-    resolution: {integrity: sha512-UkjlKz2FE8R0LPoivUBkvhvTKryLhkaKg9YRdSUwY2gjR1yTBTCJyM9ewnE/WzbcmtHU/ukF128puHpTE+sskA==}
+  /dfx@0.86.0(@effect/platform@0.42.7)(effect@2.2.0):
+    resolution: {integrity: sha512-yOqPAu3SMdom+u+Mn+/pgQn2+930X6kl/9zxB91bj83dt5FeJsNLne/qK+1hIkbGB+g8loRpJgePaYoXVDbzvA==}
     peerDependencies:
-      '@effect/platform': ^0.42.2
-      effect: ^2.1.0
+      '@effect/platform': ^0.42.7
+      effect: ^2.2.0
     dependencies:
-      '@effect/platform': 0.42.2(@effect/schema@0.60.2)(effect@2.1.0)
-      effect: 2.1.0
+      '@effect/platform': 0.42.7(@effect/schema@0.60.7)(effect@2.2.0)
+      effect: 2.2.0
       isomorphic-ws: 5.0.0(ws@8.16.0)
       ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     optionalDependencies:
@@ -764,8 +764,8 @@ packages:
     dev: false
     optional: true
 
-  /dotenv@16.3.1:
-    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
+  /dotenv@16.3.2:
+    resolution: {integrity: sha512-HTlk5nmhkm8F6JcdXvHIzaorzCoziNQT9mGxLPVXW8wJF1TiGSL60ZGB4gHWabHOaMmWmhvk2/lPHfnBiT78AQ==}
     engines: {node: '>=12'}
     dev: false
 
@@ -775,8 +775,8 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /effect@2.1.0:
-    resolution: {integrity: sha512-fZfyDtlw5RSUA5oQTBu+LOjXwcQb2lGfW7XKKCd34aELjoUKeIxm8HVo6bkpPLlPARqyyT5DfrlIhjrg2RiZCQ==}
+  /effect@2.2.0:
+    resolution: {integrity: sha512-ymp4cEa231FtoVDA+FZM6BR6acEXwWTz43jO1qbOspZPK170l4DfYwPCNI9FZm8tRSQgmqVp5Z+ACQUUnTlsjw==}
     dev: false
 
   /esbuild@0.19.10:
@@ -1062,12 +1062,12 @@ packages:
       wrappy: 1.0.2
     dev: false
 
-  /openai@4.24.7:
-    resolution: {integrity: sha512-JUesECWPtsDHO0TlZGb6q73hnAmXUdzj9NrwgZeL4lqlRt/kR1sWrXoy8LocxN/6uOtitywvcJqe0O1PLkG45g==}
+  /openai@4.25.0:
+    resolution: {integrity: sha512-qLMFOizjxKuDfQkBrczZPYo6XVL4bdcuz9MR11Q+M91kGcs8dQw+O90nRcC+qWuhaGphQkfXQJMn4cd7Yew3Kg==}
     hasBin: true
     dependencies:
-      '@types/node': 18.19.7
-      '@types/node-fetch': 2.6.10
+      '@types/node': 18.19.8
+      '@types/node-fetch': 2.6.11
       abort-controller: 3.0.0
       agentkeepalive: 4.5.0
       digest-fetch: 1.3.0
@@ -1083,8 +1083,8 @@ packages:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
     dev: false
 
-  /prettier@3.2.2:
-    resolution: {integrity: sha512-HTByuKZzw7utPiDO523Tt2pLtEyK7OibUD9suEJQrPUCYQqrHr74GGX6VidMrovbf/I50mPqr8j/II6oBAuc5A==}
+  /prettier@3.2.4:
+    resolution: {integrity: sha512-FWu1oLHKCrtpO1ypU6J0SbK2d9Ckwysq6bHj/uaCP26DxrPpppCLQRGVuqAxSTvhF00AcvDRyYrLNW7ocBhFFQ==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
