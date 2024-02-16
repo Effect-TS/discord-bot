@@ -1,5 +1,5 @@
-import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import * as OpenAI from "bot/OpenAI"
+import { ChannelsCache } from "bot/ChannelsCache"
+import { Message, OpenAI } from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
@@ -14,12 +14,9 @@ const make = Effect.gen(function* (_) {
   const rest = yield* _(DiscordREST)
   const gateway = yield* _(DiscordGateway)
   const channels = yield* _(ChannelsCache)
-  const openai = yield* _(OpenAI.OpenAI)
+  const openai = yield* _(OpenAI)
 
-  const botUser = yield* _(
-    rest.getCurrentUser(),
-    Effect.flatMap(_ => _.json),
-  )
+  const botUser = yield* _(rest.getCurrentUser().json)
 
   const generateContext = (
     thread: Discord.Channel,
@@ -28,17 +25,12 @@ const make = Effect.gen(function* (_) {
     pipe(
       Effect.all(
         {
-          openingMessage: Effect.flatMap(
-            rest.getChannelMessage(thread.parent_id!, thread.id),
-            _ => _.json,
-          ),
-          messages: Effect.flatMap(
-            rest.getChannelMessages(message.channel_id, {
-              before: message.id,
-              limit: 4,
-            }),
-            _ => _.json,
-          ),
+          openingMessage: rest.getChannelMessage(thread.parent_id!, thread.id)
+            .json,
+          messages: rest.getChannelMessages(message.channel_id, {
+            before: message.id,
+            limit: 4,
+          }).json,
         },
         { concurrency: "unbounded" },
       ),
@@ -52,7 +44,7 @@ const make = Effect.gen(function* (_) {
           )
           .filter(msg => msg.content.trim().length > 0)
           .map(
-            (msg): OpenAI.Message => ({
+            (msg): Message => ({
               content: msg.content,
               name:
                 msg.author.id === botUser.id
@@ -108,7 +100,7 @@ const make = Effect.gen(function* (_) {
 })
 
 export const MentionsLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(ChannelsCacheLive),
-  Layer.provide(OpenAI.layer),
+  Layer.provide(ChannelsCache.Live),
+  Layer.provide(OpenAI.Live),
   Layer.provide(DiscordLive),
 )

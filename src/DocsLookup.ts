@@ -5,9 +5,7 @@ import { Duration, Effect, Data, Layer, Schedule, identity, pipe } from "effect"
 import * as HtmlEnt from "html-entities"
 import * as Prettier from "prettier"
 
-const docUrls = [
-  "https://effect-ts.github.io/effect",
-]
+const docUrls = ["https://effect-ts.github.io/effect"]
 
 const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
@@ -15,9 +13,9 @@ const make = Effect.gen(function* (_) {
   const docsClient = pipe(
     Http.client.fetchOk(),
     Http.client.retry(retryPolicy),
-    Http.client.mapEffect(_ => _.json),
+    Http.client.mapEffectScoped(_ => _.json),
     Http.client.map(_ => Object.values(_ as object)),
-    Http.client.mapEffect(DocEntry.parseArray),
+    Http.client.mapEffect(DocEntry.decodeArray),
     Http.client.map(entries => entries.filter(_ => _.isSignature)),
   )
 
@@ -180,8 +178,8 @@ class DocEntry extends Schema.Class<DocEntry>()({
   ),
   relUrl: Schema.string,
 }) {
-  static readonly parse = Schema.parse(this)
-  static readonly parseArray = Schema.parse(Schema.array(this))
+  static readonly decode = Schema.decodeUnknown(this)
+  static readonly decodeArray = Schema.decodeUnknown(Schema.array(this))
 
   get isSignature() {
     return (
@@ -195,7 +193,9 @@ class DocEntry extends Schema.Class<DocEntry>()({
   get subpackage() {
     const [, subpackage, suffix] = this.url.match(/github\.io\/(.+?)\/(.+?)\//)!
     return suffix !== "modules" && subpackage !== suffix
-      ? subpackage === 'effect' ? suffix : `${subpackage}-${suffix}`
+      ? subpackage === "effect"
+        ? suffix
+        : `${subpackage}-${suffix}`
       : subpackage
   }
 

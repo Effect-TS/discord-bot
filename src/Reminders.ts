@@ -50,7 +50,7 @@ const make = Effect.gen(function* (_) {
         ),
       )
 
-      const fiber = yield* _(
+      yield* _(
         Effect.forEach(
           matches,
           ([expression, message]) =>
@@ -61,10 +61,8 @@ const make = Effect.gen(function* (_) {
           { discard: true, concurrency: "unbounded" },
         ),
         Effect.catchAllCause(Effect.logError),
-        Effect.forkDaemon,
+        FiberMap.run(fibers, channel.id),
       )
-
-      yield* _(FiberMap.set(fibers, channel.id, fiber))
     }).pipe(
       Effect.catchTags({
         MissingTopic: () => Effect.unit,
@@ -79,8 +77,7 @@ const make = Effect.gen(function* (_) {
       .createMessage(channelId, {
         content: message,
       })
-      .pipe(
-        Effect.flatMap(_ => _.json),
+      .json.pipe(
         Effect.flatMap(msg =>
           rest.startThreadFromMessage(msg.channel_id, msg.id, {
             name: `${new Date().toDateString()} - ${message}`,

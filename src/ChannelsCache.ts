@@ -9,15 +9,11 @@ const makeChannelsCache = CachePrelude.channels(
   }),
 )
 
-interface ChannelsCache {
-  readonly _: unique symbol
-}
-
-export const ChannelsCache = Context.Tag<
+export class ChannelsCache extends Context.Tag("app/ChannelsCache")<
   ChannelsCache,
   Effect.Effect.Success<typeof makeChannelsCache>
->("app/ChannelsCache")
-export const ChannelsCacheLive = Layer.scoped(
-  ChannelsCache,
-  makeChannelsCache,
-).pipe(Layer.provide(DiscordLive))
+>() {
+  static Live = Layer.scoped(this, makeChannelsCache).pipe(
+    Layer.provide(DiscordLive),
+  )
+}

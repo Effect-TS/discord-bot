@@ -1,7 +1,7 @@
-import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import * as Github from "bot/Github"
-import { Messages, MessagesLive } from "bot/Messages"
-import * as OpenAI from "bot/OpenAI"
+import { ChannelsCache } from "bot/ChannelsCache"
+import { Github } from "bot/Github"
+import { Messages } from "bot/Messages"
+import { Message, OpenAI } from "bot/OpenAI"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import {
@@ -29,17 +29,15 @@ type GithubRepo = (typeof githubRepos)[number]
 const make = Effect.gen(function* (_) {
   const rest = yield* _(DiscordREST)
   const channels = yield* _(ChannelsCache)
-  const openai = yield* _(OpenAI.OpenAI)
+  const openai = yield* _(OpenAI)
   const messages = yield* _(Messages)
   const registry = yield* _(InteractionsRegistry)
   const scope = yield* _(Effect.scope)
-  const github = yield* _(Github.Github)
+  const github = yield* _(Github)
 
   const createGithubIssue = github.wrap(_ => _.issues.create)
 
-  const application = yield* _(
-    Effect.flatMap(rest.getCurrentBotApplicationInformation(), _ => _.json),
-  )
+  const application = yield* _(rest.getCurrentBotApplicationInformation().json)
 
   const createIssue = (channel: Discord.Channel, repo: GithubRepo) =>
     pipe(
@@ -48,7 +46,7 @@ const make = Effect.gen(function* (_) {
       Effect.map(chunk =>
         Chunk.map(
           Chunk.reverse(chunk),
-          (msg): OpenAI.Message => ({
+          (msg): Message => ({
             bot: false,
             name: msg.author.username,
             content: msg.content,
@@ -176,8 +174,8 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(DiscordIxLive),
-  Layer.provide(ChannelsCacheLive),
-  Layer.provide(MessagesLive),
-  Layer.provide(OpenAI.layer),
-  Layer.provide(Github.layer),
+  Layer.provide(ChannelsCache.Live),
+  Layer.provide(Messages.Live),
+  Layer.provide(OpenAI.Live),
+  Layer.provide(Github.Live),
 )

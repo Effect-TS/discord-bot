@@ -1,5 +1,5 @@
 import { Schema, TreeFormatter } from "@effect/schema"
-import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
+import { ChannelsCache } from "bot/ChannelsCache"
 import { LayerUtils } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
@@ -26,7 +26,7 @@ const make = ({
 
     const EligibleChannel = Schema.struct({
       topic: Schema.string.pipe(Schema.includes(topicKeyword)),
-    }).pipe(Schema.parse)
+    }).pipe(Schema.decodeUnknown)
 
     const EligibleMessage = Schema.struct({
       id: Schema.string,
@@ -52,7 +52,7 @@ const make = ({
       Schema.filter(_ => _.content.includes(_.embeds[0].url), {
         message: () => "message content does not include embed url",
       }),
-      Schema.parse,
+      Schema.decodeUnknown,
     )
 
     const handleMessage = (message: Discord.MessageCreateEvent) =>
@@ -66,10 +66,7 @@ const make = ({
         Effect.bind("message", () =>
           (message.content
             ? Effect.succeed(message)
-            : Effect.flatMap(
-                rest.getChannelMessage(message.channel_id, message.id),
-                _ => _.json,
-              )
+            : rest.getChannelMessage(message.channel_id, message.id).json
           ).pipe(Effect.flatMap(EligibleMessage)),
         ),
         Effect.flatMap(({ message }) =>
@@ -101,15 +98,13 @@ const make = ({
     }),
   )
 
-export interface NoEmbedConfig {
-  readonly _: unique symbol
-}
-export const NoEmbedConfig = Context.Tag<
+export class NoEmbedConfig extends Context.Tag("app/NoEmbedConfig")<
   NoEmbedConfig,
   Parameters<typeof make>[0]
->("app/NoEmbedConfig")
-export const layerConfig = LayerUtils.config(NoEmbedConfig)
+>() {
+  static layer = LayerUtils.config(NoEmbedConfig)
+}
 
-export const layer = Layer.scopedDiscard(
+export const NoEmbedLive = Layer.scopedDiscard(
   Effect.flatMap(NoEmbedConfig, make),
-).pipe(Layer.provide(ChannelsCacheLive), Layer.provide(DiscordLive))
+).pipe(Layer.provide(ChannelsCache.Live), Layer.provide(DiscordLive))

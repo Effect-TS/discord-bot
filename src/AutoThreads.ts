@@ -1,6 +1,6 @@
 import { Schema, TreeFormatter } from "@effect/schema"
-import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import * as OpenAI from "bot/OpenAI"
+import { ChannelsCache } from "bot/ChannelsCache"
+import { OpenAI, OpenAIError } from "bot/OpenAI"
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
@@ -20,12 +20,12 @@ import {
   Schedule,
   pipe,
 } from "effect"
+import { Par } from "effect/RequestBlock"
 
 const retryPolicy = pipe(
   Schedule.fixed(Duration.millis(500)),
   Schedule.whileInput(
-    (_: OpenAI.OpenAIError | Cause.NoSuchElementException) =>
-      _._tag === "OpenAIError",
+    (_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError",
   ),
   Schedule.compose(Schedule.elapsed),
   Schedule.whileOutput(Duration.lessThanOrEqualTo(Duration.seconds(3))),
@@ -44,7 +44,7 @@ export class PermissionsError extends Data.TaggedError("PermissionsError")<{
 
 const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
   Effect.gen(function* (_) {
-    const openai = yield* _(OpenAI.OpenAI)
+    const openai = yield* _(OpenAI)
     const gateway = yield* _(DiscordGateway)
     const rest = yield* _(DiscordREST)
     const channels = yield* _(ChannelsCache)
@@ -54,7 +54,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
       id: Schema.string,
       topic: Schema.string.pipe(Schema.includes(topicKeyword)),
       type: Schema.literal(Discord.ChannelType.GUILD_TEXT),
-    }).pipe(Schema.parse)
+    }).pipe(Schema.decodeUnknown)
 
     const EligibleMessage = Schema.struct({
       id: Schema.string,
@@ -63,7 +63,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
       author: Schema.struct({
         bot: Schema.optional(Schema.literal(false)),
       }),
-    }).pipe(Schema.parse)
+    }).pipe(Schema.decodeUnknown)
 
     const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
       Effect.all({
@@ -91,13 +91,13 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
             ),
           ),
         ),
-        Effect.flatMap(({ channel, title }) =>
-          rest.startThreadFromMessage(channel.id, message.id, {
-            name: Str.truncate(title, 100),
-            auto_archive_duration: 1440,
-          }),
+        Effect.flatMap(
+          ({ channel, title }) =>
+            rest.startThreadFromMessage(channel.id, message.id, {
+              name: Str.truncate(title, 100),
+              auto_archive_duration: 1440,
+            }).json,
         ),
-        Effect.flatMap(_ => _.json),
         Effect.flatMap(thread =>
           rest.createMessage(thread.id, {
             components: UI.grid([
@@ -125,7 +125,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
 
     const hasManage = Perms.has(Discord.PermissionFlag.MANAGE_CHANNELS)
 
-    const withEditPermissions = <R, E, A>(self: Effect.Effect<R, E, A>) =>
+    const withEditPermissions = <R, E, A>(self: Effect.Effect<A, E, R>) =>
       Effect.gen(function* ($) {
         const ix = yield* $(Ix.Interaction)
         const ctx = yield* $(Ix.MessageComponentData)
@@ -223,18 +223,17 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
     yield* _(handleMessages, Effect.forkScoped)
   }).pipe(Effect.annotateLogs({ service: "AutoThreads" }))
 
-export interface AutoThreadsConfig {
-  readonly _: unique symbol
-}
-export const AutoThreadsConfig = Context.Tag<
+export class AutoThreadsConfig extends Context.Tag("app/AutoThreadsConfig")<
   AutoThreadsConfig,
   Parameters<typeof make>[0]
->("app/AutoThreadsConfig")
-export const layerConfig = LayerUtils.config(AutoThreadsConfig)
-export const layer = Layer.scopedDiscard(
+>() {
+  static layer = LayerUtils.config(AutoThreadsConfig)
+}
+
+export const AutoThreadsLive = Layer.scopedDiscard(
   Effect.flatMap(AutoThreadsConfig, make),
 ).pipe(
-  Layer.provide(ChannelsCacheLive),
-  Layer.provide(OpenAI.layer),
+  Layer.provide(ChannelsCache.Live),
+  Layer.provide(OpenAI.Live),
   Layer.provide(DiscordIxLive),
 )

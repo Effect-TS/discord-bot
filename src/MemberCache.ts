@@ -15,7 +15,7 @@ const make = Effect.gen(function* (_) {
       capacity: 1000,
       timeToLive: Duration.days(1),
       lookup: ({ guildId, userId }: GetMember) =>
-        Effect.flatMap(rest.getGuildMember(guildId, userId), _ => _.json),
+        rest.getGuildMember(guildId, userId).json,
     }),
   )
 
@@ -25,13 +25,9 @@ const make = Effect.gen(function* (_) {
   } as const
 })
 
-export interface MemberCache {
-  readonly _: unique symbol
-}
-export const MemberCache = Context.Tag<
+export class MemberCache extends Context.Tag("app/MemberCache")<
   MemberCache,
   Effect.Effect.Success<typeof make>
->("app/MemberCache")
-export const MemberCacheLive = Layer.effect(MemberCache, make).pipe(
-  Layer.provide(DiscordLive),
-)
+>() {
+  static Live = Layer.effect(this, make).pipe(Layer.provide(DiscordLive))
+}
