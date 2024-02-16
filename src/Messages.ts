@@ -1,4 +1,4 @@
-import { MemberCache, MemberCacheLive } from "bot/MemberCache"
+import { MemberCache } from "bot/MemberCache"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordLive } from "dfx/gateway"
 import { Chunk, Context, Effect, Layer, Option, Stream, pipe } from "effect"
@@ -46,8 +46,7 @@ const make = Effect.gen(function* (_) {
           rest.getChannelMessages(channelId, {
             limit: 100,
             before: Option.getOrUndefined(before),
-          }),
-          Effect.flatMap(_ => _.json),
+          }).json,
           Effect.map(messages =>
             messages.length < 100
               ? ([
@@ -66,13 +65,10 @@ const make = Effect.gen(function* (_) {
       Stream.flatMap(
         msg => {
           if (msg.type === Discord.MessageType.THREAD_STARTER_MESSAGE) {
-            return Effect.flatMap(
-              rest.getChannelMessage(
-                msg.message_reference!.channel_id!,
-                msg.message_reference!.message_id!,
-              ),
-              _ => _.json,
-            )
+            return rest.getChannelMessage(
+              msg.message_reference!.channel_id!,
+              msg.message_reference!.message_id!,
+            ).json
           } else if (
             msg.content !== "" &&
             (msg.type === Discord.MessageType.REPLY ||
@@ -114,14 +110,12 @@ const make = Effect.gen(function* (_) {
   } as const
 })
 
-export interface Messages {
-  readonly _: unique symbol
-}
-export const Messages = Context.Tag<
+export class Messages extends Context.Tag("app/Messages")<
   Messages,
   Effect.Effect.Success<typeof make>
->("app/Messages")
-export const MessagesLive = Layer.effect(Messages, make).pipe(
-  Layer.provide(MemberCacheLive),
-  Layer.provide(DiscordLive),
-)
+>() {
+  static Live = Layer.effect(this, make).pipe(
+    Layer.provide(MemberCache.Live),
+    Layer.provide(DiscordLive),
+  )
+}

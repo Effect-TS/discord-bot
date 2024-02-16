@@ -1,6 +1,6 @@
-import { ChannelsCache, ChannelsCacheLive } from "bot/ChannelsCache"
-import { MemberCache, MemberCacheLive } from "bot/MemberCache"
-import { Messages, MessagesLive } from "bot/Messages"
+import { ChannelsCache } from "bot/ChannelsCache"
+import { MemberCache } from "bot/MemberCache"
+import { Messages } from "bot/Messages"
 import { Http } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
@@ -27,9 +27,7 @@ const make = Effect.gen(function* (_) {
   const members = yield* _(MemberCache)
   const messages = yield* _(Messages)
   const scope = yield* _(Effect.scope)
-  const application = yield* _(
-    Effect.flatMap(rest.getCurrentBotApplicationInformation(), _ => _.json),
-  )
+  const application = yield* _(rest.getCurrentBotApplicationInformation().json)
 
   const summarizeThread = (channel: Discord.Channel, small = true) =>
     pipe(
@@ -115,8 +113,8 @@ ${messageContent.join("\n\n")}`,
         message.timestamp,
       ).toUTCString()}${smallClose}${smallClose}`
 
-      const images = message.attachments.filter(
-        _ => _.content_type?.startsWith("image/"),
+      const images = message.attachments.filter(_ =>
+        _.content_type?.startsWith("image/"),
       )
       const imagesContent =
         images.length > 0
@@ -228,20 +226,18 @@ ${message.content}${imagesContent}`
   } as const
 })
 
-export interface Summarizer {
-  readonly _: unique symbol
-}
-export const Summarizer = Context.Tag<
+export class Summarizer extends Context.Tag("app/Summarizer")<
   Summarizer,
   Effect.Effect.Success<typeof make>
->("app/Summarizer")
-export const SummarizerLive = Layer.scoped(Summarizer, make).pipe(
-  Layer.provide(
-    Layer.mergeAll(
-      ChannelsCacheLive,
-      MemberCacheLive,
-      MessagesLive,
-      DiscordIxLive,
+>() {
+  static Live = Layer.scoped(Summarizer, make).pipe(
+    Layer.provide(
+      Layer.mergeAll(
+        ChannelsCache.Live,
+        MemberCache.Live,
+        Messages.Live,
+        DiscordIxLive,
+      ),
     ),
-  ),
-)
+  )
+}

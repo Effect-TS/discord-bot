@@ -160,20 +160,19 @@ The title of this chat is "${title}".`,
   } as const
 }
 
-export interface OpenAIConfig {
-  readonly _: unique symbol
-}
-export const OpenAIConfig = Context.Tag<
+export class OpenAIConfig extends Context.Tag("app/OpenAIConfig")<
   OpenAIConfig,
   Parameters<typeof make>[0]
->("app/OpenAIConfig")
-export const layerConfig = LayerUtils.config(OpenAIConfig)
-
-export interface OpenAI {
-  readonly _: unique symbol
+>() {
+  static layer = LayerUtils.config(this)
 }
-export const OpenAI = Context.Tag<OpenAI, ReturnType<typeof make>>("app/OpenAI")
-export const layer = Layer.effect(OpenAI, Effect.map(OpenAIConfig, make))
+
+export class OpenAI extends Context.Tag("app/OpenAI")<
+  OpenAI,
+  ReturnType<typeof make>
+>() {
+  static Live = Layer.effect(OpenAI, Effect.map(OpenAIConfig, make))
+}
 
 const cleanTitle = (_: string) =>
   pipe(Str.firstParagraph(_), Str.removeQuotes, Str.removePeriod)

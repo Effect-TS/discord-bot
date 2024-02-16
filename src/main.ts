@@ -1,10 +1,10 @@
-import * as AutoThreads from "bot/AutoThreads"
+import { AutoThreadsConfig, AutoThreadsLive } from "bot/AutoThreads"
 import { DocsLookupLive } from "bot/DocsLookup"
-import * as Github from "bot/Github"
+import { GithubConfig } from "bot/Github"
 import { IssueifierLive } from "bot/Issueifier"
-import * as NoEmbed from "bot/NoEmbed"
-import * as OpenAI from "bot/OpenAI"
-import { SummarizerLive } from "bot/Summarizer"
+import { NoEmbedConfig, NoEmbedLive } from "bot/NoEmbed"
+import { OpenAIConfig } from "bot/OpenAI"
+import { Summarizer } from "bot/Summarizer"
 import { DiscordConfig, Intents } from "dfx"
 import * as Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger, pipe } from "effect"
@@ -29,19 +29,19 @@ const LogLevelLive = Layer.unwrapEffect(
   }),
 )
 
-const OpenAIOptions = OpenAI.layerConfig({
+const OpenAIOptions = OpenAIConfig.layer({
   apiKey: Config.secret("OPENAI_API_KEY"),
   organization: Config.option(Config.secret("OPENAI_ORGANIZATION")),
 })
 
-const AutoThreadsOptions = AutoThreads.layerConfig({
+const AutoThreadsOptions = AutoThreadsConfig.layer({
   topicKeyword: Config.withDefault(
     Config.string("AUTOTHREADS_KEYWORD"),
     "[threads]",
   ),
 })
 
-const NoEmbedOptions = NoEmbed.layerConfig({
+const NoEmbedOptions = NoEmbedConfig.layer({
   topicKeyword: Config.withDefault(
     Config.string("NOEMBED_KEYWORD"),
     "[noembed]",
@@ -49,23 +49,23 @@ const NoEmbedOptions = NoEmbed.layerConfig({
   urlWhitelist: Config.succeed(["effect.website"]),
 })
 
-const GithubConfig = Github.layerConfig({
+const GithubConfigLive = GithubConfig.layer({
   token: Config.secret("GITHUB_TOKEN"),
 })
 
 const MainLive = Layer.mergeAll(
-  AutoThreads.layer,
-  NoEmbed.layer,
+  AutoThreadsLive,
+  NoEmbedLive,
   DocsLookupLive,
   IssueifierLive,
   RemindersLive,
-  SummarizerLive,
+  Summarizer.Live,
 ).pipe(
   Layer.provide(DiscordConfigLive),
   Layer.provide(AutoThreadsOptions),
   Layer.provide(NoEmbedOptions),
   Layer.provide(OpenAIOptions),
-  Layer.provide(GithubConfig),
+  Layer.provide(GithubConfigLive),
   Layer.provide(LogLevelLive),
 )
 
