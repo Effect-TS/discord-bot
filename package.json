@@ -22,12 +22,12 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@effect/platform": "^0.45.3",
-    "@effect/platform-node": "^0.44.4",
-    "@effect/schema": "^0.62.7",
-    "dfx": "^0.88.1",
-    "dotenv": "^16.4.4",
-    "effect": "2.3.6",
+    "@effect/platform": "^0.46.0",
+    "@effect/platform-node": "^0.44.8",
+    "@effect/schema": "^0.63.0",
+    "dfx": "^0.89.0",
+    "dotenv": "^16.4.5",
+    "effect": "2.4.0",
     "gpt-tokenizer": "^2.1.2",
     "html-entities": "^2.4.0",
     "octokit": "^3.1.2",
