@@ -1,12 +1,29 @@
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
-import { Secret, Context, Data, Effect, Layer, Option, pipe } from "effect"
+import {
+  Secret,
+  Context,
+  Data,
+  Effect,
+  Layer,
+  Option,
+  pipe,
+  Predicate,
+} from "effect"
 import * as Tokenizer from "gpt-tokenizer"
 import * as OAI from "openai"
 
 export class OpenAIError extends Data.TaggedError("OpenAIError")<{
   readonly error: unknown
-}> {}
+}> {
+  get message() {
+    return String(
+      Predicate.hasProperty(this.error, "message")
+        ? this.error.message
+        : this.error,
+    )
+  }
+}
 
 export interface Message {
   readonly bot: boolean
