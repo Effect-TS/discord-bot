@@ -12,9 +12,10 @@ import {
 } from "effect"
 import * as Tokenizer from "gpt-tokenizer"
 import * as OAI from "openai"
+import type { APIError } from "openai/error.mjs"
 
 export class OpenAIError extends Data.TaggedError("OpenAIError")<{
-  readonly error: unknown
+  readonly error: APIError
 }> {
   get message() {
     return String(
@@ -45,7 +46,7 @@ const make = (params: {
   const call = <A>(f: (api: OAI.OpenAI, signal: AbortSignal) => Promise<A>) =>
     Effect.tryPromise({
       try: signal => f(client, signal),
-      catch: error => new OpenAIError({ error }),
+      catch: error => new OpenAIError({ error: error as APIError }),
     })
 
   const generateTitle = (prompt: string) =>
