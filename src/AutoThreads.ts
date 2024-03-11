@@ -20,15 +20,13 @@ import {
   Schedule,
   pipe,
 } from "effect"
-import { Par } from "effect/RequestBlock"
 
 const retryPolicy = pipe(
   Schedule.fixed(Duration.millis(500)),
   Schedule.whileInput(
     (_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError",
   ),
-  Schedule.compose(Schedule.elapsed),
-  Schedule.whileOutput(Duration.lessThanOrEqualTo(Duration.seconds(3))),
+  Schedule.intersect(Schedule.recurs(2)),
 )
 
 export class NotValidMessageError extends Data.TaggedError(
