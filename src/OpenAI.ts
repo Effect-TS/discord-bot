@@ -54,7 +54,7 @@ const make = (params: {
       call((_, signal) =>
         _.chat.completions.create(
           {
-            model: "gpt-3.5-turbo",
+            model: "gpt-4-turbo-preview",
             messages: [
               {
                 role: "user",
@@ -84,7 +84,7 @@ ${Str.truncateWords(prompt, 75)}`,
       call((_, signal) =>
         _.chat.completions.create(
           {
-            model: "gpt-3.5-turbo",
+            model: "gpt-4-turbo-preview",
             temperature: 1,
             top_p: 1,
             max_tokens: 256,
@@ -129,7 +129,7 @@ The title of this conversation is "${title}".`,
       call((_, signal) =>
         _.chat.completions.create(
           {
-            model: "gpt-3.5-turbo-16k",
+            model: "gpt-4-turbo-preview",
             temperature: 0.25,
             messages: [
               {
