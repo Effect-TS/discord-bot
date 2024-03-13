@@ -24,7 +24,7 @@ const DiscordConfigLive = DiscordConfig.layerConfig({
 const LogLevelLive = Layer.unwrapEffect(
   Effect.gen(function* (_) {
     const debug = yield* _(Config.withDefault(Config.boolean("DEBUG"), false))
-    const level = debug ? LogLevel.All : LogLevel.Info
+    const level = debug ? LogLevel.Debug : LogLevel.Info
     return Logger.minimumLogLevel(level)
   }),
 )
