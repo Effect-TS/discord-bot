@@ -164,7 +164,7 @@ export const DocsLookupLive = Layer.effectDiscard(make).pipe(
 
 // schema
 
-class DocEntry extends Schema.Class<DocEntry>()({
+class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   doc: Schema.string,
   title: Schema.string,
   content: Schema.string,
