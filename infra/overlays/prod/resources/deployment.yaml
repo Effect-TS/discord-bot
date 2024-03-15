@@ -48,5 +48,3 @@ spec:
                 secretKeyRef:
                   name: discord-bot-secrets
                   key: github-token
-            - name: DEBUG
-              value: "true"
