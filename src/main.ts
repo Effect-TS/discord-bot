@@ -9,6 +9,7 @@ import { DiscordConfig, Intents } from "dfx"
 import * as Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger, pipe } from "effect"
 import { RemindersLive } from "./Reminders.js"
+import { NodeHttpClient } from "@effect/platform-node"
 
 Dotenv.config()
 
@@ -67,6 +68,7 @@ const MainLive = Layer.mergeAll(
   Layer.provide(OpenAIOptions),
   Layer.provide(GithubConfigLive),
   Layer.provide(LogLevelLive),
+  Layer.provide(NodeHttpClient.layerUndici),
 )
 
 pipe(
