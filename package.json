@@ -16,22 +16,22 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@octokit/types": "^12.6.0",
-    "@types/node": "^20.11.29",
+    "@octokit/types": "^13.0.0",
+    "@types/node": "^20.12.3",
     "tsx": "^4.7.1",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@effect/platform": "^0.48.10",
-    "@effect/platform-node": "^0.45.12",
-    "@effect/schema": "^0.64.7",
-    "dfx": "^0.90.3",
+    "@effect/platform": "^0.48.23",
+    "@effect/platform-node": "^0.45.25",
+    "@effect/schema": "^0.64.17",
+    "dfx": "^0.91.0",
     "dotenv": "^16.4.5",
-    "effect": "2.4.9",
+    "effect": "2.4.16",
     "gpt-tokenizer": "^2.1.2",
     "html-entities": "^2.5.2",
     "octokit": "^3.1.2",
-    "openai": "^4.29.1",
+    "openai": "^4.32.1",
     "prettier": "^3.2.5"
   }
 }

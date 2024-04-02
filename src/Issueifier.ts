@@ -5,15 +5,15 @@ import { Message, OpenAI } from "bot/OpenAI"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import {
+  Cause,
   Chunk,
-  Effect,
   Data,
+  Effect,
+  FiberMap,
   Layer,
-  Option,
   ReadonlyArray,
   Stream,
   pipe,
-  Cause,
 } from "effect"
 
 export class NotInThreadError extends Data.TaggedError(
@@ -21,8 +21,8 @@ export class NotInThreadError extends Data.TaggedError(
 )<{}> {}
 
 const githubRepos = [
-  { label: "/website", owner: "effect-ts", repo: "website" },
   { label: "/effect", owner: "effect-ts", repo: "effect" },
+  { label: "/website", owner: "effect-ts", repo: "website" },
 ]
 type GithubRepo = (typeof githubRepos)[number]
 
@@ -32,8 +32,8 @@ const make = Effect.gen(function* (_) {
   const openai = yield* _(OpenAI)
   const messages = yield* _(Messages)
   const registry = yield* _(InteractionsRegistry)
-  const scope = yield* _(Effect.scope)
   const github = yield* _(Github)
+  const fiberMap = yield* _(FiberMap.make<Discord.Snowflake>())
 
   const createGithubIssue = github.wrap(_ => _.issues.create)
 
@@ -117,23 +117,19 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         {
           type: Discord.ApplicationCommandOptionType.NUMBER,
           name: "repository",
-          description:
-            "What repository to create the issue in. Defaults to /website",
+          description: "What repository to create the issue in.",
           choices: ReadonlyArray.map(githubRepos, ({ label }, value) => ({
             name: label,
             value: value.toString(),
           })),
-          required: false,
+          required: true,
         },
       ],
     },
     ix =>
       Effect.gen(function* (_) {
         const context = yield* _(Ix.Interaction)
-        const repoIndex = yield* _(
-          ix.optionValueOptional("repository"),
-          Effect.map(Option.getOrElse(() => 0)),
-        )
+        const repoIndex = yield* _(ix.optionValue("repository"))
         const repo = githubRepos[repoIndex]
         const channel = yield* _(
           channels.get(context.guild_id!, context.channel_id!),
@@ -145,7 +141,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           followUp(context, channel, repo),
           Effect.annotateLogs("repo", repo.label),
           Effect.annotateLogs("thread", channel.id),
-          Effect.forkIn(scope),
+          FiberMap.run(fiberMap, context.id),
         )
         return Ix.response({
           type: Discord.InteractionCallbackType
