@@ -18,27 +18,12 @@ in
         NIX_CONFIG = "extra-experimental-features = nix-command flakes repl-flake";
 
         buildInputs = [
-          age
           alejandra
           git
-          kubectl
+          flyctl
           nix
           nil
           nodejs_20
           nodePackages.pnpm
-          sops
-          ssh-to-age
         ];
-
-        KUSTOMIZE_PLUGIN_HOME = pkgs.buildEnv {
-          name = "kustomize-plugins";
-          paths = [
-            kustomize-sops
-          ];
-          postBuild = ''
-            mv $out/lib/* $out
-            rm -r $out/lib
-          '';
-          pathsToLink = ["/lib"];
-        };
       }
