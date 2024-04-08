@@ -67,8 +67,9 @@ const MainLive = Layer.mergeAll(
   Layer.provide(NoEmbedOptions),
   Layer.provide(OpenAIOptions),
   Layer.provide(GithubConfigLive),
-  Layer.provide(LogLevelLive),
   Layer.provide(NodeHttpClient.layerUndici),
+  Layer.provide(LogLevelLive),
+  Layer.provide(Logger.logFmt),
 )
 
 pipe(
