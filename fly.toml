@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for effectful-discord-bot on 2024-04-08T12:06:27-04:00
+# fly.toml app configuration file generated for effectful-discord-bot on 2024-04-08T18:44:57-04:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'effectful-discord-bot'
-primary_region = 'sea'
+primary_region = 'iad'
 
 [build]
 
