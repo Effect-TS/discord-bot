@@ -16,8 +16,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@octokit/types": "^13.1.0",
-    "@types/node": "^20.12.5",
+    "@octokit/types": "^13.4.0",
+    "@types/node": "^20.12.7",
     "tsx": "^4.7.2",
     "typescript": "^5.4.4"
   },
@@ -32,7 +32,7 @@
     "@opentelemetry/sdk-metrics": "^1.23.0",
     "@opentelemetry/sdk-trace-base": "^1.23.0",
     "@opentelemetry/sdk-trace-node": "^1.23.0",
-    "dfx": "^0.91.1",
+    "dfx": "^0.91.3",
     "dotenv": "^16.4.5",
     "effect": "2.4.18",
     "gpt-tokenizer": "^2.1.2",
