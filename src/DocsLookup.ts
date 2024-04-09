@@ -57,6 +57,7 @@ const make = Effect.gen(function* (_) {
       ),
       Effect.annotateLogs("module", "DocsLookup"),
       Effect.annotateLogs("query", query),
+      Effect.withSpan("DocsLookup.search", { attributes: { query } }),
     )
   }
 
@@ -89,6 +90,12 @@ const make = Effect.gen(function* (_) {
         Effect.bind("entry", ({ key, docs }) =>
           Effect.fromNullable(docs.map[key]),
         ),
+        Effect.tap(({ entry, reveal }) =>
+          Effect.annotateCurrentSpan({
+            entry: entry.signature,
+            public: reveal,
+          }),
+        ),
         Effect.bind("embed", ({ entry }) => entry.embed),
         Effect.map(({ embed, reveal }) =>
           Ix.response({
@@ -112,12 +119,14 @@ const make = Effect.gen(function* (_) {
               }),
             ),
         }),
+        Effect.withSpan("DocsLookup.command"),
       ),
   )
 
   const autocomplete = Ix.autocomplete(
     Ix.option("docs", "query"),
     Ix.focusedOptionValue.pipe(
+      Effect.tap(query => Effect.annotateCurrentSpan("query", query)),
       Effect.filterOrFail(
         _ => _.length >= 3,
         _ => new QueryTooShort({ actual: _.length, min: 3 }),
@@ -147,6 +156,7 @@ const make = Effect.gen(function* (_) {
             }),
           ),
       }),
+      Effect.withSpan("DocsLookup.autocomplete"),
     ),
   )
 
@@ -282,4 +292,5 @@ const wrapCodeBlock = (code: string) =>
     }),
     Effect.catchAllCause(_ => Effect.succeed(code)),
     Effect.map(_ => "```typescript\n" + _ + "\n```"),
+    Effect.withSpan("DocsLookup.wrapCodeBlock"),
   )

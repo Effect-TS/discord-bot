@@ -85,6 +85,7 @@ const make = Effect.gen(function* (_) {
         ),
         Effect.asUnit,
         Effect.retry(createThreadPolicy),
+        Effect.withSpan("Reminders.createThread", { attributes: { message } }),
       )
 
   yield* _(

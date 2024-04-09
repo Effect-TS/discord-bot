@@ -21,7 +21,9 @@ const make = Effect.gen(function* (_) {
 
   return {
     get: (guildId: Discord.Snowflake, userId: Discord.Snowflake) =>
-      cache.get(new GetMember({ guildId, userId })),
+      cache
+        .get(new GetMember({ guildId, userId }))
+        .pipe(Effect.withSpan("MemberCache.get", { attributes: { userId } })),
   } as const
 })
 
