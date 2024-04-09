@@ -118,6 +118,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
             Effect.logDebug(TreeFormatter.formatIssue(error.error)),
         }),
         Effect.catchAllCause(Effect.logError),
+        Effect.withSpan("AutoThreads.handleMessages"),
       ),
     )
 
@@ -161,6 +162,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
           }),
         ),
         withEditPermissions,
+        Effect.withSpan("AutoThreads.edit"),
       ),
     )
 
@@ -181,6 +183,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
             type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE,
           }),
         ),
+        Effect.withSpan("AutoThreads.editSubmit"),
       ),
     )
 
@@ -197,6 +200,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
           }),
         ),
         withEditPermissions,
+        Effect.withSpan("AutoThreads.archive"),
       ),
     )
 

@@ -41,6 +41,7 @@ const make = Effect.gen(function* (_) {
       Effect.flatMap(({ parentChannel, messages }) =>
         summarize(parentChannel, channel, messages, small),
       ),
+      Effect.withSpan("Summarizer.summarizeThread"),
     )
 
   const summarizeWithMessages = (
@@ -53,6 +54,7 @@ const make = Effect.gen(function* (_) {
       Effect.flatMap(parentChannel =>
         summarize(parentChannel, channel, messages, small),
       ),
+      Effect.withSpan("Summarizer.summarizeWithMessages"),
     )
 
   const summarize = (
@@ -61,32 +63,34 @@ const make = Effect.gen(function* (_) {
     messages: Chunk.Chunk<Discord.Message>,
     small: boolean,
   ) =>
-    Effect.map(
-      Effect.forEach(
-        messages,
-        (message, index) => {
-          const reply = pipe(
-            Option.fromNullable(message.message_reference),
-            Option.flatMap(ref =>
-              Chunk.findFirstIndex(messages, _ => _.id === ref.message_id),
-            ),
-            Option.map(
-              index => [Chunk.unsafeGet(messages, index), index + 1] as const,
-            ),
-          )
-          return summarizeMessage(thread, index + 1, message, reply, small)
-        },
-        { concurrency: "unbounded" },
-      ),
-      messageContent =>
-        `# ${thread.name}
+    Effect.forEach(
+      messages,
+      (message, index) => {
+        const reply = pipe(
+          Option.fromNullable(message.message_reference),
+          Option.flatMap(ref =>
+            Chunk.findFirstIndex(messages, _ => _.id === ref.message_id),
+          ),
+          Option.map(
+            index => [Chunk.unsafeGet(messages, index), index + 1] as const,
+          ),
+        )
+        return summarizeMessage(thread, index + 1, message, reply, small)
+      },
+      { concurrency: "unbounded" },
+    ).pipe(
+      Effect.map(
+        messageContent =>
+          `# ${thread.name}
 
 Thread started in: #${channel.name}<br />
 Thread started at: ${new Date(
-          thread.thread_metadata!.create_timestamp!,
-        ).toUTCString()}
+            thread.thread_metadata!.create_timestamp!,
+          ).toUTCString()}
 
 ${messageContent.join("\n\n")}`,
+      ),
+      Effect.withSpan("Summarizer.summarize"),
     )
 
   const summarizeMessage = (
@@ -123,7 +127,14 @@ ${messageContent.join("\n\n")}`,
 
       return `${header}<br />
 ${message.content}${imagesContent}`
-    })
+    }).pipe(
+      Effect.withSpan("Summarizer.summarizeMessage", {
+        attributes: {
+          channelId: thread.id,
+          messageId: message.id,
+        },
+      }),
+    )
 
   const followUpResponse = (
     context: Discord.Interaction,
@@ -156,6 +167,12 @@ ${message.content}${imagesContent}`
             "\n```",
         }),
       ),
+      Effect.withSpan("Summarizer.followUpResponse", {
+        attributes: {
+          channelId: channel.id,
+          small,
+        },
+      }),
     )
 
   const command = Ix.global(
@@ -183,6 +200,12 @@ ${message.content}${imagesContent}`
         Effect.bind("channel", ({ context }) =>
           channels.get(context.guild_id!, context.channel_id!),
         ),
+        Effect.tap(({ channel, small }) =>
+          Effect.annotateCurrentSpan({
+            channelId: channel.id,
+            small,
+          }),
+        ),
         Effect.filterOrFail(
           ({ channel }) => channel.type === Discord.ChannelType.PUBLIC_THREAD,
           () => new NotInThreadError(),
@@ -199,6 +222,7 @@ ${message.content}${imagesContent}`
             },
           }),
         ),
+        Effect.withSpan("Summarizer.command"),
       ),
   )
 

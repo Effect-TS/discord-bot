@@ -10,6 +10,7 @@ import * as Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger, pipe } from "effect"
 import { RemindersLive } from "./Reminders.js"
 import { NodeHttpClient } from "@effect/platform-node"
+import { TracingLive } from "bot/Tracing"
 
 Dotenv.config()
 
@@ -68,6 +69,7 @@ const MainLive = Layer.mergeAll(
   Layer.provide(OpenAIOptions),
   Layer.provide(GithubConfigLive),
   Layer.provide(NodeHttpClient.layerUndici),
+  Layer.provide(TracingLive),
   Layer.provide(LogLevelLive),
   Layer.provide(Logger.logFmt),
 )

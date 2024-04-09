@@ -73,6 +73,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 `,
         }),
       ),
+      Effect.withSpan("Issueifier.createIssue"),
     )
 
   const followUp = (
@@ -106,6 +107,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
             ),
           ),
       ),
+      Effect.withSpan("Issueifier.followUp"),
     )
 
   const command = Ix.global(
@@ -131,6 +133,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         const context = yield* _(Ix.Interaction)
         const repoIndex = yield* _(ix.optionValue("repository"))
         const repo = githubRepos[repoIndex]
+        yield* _(Effect.annotateCurrentSpan({ repo: repo.label }))
         const channel = yield* _(
           channels.get(context.guild_id!, context.channel_id!),
         )
@@ -147,7 +150,10 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           type: Discord.InteractionCallbackType
             .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
         })
-      }).pipe(Effect.annotateLogs("command", "issueify")),
+      }).pipe(
+        Effect.annotateLogs("command", "issueify"),
+        Effect.withSpan("Issueifier.command"),
+      ),
   )
 
   const ix = Ix.builder

@@ -79,6 +79,7 @@ const make = ({
             Effect.logDebug(TreeFormatter.formatIssue(error.error)),
         }),
         Effect.catchAllCause(Effect.logError),
+        Effect.withSpan("NoEmbed.handleMessage"),
       )
 
     yield* _(

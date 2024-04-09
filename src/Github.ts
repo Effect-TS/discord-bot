@@ -24,10 +24,13 @@ const make = ({ token }: { readonly token: Secret.Secret }) => {
   type Endpoints = typeof rest
 
   const request = <A>(f: (_: Endpoints) => Promise<A>) =>
-    Effect.tryPromise({
-      try: () => f(rest),
-      catch: reason => new GithubError({ reason }),
-    })
+    Effect.withSpan(
+      Effect.tryPromise({
+        try: () => f(rest),
+        catch: reason => new GithubError({ reason }),
+      }),
+      "Github.request",
+    )
 
   const wrap =
     <A, Args extends any[]>(

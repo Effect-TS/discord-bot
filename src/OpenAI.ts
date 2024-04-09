@@ -9,10 +9,19 @@ import {
   Option,
   pipe,
   Predicate,
+  Metric,
 } from "effect"
 import * as Tokenizer from "gpt-tokenizer"
 import * as OAI from "openai"
 import type { APIError } from "openai/error.mjs"
+
+const metrics = {
+  duration: Metric.timer("openai_duration"),
+  calls: Metric.counter("openai_calls", {
+    bigint: true,
+    incremental: true,
+  }),
+} as const
 
 export class OpenAIError extends Data.TaggedError("OpenAIError")<{
   readonly error: APIError
@@ -47,36 +56,41 @@ const make = (params: {
     Effect.tryPromise({
       try: signal => f(client, signal),
       catch: error => new OpenAIError({ error: error as APIError }),
-    })
+    }).pipe(
+      Metric.trackDuration(metrics.duration),
+      Metric.trackAll(metrics.calls, 1n),
+      Effect.withSpan("OpenAI.call"),
+    )
 
   const generateTitle = (prompt: string) =>
-    Effect.flatMap(
-      call((_, signal) =>
-        _.chat.completions.create(
-          {
-            model: "gpt-4-turbo-preview",
-            messages: [
-              {
-                role: "user",
-                content: `Create a short title summarizing the following text:
+    call((_, signal) =>
+      _.chat.completions.create(
+        {
+          model: "gpt-4-turbo-preview",
+          messages: [
+            {
+              role: "user",
+              content: `Create a short title summarizing the following text:
 
 ${Str.truncateWords(prompt, 75)}`,
-              },
-            ],
-            temperature: 0.25,
-            max_tokens: 64,
-            top_p: 1,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-          },
-          { signal },
-        ),
+            },
+          ],
+          temperature: 0.25,
+          max_tokens: 64,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0,
+        },
+        { signal },
       ),
-      _ =>
+    ).pipe(
+      Effect.flatMap(_ =>
         pipe(
           Option.fromNullable(_.choices[0]?.message?.content),
           Option.map(cleanTitle),
         ),
+      ),
+      Effect.withSpan("OpenAI.generateTitle"),
     )
 
   const generateReply = (title: string, messages: ReadonlyArray<Message>) =>
