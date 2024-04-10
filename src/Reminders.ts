@@ -1,7 +1,7 @@
 import { DiscordREST } from "dfx/DiscordREST"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
 import { Discord } from "dfx/index"
-import { Cron, Data, Effect, FiberMap, Layer, Schedule } from "effect"
+import { Cron, Data, Effect, FiberMap, Layer, Schedule, pipe } from "effect"
 
 class MissingTopic extends Data.TaggedError("MissingTopic")<{}> {}
 
@@ -73,20 +73,19 @@ const make = Effect.gen(function* (_) {
     )
 
   const createThread = (channelId: Discord.Snowflake, message: string) =>
-    rest
-      .createMessage(channelId, {
+    pipe(
+      rest.createMessage(channelId, {
         content: message,
-      })
-      .json.pipe(
-        Effect.flatMap(msg =>
-          rest.startThreadFromMessage(msg.channel_id, msg.id, {
-            name: `${new Date().toDateString()} - ${message}`,
-          }),
-        ),
-        Effect.asUnit,
-        Effect.retry(createThreadPolicy),
-        Effect.withSpan("Reminders.createThread", { attributes: { message } }),
-      )
+      }).json,
+      Effect.flatMap(msg =>
+        rest.startThreadFromMessage(msg.channel_id, msg.id, {
+          name: `${new Date().toDateString()} - ${message}`,
+        }),
+      ),
+      Effect.asUnit,
+      Effect.retry(createThreadPolicy),
+      Effect.withSpan("Reminders.createThread", { attributes: { message } }),
+    )
 
   yield* _(
     gateway.handleDispatch("GUILD_CREATE", ({ channels }) =>
