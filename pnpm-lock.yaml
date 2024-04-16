@@ -6,20 +6,20 @@ settings:
 
 dependencies:
   '@effect/experimental':
-    specifier: ^0.14.12
-    version: 0.14.12(@effect/platform-node@0.45.29)(@effect/platform@0.48.27)(@effect/schema@0.64.20)(effect@2.4.18)(ws@8.16.0)
+    specifier: ^0.15.0
+    version: 0.15.0(@effect/platform-node@0.46.0)(@effect/platform@0.49.0)(@effect/schema@0.66.0)(effect@3.0.0)(ws@8.16.0)
   '@effect/opentelemetry':
-    specifier: ^0.31.28
-    version: 0.31.28(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.23.0)(@opentelemetry/sdk-metrics@1.23.0)(@opentelemetry/sdk-trace-base@1.23.0)(@opentelemetry/sdk-trace-node@1.23.0)(@opentelemetry/semantic-conventions@1.23.0)(effect@2.4.18)
+    specifier: ^0.32.0
+    version: 0.32.0(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.23.0)(@opentelemetry/sdk-metrics@1.23.0)(@opentelemetry/sdk-trace-base@1.23.0)(@opentelemetry/sdk-trace-node@1.23.0)(@opentelemetry/semantic-conventions@1.23.0)(effect@3.0.0)
   '@effect/platform':
-    specifier: ^0.48.27
-    version: 0.48.27(@effect/schema@0.64.20)(effect@2.4.18)(ws@8.16.0)
+    specifier: ^0.49.0
+    version: 0.49.0(@effect/schema@0.66.0)(effect@3.0.0)(ws@8.16.0)
   '@effect/platform-node':
-    specifier: ^0.45.29
-    version: 0.45.29(@effect/platform@0.48.27)(effect@2.4.18)
+    specifier: ^0.46.0
+    version: 0.46.0(@effect/platform@0.49.0)(effect@3.0.0)
   '@effect/schema':
-    specifier: ^0.64.20
-    version: 0.64.20(effect@2.4.18)(fast-check@3.17.1)
+    specifier: ^0.66.0
+    version: 0.66.0(effect@3.0.0)(fast-check@3.17.1)
   '@opentelemetry/exporter-metrics-otlp-http':
     specifier: ^0.50.0
     version: 0.50.0(@opentelemetry/api@1.8.0)
@@ -36,14 +36,14 @@ dependencies:
     specifier: ^1.23.0
     version: 1.23.0(@opentelemetry/api@1.8.0)
   dfx:
-    specifier: ^0.92.0
-    version: 0.92.0(@effect/platform@0.48.27)(effect@2.4.18)
+    specifier: ^0.93.0
+    version: 0.93.0(@effect/platform@0.49.0)(effect@3.0.0)
   dotenv:
     specifier: ^16.4.5
     version: 16.4.5
   effect:
-    specifier: 2.4.18
-    version: 2.4.18
+    specifier: 3.0.0
+    version: 3.0.0
   gpt-tokenizer:
     specifier: ^2.1.2
     version: 2.1.2
@@ -54,16 +54,16 @@ dependencies:
     specifier: ^3.2.0
     version: 3.2.0
   openai:
-    specifier: ^4.33.0
-    version: 4.33.0
+    specifier: ^4.36.0
+    version: 4.36.0
   prettier:
     specifier: ^3.2.5
     version: 3.2.5
 
 devDependencies:
   '@octokit/types':
-    specifier: ^13.4.0
-    version: 13.4.0
+    specifier: ^13.4.1
+    version: 13.4.1
   '@types/node':
     specifier: ^20.12.7
     version: 20.12.7
@@ -71,18 +71,18 @@ devDependencies:
     specifier: ^4.7.2
     version: 4.7.2
   typescript:
-    specifier: ^5.4.4
-    version: 5.4.4
+    specifier: ^5.4.5
+    version: 5.4.5
 
 packages:
 
-  /@effect/experimental@0.14.12(@effect/platform-node@0.45.29)(@effect/platform@0.48.27)(@effect/schema@0.64.20)(effect@2.4.18)(ws@8.16.0):
-    resolution: {integrity: sha512-ei2xAfMvHBiVdqvwv2YSfcfNTyCz9+YrbWVGe/2g4xVIAUkWVbx90kfdbAWJw1acGxzyPmHMG49Ypw45HY5lVA==}
+  /@effect/experimental@0.15.0(@effect/platform-node@0.46.0)(@effect/platform@0.49.0)(@effect/schema@0.66.0)(effect@3.0.0)(ws@8.16.0):
+    resolution: {integrity: sha512-WBQSgehehgzdnobUaT5maeOMrT8nwhYutfDKEiHD0pAUpE9FmfBGn848I5JiBdRgaSobApHsiAplPUljVczbxg==}
     peerDependencies:
-      '@effect/platform': ^0.48.27
-      '@effect/platform-node': ^0.45.29
-      '@effect/schema': ^0.64.20
-      effect: ^2.4.18
+      '@effect/platform': ^0.49.0
+      '@effect/platform-node': ^0.46.0
+      '@effect/schema': ^0.66.0
+      effect: ^3.0.0
       ioredis: ^5.3.2
       lmdb: ^2.9.2
       ws: ^8.14
@@ -96,16 +96,16 @@ packages:
       ws:
         optional: true
     dependencies:
-      '@effect/platform': 0.48.27(@effect/schema@0.64.20)(effect@2.4.18)(ws@8.16.0)
-      '@effect/platform-node': 0.45.29(@effect/platform@0.48.27)(effect@2.4.18)
-      '@effect/schema': 0.64.20(effect@2.4.18)(fast-check@3.17.1)
-      effect: 2.4.18
+      '@effect/platform': 0.49.0(@effect/schema@0.66.0)(effect@3.0.0)(ws@8.16.0)
+      '@effect/platform-node': 0.46.0(@effect/platform@0.49.0)(effect@3.0.0)
+      '@effect/schema': 0.66.0(effect@3.0.0)(fast-check@3.17.1)
+      effect: 3.0.0
       msgpackr: 1.10.1
       ws: 8.16.0
     dev: false
 
-  /@effect/opentelemetry@0.31.28(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.23.0)(@opentelemetry/sdk-metrics@1.23.0)(@opentelemetry/sdk-trace-base@1.23.0)(@opentelemetry/sdk-trace-node@1.23.0)(@opentelemetry/semantic-conventions@1.23.0)(effect@2.4.18):
-    resolution: {integrity: sha512-ygMgCQwIINgNhrIds5pBOW3BKBnTIo8ULb/ckAccCFvWQepkqaWkS/02o8Seb1wcqHVNbOBoZlFX3krgxLNTIQ==}
+  /@effect/opentelemetry@0.32.0(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.23.0)(@opentelemetry/sdk-metrics@1.23.0)(@opentelemetry/sdk-trace-base@1.23.0)(@opentelemetry/sdk-trace-node@1.23.0)(@opentelemetry/semantic-conventions@1.23.0)(effect@3.0.0):
+    resolution: {integrity: sha512-CCQ6Xcn6vwCY4h5eBkvh6KwKLWaD+WbsNNv5qHHTImVBtp9vONFz53p9CAyLYTA4aTPduBLSFvRyyq9Mo1a8dQ==}
     peerDependencies:
       '@opentelemetry/api': ^1.6
       '@opentelemetry/resources': ^1.17
@@ -114,7 +114,7 @@ packages:
       '@opentelemetry/sdk-trace-node': ^1.17
       '@opentelemetry/sdk-trace-web': ^1.17
       '@opentelemetry/semantic-conventions': ^1.17
-      effect: ^2.4.18
+      effect: ^3.0.0
     peerDependenciesMeta:
       '@opentelemetry/sdk-metrics':
         optional: true
@@ -131,46 +131,46 @@ packages:
       '@opentelemetry/sdk-trace-base': 1.23.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/sdk-trace-node': 1.23.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/semantic-conventions': 1.23.0
-      effect: 2.4.18
+      effect: 3.0.0
     dev: false
 
-  /@effect/platform-node-shared@0.3.27(@effect/platform@0.48.27)(effect@2.4.18):
-    resolution: {integrity: sha512-SMlcE0Q3+i5C20ur0tp/XWo+mg2oIwdSq47NPViTgqtpyoqXpHlCQm9IUIMSyzhYDuPRXO44FVCt7Aw//0pLxA==}
+  /@effect/platform-node-shared@0.4.0(@effect/platform@0.49.0)(effect@3.0.0):
+    resolution: {integrity: sha512-7wmIXeZU3l+rqlT3Lbco8NYUAuAU8mVlSXlk6CII76WUlBOGJ0YWRUc/E1NrYJHkE2nR1Ew8V51FTEivgTGOzQ==}
     peerDependencies:
-      '@effect/platform': ^0.48.27
-      effect: ^2.4.18
+      '@effect/platform': ^0.49.0
+      effect: ^3.0.0
     dependencies:
-      '@effect/platform': 0.48.27(@effect/schema@0.64.20)(effect@2.4.18)(ws@8.16.0)
+      '@effect/platform': 0.49.0(@effect/schema@0.66.0)(effect@3.0.0)(ws@8.16.0)
       '@parcel/watcher': 2.4.1
-      effect: 2.4.18
+      effect: 3.0.0
       multipasta: 0.2.0
     dev: false
 
-  /@effect/platform-node@0.45.29(@effect/platform@0.48.27)(effect@2.4.18):
-    resolution: {integrity: sha512-/GrESdPrAfLww8e3IzHofJUV6F3DxblC8E3fwL6iK/8CONBOPRnNrgvzJLSTBOGJIEEnNdsqFdWnlHs0OPwiqQ==}
+  /@effect/platform-node@0.46.0(@effect/platform@0.49.0)(effect@3.0.0):
+    resolution: {integrity: sha512-ZB7QCw0EwC3vV85QGInLXBcTzHLBac1Kb2S7gly7hU4UyWQkibfzHWjWGSnH9QyE4Sara+ldOMwyWV4JQt2WWQ==}
     peerDependencies:
-      '@effect/platform': ^0.48.27
-      effect: ^2.4.18
+      '@effect/platform': ^0.49.0
+      effect: ^3.0.0
     dependencies:
-      '@effect/platform': 0.48.27(@effect/schema@0.64.20)(effect@2.4.18)(ws@8.16.0)
-      '@effect/platform-node-shared': 0.3.27(@effect/platform@0.48.27)(effect@2.4.18)
-      effect: 2.4.18
+      '@effect/platform': 0.49.0(@effect/schema@0.66.0)(effect@3.0.0)(ws@8.16.0)
+      '@effect/platform-node-shared': 0.4.0(@effect/platform@0.49.0)(effect@3.0.0)
+      effect: 3.0.0
       mime: 3.0.0
-      undici: 6.11.1
+      undici: 6.13.0
       ws: 8.16.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
     dev: false
 
-  /@effect/platform@0.48.27(@effect/schema@0.64.20)(effect@2.4.18)(ws@8.16.0):
-    resolution: {integrity: sha512-5DRgmzcYXYF/reoum3hzZ0ZCUZ5tvwgXCOsJFs6QricwC6h1wrthgYULCftI2/3KL/8mW+cxPow9/kTH08JQAg==}
+  /@effect/platform@0.49.0(@effect/schema@0.66.0)(effect@3.0.0)(ws@8.16.0):
+    resolution: {integrity: sha512-FhVe/eUwVREp8bD6oFApj0srbmUAE3If9EnvCfJLFBxiKcCU+HoFJ3VHDoAb7bRjrg4mAfiqCF3ghGxhY6omFQ==}
     peerDependencies:
-      '@effect/schema': ^0.64.20
-      effect: ^2.4.18
+      '@effect/schema': ^0.66.0
+      effect: ^3.0.0
     dependencies:
-      '@effect/schema': 0.64.20(effect@2.4.18)(fast-check@3.17.1)
-      effect: 2.4.18
+      '@effect/schema': 0.66.0(effect@3.0.0)(fast-check@3.17.1)
+      effect: 3.0.0
       find-my-way-ts: 0.1.1
       isows: 1.0.4(ws@8.16.0)
       multipasta: 0.2.0
@@ -179,13 +179,13 @@ packages:
       - ws
     dev: false
 
-  /@effect/schema@0.64.20(effect@2.4.18)(fast-check@3.17.1):
-    resolution: {integrity: sha512-oSphgsP9j7yHy31RxTQ0txWq76u1F/H1Hqw+GVcpjnK4n/fuZo7MNYU/qpG+TLJWj4+yUku5I3Rr0Vr7gVoMeQ==}
+  /@effect/schema@0.66.0(effect@3.0.0)(fast-check@3.17.1):
+    resolution: {integrity: sha512-wbmA4vQ0OswEwBt+vWn4oEgw2QdEDchPiNNisPCHvSy5e5qH0usfppJ3fNX9cwrCz6jEQTCE42Q/7Was2BhVHg==}
     peerDependencies:
-      effect: ^2.4.18
+      effect: ^3.0.0
       fast-check: ^3.13.2
     dependencies:
-      effect: 2.4.18
+      effect: 3.0.0
       fast-check: 3.17.1
     dev: false
 
@@ -479,7 +479,7 @@ packages:
       '@octokit/auth-oauth-device': 6.1.0
       '@octokit/auth-oauth-user': 4.1.0
       '@octokit/request': 8.3.1
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       '@types/btoa-lite': 1.0.2
       btoa-lite: 1.0.0
       universal-user-agent: 6.0.1
@@ -491,7 +491,7 @@ packages:
     dependencies:
       '@octokit/oauth-methods': 4.1.0
       '@octokit/request': 8.3.1
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       universal-user-agent: 6.0.1
     dev: false
 
@@ -502,7 +502,7 @@ packages:
       '@octokit/auth-oauth-device': 6.1.0
       '@octokit/oauth-methods': 4.1.0
       '@octokit/request': 8.3.1
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       btoa-lite: 1.0.0
       universal-user-agent: 6.0.1
     dev: false
@@ -528,7 +528,7 @@ packages:
       '@octokit/graphql': 7.1.0
       '@octokit/request': 8.3.1
       '@octokit/request-error': 5.1.0
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       before-after-hook: 2.2.3
       universal-user-agent: 6.0.1
     dev: false
@@ -537,7 +537,7 @@ packages:
     resolution: {integrity: sha512-ekqR4/+PCLkEBF6qgj8WqJfvDq65RH85OAgrtnVp1mSxaXF03u2xW/hUdweGS5654IlC0wkNYC18Z50tSYTAFw==}
     engines: {node: '>= 18'}
     dependencies:
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       universal-user-agent: 6.0.1
     dev: false
 
@@ -546,7 +546,7 @@ packages:
     engines: {node: '>= 18'}
     dependencies:
       '@octokit/request': 8.3.1
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       universal-user-agent: 6.0.1
     dev: false
 
@@ -576,7 +576,7 @@ packages:
       '@octokit/oauth-authorization-url': 6.0.2
       '@octokit/request': 8.3.1
       '@octokit/request-error': 5.1.0
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       btoa-lite: 1.0.0
     dev: false
 
@@ -584,8 +584,8 @@ packages:
     resolution: {integrity: sha512-EtqRBEjp1dL/15V7WiX5LJMIxxkdiGJnabzYx5Apx4FkQIFgAfKumXeYAqqJCj1s+BMX4cPFIFC4OLCR6stlnA==}
     dev: false
 
-  /@octokit/openapi-types@22.0.1:
-    resolution: {integrity: sha512-1yN5m1IMNXthoBDUXFF97N1gHop04B3H8ws7wtOr8GgRyDO1gKALjwMHARNBoMBiB/2vEe/vxstrApcJZzQbnQ==}
+  /@octokit/openapi-types@22.1.0:
+    resolution: {integrity: sha512-pGUdSP+eEPfZiQHNkZI0U01HLipxncisdJQB4G//OAmfeO8sqTQ9KRa0KF03TUPCziNsoXUrTg4B2Q1EX++T0Q==}
 
   /@octokit/plugin-paginate-graphql@4.0.1(@octokit/core@5.2.0):
     resolution: {integrity: sha512-R8ZQNmrIKKpHWC6V2gum4x9LG2qF1RxRjo27gjQcG3j+vf2tLsEfE7I/wRWEPzYMaenr1M+qDAtNcwZve1ce1A==}
@@ -643,7 +643,7 @@ packages:
     resolution: {integrity: sha512-GETXfE05J0+7H2STzekpKObFe765O5dlAKUTLNGeH+x47z7JjXHfsHKo5z21D/o/IOZTUEI6nyWyR+bZVP/n5Q==}
     engines: {node: '>= 18'}
     dependencies:
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       deprecation: 2.3.1
       once: 1.4.0
     dev: false
@@ -654,7 +654,7 @@ packages:
     dependencies:
       '@octokit/endpoint': 9.0.5
       '@octokit/request-error': 5.1.0
-      '@octokit/types': 13.4.0
+      '@octokit/types': 13.4.1
       universal-user-agent: 6.0.1
     dev: false
 
@@ -664,10 +664,10 @@ packages:
       '@octokit/openapi-types': 20.0.0
     dev: false
 
-  /@octokit/types@13.4.0:
-    resolution: {integrity: sha512-WlMegy3lPXYWASe3k9Jslc5a0anrYAYMWtsFrxBTdQjS70hvLH6C+PGvHbOsgy3RA3LouGJoU/vAt4KarecQLQ==}
+  /@octokit/types@13.4.1:
+    resolution: {integrity: sha512-Y73oOAzRBAUzR/iRAbGULzpNkX8vaxKCqEtg6K74Ff3w9f5apFnWtE/2nade7dMWWW3bS5Kkd6DJS4HF04xreg==}
     dependencies:
-      '@octokit/openapi-types': 22.0.1
+      '@octokit/openapi-types': 22.1.0
 
   /@octokit/webhooks-methods@4.1.0:
     resolution: {integrity: sha512-zoQyKw8h9STNPqtm28UGOYFE7O6D4Il8VJwhAtMHFt2C4L0VQT1qGKLeefUOqHNs1mNRYSadVv7x0z8U2yyeWQ==}
@@ -1021,7 +1021,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@types/node': 20.12.7
-      '@types/qs': 6.9.14
+      '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
     dev: false
@@ -1033,7 +1033,7 @@ packages:
     dependencies:
       '@types/body-parser': 1.19.5
       '@types/express-serve-static-core': 4.19.0
-      '@types/qs': 6.9.14
+      '@types/qs': 6.9.15
       '@types/serve-static': 1.15.7
     dev: false
     optional: true
@@ -1074,8 +1074,8 @@ packages:
     dependencies:
       undici-types: 5.26.5
 
-  /@types/qs@6.9.14:
-    resolution: {integrity: sha512-5khscbd3SwWMhFqylJBLQ0zIu7c1K6Vz0uBIt915BI3zV0q1nfjRQD3RqSBcPaO6PHEF4ov/t9y89fSiyThlPA==}
+  /@types/qs@6.9.15:
+    resolution: {integrity: sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg==}
     requiresBuild: true
     dev: false
     optional: true
@@ -1190,14 +1190,14 @@ packages:
     hasBin: true
     dev: false
 
-  /dfx@0.92.0(@effect/platform@0.48.27)(effect@2.4.18):
-    resolution: {integrity: sha512-8asAIlyaTsnL+SqknXAohPOwJmsfejvTOwqBp7LEsdkV894EGL3+Qgb+dMhA7kXC1QPEOesUsSGBdZjgzQdyJQ==}
+  /dfx@0.93.0(@effect/platform@0.49.0)(effect@3.0.0):
+    resolution: {integrity: sha512-IzHvjSI9msIyFqjOPiqL4a4peTAxVszzyGNsg4gpnHNTQklYH5jMnq/2F7dfRkcY95KPlpVL7MlJQ3Nan3nGjg==}
     peerDependencies:
-      '@effect/platform': ^0.48.27
-      effect: ^2.4.18
+      '@effect/platform': ^0.49.0
+      effect: ^3.0.0
     dependencies:
-      '@effect/platform': 0.48.27(@effect/schema@0.64.20)(effect@2.4.18)(ws@8.16.0)
-      effect: 2.4.18
+      '@effect/platform': 0.49.0(@effect/schema@0.66.0)(effect@3.0.0)(ws@8.16.0)
+      effect: 3.0.0
     optionalDependencies:
       bufferutil: 4.0.8
       discord-verify: 1.2.0
@@ -1225,8 +1225,8 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /effect@2.4.18:
-    resolution: {integrity: sha512-8nNzkhSzFLhG9YxowXKawlk4+b3zwwOsbZwaaYhy1OjZGcEgcE6i0ywMFieXNSfOtsQ8swV1+5hvF+VBEtwwqg==}
+  /effect@3.0.0:
+    resolution: {integrity: sha512-8yVxuahojpD8Y6ynrvIlSWD2xsea/PyGnjA4V5c7v0fOMJafgsKUNUHErBAr6YoPikmtOfR9zqNWRd9u5QaWEQ==}
     dev: false
 
   /esbuild@0.19.12:
@@ -1571,8 +1571,8 @@ packages:
       wrappy: 1.0.2
     dev: false
 
-  /openai@4.33.0:
-    resolution: {integrity: sha512-Sh4KvplkvkAREuhb8yZpohqsOo08cBBu6LNWLD8YyMxe8yCxbE+ouJYUs1X2oDPrzQGANj0rFNQYiwW9gWLBOg==}
+  /openai@4.36.0:
+    resolution: {integrity: sha512-AtYrhhWY64LhB9P6f3H0nV8nTSaQJ89mWPnfNU5CnYg81zlYaV8nkyO+aTNfprdqP/9xv10woNNUgefXINT4Dg==}
     hasBin: true
     dependencies:
       '@types/node': 18.19.31
@@ -1648,8 +1648,8 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /typescript@5.4.4:
-    resolution: {integrity: sha512-dGE2Vv8cpVvw28v8HCPqyb08EzbBURxDpuhJvTrusShUfGnhHBafDsLdS1EhhxyL6BJQE+2cT3dDPAv+MQ6oLw==}
+  /typescript@5.4.5:
+    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -1657,8 +1657,8 @@ packages:
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  /undici@6.11.1:
-    resolution: {integrity: sha512-KyhzaLJnV1qa3BSHdj4AZ2ndqI0QWPxYzaIOio0WzcEJB9gvuysprJSLtpvc2D9mhR9jPDUk7xlJlZbH2KR5iw==}
+  /undici@6.13.0:
+    resolution: {integrity: sha512-Q2rtqmZWrbP8nePMq7mOJIN98M0fYvSgV89vwl/BQRT4mDOeY2GXZngfGpcBBhtky3woM7G24wZV3Q304Bv6cw==}
     engines: {node: '>=18.0'}
     dev: false
 

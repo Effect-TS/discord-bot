@@ -65,7 +65,7 @@ const make = Effect.gen(function* (_) {
       )
     }).pipe(
       Effect.catchTags({
-        MissingTopic: () => Effect.unit,
+        MissingTopic: () => Effect.void,
       }),
       Effect.annotateLogs({
         channelId: channel.id,
@@ -82,7 +82,7 @@ const make = Effect.gen(function* (_) {
           name: `${new Date().toDateString()} - ${message}`,
         }),
       ),
-      Effect.asUnit,
+      Effect.asVoid,
       Effect.retry(createThreadPolicy),
       Effect.withSpan("Reminders.createThread", { attributes: { message } }),
     )

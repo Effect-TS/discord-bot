@@ -1,7 +1,8 @@
-import { Http, Schema } from "bot/_common"
+import { Schema } from "@effect/schema"
+import { Http } from "bot/_common"
 import { Discord, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
-import { Duration, Effect, Data, Layer, Schedule, identity, pipe } from "effect"
+import { Data, Duration, Effect, Layer, Schedule, identity, pipe } from "effect"
 import * as HtmlEnt from "html-entities"
 import * as Prettier from "prettier"
 
@@ -11,7 +12,7 @@ const make = Effect.gen(function* (_) {
   const registry = yield* _(InteractionsRegistry)
 
   const docsClient = pipe(
-    Http.client.fetchOk(),
+    Http.client.fetchOk,
     Http.client.retry(retryPolicy),
     Http.client.mapEffectScoped(_ => _.json),
     Http.client.map(_ => Object.values(_ as object)),
@@ -175,21 +176,20 @@ export const DocsLookupLive = Layer.effectDiscard(make).pipe(
 // schema
 
 class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
-  doc: Schema.string,
-  title: Schema.string,
-  content: Schema.string,
+  doc: Schema.String,
+  title: Schema.String,
+  content: Schema.String,
   url: pipe(
-    Schema.string,
-    Schema.transform(
-      Schema.string,
-      path => `https://effect-ts.github.io${path}`,
-      identity,
-    ),
+    Schema.String,
+    Schema.transform(Schema.String, {
+      decode: path => `https://effect-ts.github.io${path}`,
+      encode: identity,
+    }),
   ),
-  relUrl: Schema.string,
+  relUrl: Schema.String,
 }) {
   static readonly decode = Schema.decodeUnknown(this)
-  static readonly decodeArray = Schema.decodeUnknown(Schema.array(this))
+  static readonly decodeArray = Schema.decodeUnknown(Schema.Array(this))
 
   get isSignature() {
     return (
