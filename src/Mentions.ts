@@ -89,8 +89,8 @@ const make = Effect.gen(function* (_) {
         }),
       ),
       Effect.catchTags({
-        NonEligibleMessage: _ => Effect.unit,
-        NoSuchElementException: _ => Effect.unit,
+        NonEligibleMessage: _ => Effect.void,
+        NoSuchElementException: _ => Effect.void,
       }),
       Effect.catchAllCause(Effect.logError),
     ),

@@ -48,18 +48,18 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
     const channels = yield* _(ChannelsCache)
     const registry = yield* _(InteractionsRegistry)
 
-    const EligibleChannel = Schema.struct({
-      id: Schema.string,
-      topic: Schema.string.pipe(Schema.includes(topicKeyword)),
-      type: Schema.literal(Discord.ChannelType.GUILD_TEXT),
+    const EligibleChannel = Schema.Struct({
+      id: Schema.String,
+      topic: Schema.String.pipe(Schema.includes(topicKeyword)),
+      type: Schema.Literal(Discord.ChannelType.GUILD_TEXT),
     }).pipe(Schema.decodeUnknown)
 
-    const EligibleMessage = Schema.struct({
-      id: Schema.string,
-      channel_id: Schema.string,
-      type: Schema.literal(Discord.MessageType.DEFAULT),
-      author: Schema.struct({
-        bot: Schema.optional(Schema.literal(false)),
+    const EligibleMessage = Schema.Struct({
+      id: Schema.String,
+      channel_id: Schema.String,
+      type: Schema.Literal(Discord.MessageType.DEFAULT),
+      author: Schema.Struct({
+        bot: Schema.optional(Schema.Literal(false)),
       }),
     }).pipe(Schema.decodeUnknown)
 
@@ -115,7 +115,7 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
         ),
         Effect.catchTags({
           ParseError: error =>
-            Effect.logDebug(TreeFormatter.formatIssue(error.error)),
+            Effect.logDebug(TreeFormatter.formatIssueSync(error.error)),
         }),
         Effect.catchAllCause(Effect.logError),
         Effect.withSpan("AutoThreads.handleMessages"),

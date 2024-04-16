@@ -5,13 +5,13 @@ import { Message, OpenAI } from "bot/OpenAI"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
 import {
+  Array,
   Cause,
   Chunk,
   Data,
   Effect,
   FiberMap,
   Layer,
-  ReadonlyArray,
   Stream,
   pipe,
 } from "effect"
@@ -120,7 +120,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           type: Discord.ApplicationCommandOptionType.NUMBER,
           name: "repository",
           description: "What repository to create the issue in.",
-          choices: ReadonlyArray.map(githubRepos, ({ label }, value) => ({
+          choices: Array.map(githubRepos, ({ label }, value) => ({
             name: label,
             value: value.toString(),
           })),

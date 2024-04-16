@@ -24,24 +24,24 @@ const make = ({
           : Effect.succeed(_),
       )
 
-    const EligibleChannel = Schema.struct({
-      topic: Schema.string.pipe(Schema.includes(topicKeyword)),
+    const EligibleChannel = Schema.Struct({
+      topic: Schema.String.pipe(Schema.includes(topicKeyword)),
     }).pipe(Schema.decodeUnknown)
 
-    const EligibleMessage = Schema.struct({
-      id: Schema.string,
-      channel_id: Schema.string,
-      flags: Schema.optional(Schema.number, { default: () => 0 }),
-      content: Schema.string,
-      embeds: Schema.nonEmptyArray(
-        Schema.struct({
-          url: Schema.string.pipe(
+    const EligibleMessage = Schema.Struct({
+      id: Schema.String,
+      channel_id: Schema.String,
+      flags: Schema.optional(Schema.Number, { default: () => 0 }),
+      content: Schema.String,
+      embeds: Schema.NonEmptyArray(
+        Schema.Struct({
+          url: Schema.String.pipe(
             Schema.filter(
               _ => urlWhitelist.some(url => _.includes(url)) === false,
               { message: () => "url is whitelisted" },
             ),
           ),
-          type: Schema.string.pipe(
+          type: Schema.String.pipe(
             Schema.filter(_ => _ !== Discord.EmbedType.GIFV, {
               message: () => "embed type is gif",
             }),
@@ -76,7 +76,7 @@ const make = ({
         ),
         Effect.catchTags({
           ParseError: error =>
-            Effect.logDebug(TreeFormatter.formatIssue(error.error)),
+            Effect.logDebug(TreeFormatter.formatIssueSync(error.error)),
         }),
         Effect.catchAllCause(Effect.logError),
         Effect.withSpan("NoEmbed.handleMessage"),
