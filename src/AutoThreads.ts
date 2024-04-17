@@ -113,12 +113,12 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
             ]),
           }),
         ),
+        Effect.withSpan("AutoThreads.handleMessages"),
         Effect.catchTags({
           ParseError: error =>
             Effect.logDebug(TreeFormatter.formatIssueSync(error.error)),
         }),
         Effect.catchAllCause(Effect.logError),
-        Effect.withSpan("AutoThreads.handleMessages"),
       ),
     )
 

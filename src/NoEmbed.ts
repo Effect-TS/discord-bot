@@ -74,12 +74,12 @@ const make = ({
             flags: message.flags | Discord.MessageFlag.SUPPRESS_EMBEDS,
           }),
         ),
+        Effect.withSpan("NoEmbed.handleMessage"),
         Effect.catchTags({
           ParseError: error =>
             Effect.logDebug(TreeFormatter.formatIssueSync(error.error)),
         }),
         Effect.catchAllCause(Effect.logError),
-        Effect.withSpan("NoEmbed.handleMessage"),
       )
 
     yield* _(
