@@ -1,15 +1,16 @@
+import { JSONSchema, Schema } from "@effect/schema"
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import {
-  Secret,
   Context,
   Data,
   Effect,
   Layer,
-  Option,
-  pipe,
-  Predicate,
   Metric,
+  Option,
+  Predicate,
+  Secret,
+  pipe,
 } from "effect"
 import * as Tokenizer from "gpt-tokenizer"
 import * as OAI from "openai"
@@ -41,6 +42,68 @@ export interface Message {
   readonly content: string
 }
 
+export interface ChoiceToolCall<A>
+  extends Schema.Struct<{
+    message: Schema.Struct<{
+      tool_calls: Schema.NonEmptyArray<
+        Schema.Struct<{
+          function: Schema.Struct<{
+            name: Schema.Literal<[string]>
+            arguments: Schema.Schema<A, string, never>
+          }>
+        }>
+      >
+    }>
+  }> {}
+
+const ChoiceToolCall = <A, I>(
+  name: string,
+  schema: Schema.Schema<A, I>,
+): ChoiceToolCall<A> =>
+  Schema.Struct({
+    message: Schema.Struct({
+      tool_calls: Schema.NonEmptyArray(
+        Schema.Struct({
+          function: Schema.Struct({
+            name: Schema.Literal(name),
+            arguments: Schema.parseJson(schema),
+          }),
+        }),
+      ),
+    }),
+  })
+
+export class OpenAITool<A> {
+  constructor(
+    readonly name: string,
+    readonly description: string,
+    readonly schema: Schema.Schema<A, any> & {
+      readonly fields: Record<string, Schema.Schema<any, any>>
+    },
+  ) {
+    this.jsonSchema = JSONSchema.make(Schema.Struct(schema.fields)) as any
+    this.choiceSchema = ChoiceToolCall(name, schema)
+  }
+
+  readonly jsonSchema: Record<string, unknown>
+  readonly choiceSchema: ChoiceToolCall<A>
+
+  decodeChoice(value: OAI.OpenAI.ChatCompletion.Choice | undefined) {
+    return Schema.decodeUnknown(this.choiceSchema)(value)
+  }
+
+  get tool(): OAI.OpenAI.ChatCompletionTool {
+    return {
+      type: "function",
+      function: {
+        name: this.name,
+        description: this.description,
+        parameters: this.jsonSchema,
+      },
+    }
+  }
+}
+
 const make = (params: {
   readonly apiKey: Secret.Secret
   readonly organization: Option.Option<Secret.Secret>
@@ -60,6 +123,32 @@ const make = (params: {
       Metric.trackDuration(metrics.duration),
       Metric.trackAll(metrics.calls, 1n),
       Effect.withSpan("OpenAI.call"),
+    )
+
+  const fn = <A>(tool: OpenAITool<A>, prompt: string) =>
+    call((_, signal) =>
+      _.chat.completions.create(
+        {
+          model: "gpt-4-turbo-preview",
+          tools: [tool.tool],
+          tool_choice: {
+            type: "function",
+            function: {
+              name: tool.name,
+            },
+          },
+          messages: [
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+        },
+        { signal },
+      ),
+    ).pipe(
+      Effect.andThen(_ => tool.decodeChoice(_.choices[0])),
+      Effect.map(_ => _.message.tool_calls[0].function.arguments),
     )
 
   const generateTitle = (prompt: string) =>
@@ -185,6 +274,7 @@ The title of this chat is "${title}".`,
   return {
     client,
     call,
+    fn,
     generateTitle,
     generateReply,
     generateDocs,

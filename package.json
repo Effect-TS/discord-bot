@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@effect/language-service": "^0.1.0",
     "@octokit/types": "^13.4.1",
     "@types/node": "^20.12.7",
     "tsx": "^4.7.2",
