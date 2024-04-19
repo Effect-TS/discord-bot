@@ -1,4 +1,12 @@
-import { Config, Effect, Layer, Secret } from "effect"
+import {
+  Config,
+  Effect,
+  FiberRef,
+  Layer,
+  LogLevel,
+  Logger,
+  Secret,
+} from "effect"
 import * as DevTools from "@effect/experimental/DevTools"
 import * as NodeSdk from "@effect/opentelemetry/NodeSdk"
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base"
@@ -10,7 +18,9 @@ export const TracingLive = Layer.unwrapEffect(
   Effect.gen(function* (_) {
     const apiKey = yield* _(Config.secret("HONEYCOMB_API_KEY"), Config.option)
     if (apiKey._tag === "None") {
-      return DevTools.layer()
+      return DevTools.layer().pipe(
+        Layer.locally(FiberRef.currentMinimumLogLevel, LogLevel.None),
+      )
     }
 
     const headers = {
