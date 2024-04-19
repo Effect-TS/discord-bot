@@ -61,6 +61,9 @@ dependencies:
     version: 3.2.5
 
 devDependencies:
+  '@effect/language-service':
+    specifier: ^0.1.0
+    version: 0.1.0
   '@octokit/types':
     specifier: ^13.4.1
     version: 13.4.1
@@ -103,6 +106,10 @@ packages:
       msgpackr: 1.10.1
       ws: 8.16.0
     dev: false
+
+  /@effect/language-service@0.1.0:
+    resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
+    dev: true
 
   /@effect/opentelemetry@0.32.3(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.23.0)(@opentelemetry/sdk-metrics@1.23.0)(@opentelemetry/sdk-trace-base@1.23.0)(@opentelemetry/sdk-trace-node@1.23.0)(@opentelemetry/semantic-conventions@1.23.0)(effect@3.0.3):
     resolution: {integrity: sha512-5VZlnBEHMAJ0RFMXPeyLAPpAR+qevvXT/l4wTGbXA17JHGJqmPaV2HilMHJeOhR9sQWbBhqbk9Ani3VeqTVTPg==}

@@ -1,6 +1,6 @@
 import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
-import { OpenAI, OpenAIError } from "bot/OpenAI"
+import { OpenAI, OpenAIError, OpenAITool } from "bot/OpenAI"
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
@@ -11,6 +11,7 @@ import {
 } from "dfx/gateway"
 import {
   Cause,
+  Console,
   Context,
   Data,
   Duration,
@@ -23,9 +24,6 @@ import {
 
 const retryPolicy = pipe(
   Schedule.fixed(Duration.millis(500)),
-  Schedule.whileInput(
-    (_: OpenAIError | Cause.NoSuchElementException) => _._tag === "OpenAIError",
-  ),
   Schedule.intersect(Schedule.recurs(2)),
 )
 
@@ -39,6 +37,28 @@ export class PermissionsError extends Data.TaggedError("PermissionsError")<{
   readonly action: string
   readonly subject: string
 }> {}
+
+class MessageInfo extends Schema.Class<MessageInfo>("MessageInfo")({
+  short_title: Schema.String.pipe(
+    Schema.description("A short title summarizing the message"),
+  ),
+  has_code_examples: Schema.Boolean.pipe(
+    Schema.description("Are there code examples in the message?"),
+  ),
+  has_code_fences: Schema.Boolean.pipe(
+    Schema.description("Does the message contain code fences, e.g. ```"),
+  ),
+}) {
+  get missingCodeFences() {
+    return this.has_code_examples && !this.has_code_fences
+  }
+}
+
+const messageInfo = new OpenAITool(
+  "message_info",
+  "Extract a short title and validate a message",
+  MessageInfo,
+)
 
 const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
   Effect.gen(function* (_) {
@@ -70,33 +90,36 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
           .get(message.guild_id!, message.channel_id)
           .pipe(Effect.flatMap(EligibleChannel)),
       }).pipe(
-        Effect.bind("title", () =>
-          pipe(
-            Str.nonEmpty(message.content),
-            Effect.flatMap(content =>
-              pipe(
-                openai.generateTitle(content),
-                Effect.retry(retryPolicy),
-                Effect.tapErrorCause(_ => Effect.log(_)),
-              ),
-            ),
+        Effect.bind("info", () =>
+          openai.fn(messageInfo, message.content).pipe(
+            Effect.retry({
+              schedule: retryPolicy,
+              while: err => err._tag === "OpenAIError",
+            }),
+            Effect.tapErrorCause(_ => Effect.log(_)),
             Effect.orElseSucceed(() =>
               pipe(
                 Option.fromNullable(message.member?.nick),
                 Option.getOrElse(() => message.author.username),
-                _ => `${_}'s thread`,
+                _ =>
+                  new MessageInfo({
+                    short_title: `${_}'s thread`,
+                    has_code_examples: false,
+                    has_code_fences: false,
+                  }),
               ),
             ),
           ),
         ),
-        Effect.flatMap(
-          ({ channel, title }) =>
+        Effect.bind(
+          "thread",
+          ({ channel, info }) =>
             rest.startThreadFromMessage(channel.id, message.id, {
-              name: Str.truncate(title, 100),
+              name: Str.truncate(info.short_title, 100),
               auto_archive_duration: 1440,
             }).json,
         ),
-        Effect.flatMap(thread =>
+        Effect.tap(({ thread }) =>
           rest.createMessage(thread.id, {
             components: UI.grid([
               [
@@ -112,6 +135,20 @@ const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
               ],
             ]),
           }),
+        ),
+        Effect.tap(({ thread, info }) =>
+          rest
+            .createMessage(thread.id, {
+              content: `It looks like your code examples might be missing code fences.
+
+You can wrap your code like this:
+
+${"\\`\\`\\`"}ts
+const a = 123
+${"\\`\\`\\`"}
+`,
+            })
+            .pipe(Effect.when(() => info.missingCodeFences)),
         ),
         Effect.withSpan("AutoThreads.handleMessages"),
         Effect.catchTags({
