@@ -1,6 +1,6 @@
 import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
-import { OpenAI, OpenAIError, OpenAITool } from "bot/OpenAI"
+import { OpenAI, OpenAIFn } from "bot/OpenAI"
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
@@ -10,8 +10,6 @@ import {
   InteractionsRegistry,
 } from "dfx/gateway"
 import {
-  Cause,
-  Console,
   Context,
   Data,
   Duration,
@@ -54,7 +52,7 @@ class MessageInfo extends Schema.Class<MessageInfo>("MessageInfo")({
   }
 }
 
-const messageInfo = new OpenAITool(
+const messageInfo = new OpenAIFn(
   "message_info",
   "Extract a short title and validate a message",
   MessageInfo,
