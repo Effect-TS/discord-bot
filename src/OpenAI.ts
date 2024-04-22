@@ -73,15 +73,13 @@ const ChoiceToolCall = <A, I>(
     }),
   })
 
-export class OpenAITool<A> {
+export class OpenAIFn<A> {
   constructor(
     readonly name: string,
     readonly description: string,
-    readonly schema: Schema.Schema<A, any> & {
-      readonly fields: Record<string, Schema.Schema<any, any>>
-    },
+    readonly schema: Schema.Schema<A, any>,
   ) {
-    this.jsonSchema = JSONSchema.make(Schema.Struct(schema.fields)) as any
+    this.jsonSchema = JSONSchema.make(schema) as any
     this.choiceSchema = ChoiceToolCall(name, schema)
   }
 
@@ -125,7 +123,7 @@ const make = (params: {
       Effect.withSpan("OpenAI.call"),
     )
 
-  const fn = <A>(tool: OpenAITool<A>, prompt: string) =>
+  const fn = <A>(tool: OpenAIFn<A>, prompt: string) =>
     call((_, signal) =>
       _.chat.completions.create(
         {
