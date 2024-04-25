@@ -15,8 +15,8 @@ import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http"
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
 
 export const TracingLive = Layer.unwrapEffect(
-  Effect.gen(function* (_) {
-    const apiKey = yield* _(Config.secret("HONEYCOMB_API_KEY"), Config.option)
+  Effect.gen(function* () {
+    const apiKey = yield* Config.option(Config.secret("HONEYCOMB_API_KEY"))
     if (apiKey._tag === "None") {
       return DevTools.layer().pipe(
         Layer.locally(FiberRef.currentMinimumLogLevel, LogLevel.None),

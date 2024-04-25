@@ -27,39 +27,37 @@ const createThreadPolicy = Schedule.spaced("1 seconds").pipe(
   Schedule.compose(Schedule.recurs(3)),
 )
 
-const make = Effect.gen(function* (_) {
-  const rest = yield* _(DiscordREST)
-  const gateway = yield* _(DiscordGateway)
-  const fibers = yield* _(FiberMap.make<Discord.Snowflake>())
+const make = Effect.gen(function* () {
+  const rest = yield* DiscordREST
+  const gateway = yield* DiscordGateway
+  const fibers = yield* FiberMap.make<Discord.Snowflake>()
 
   const handleChannel = (channel: Discord.Channel) =>
     Effect.gen(function* (_) {
-      yield* _(FiberMap.remove(fibers, channel.id))
+      yield FiberMap.remove(fibers, channel.id)
 
-      const [errors, matches] = yield* _(parseTopic(channel.topic ?? ""))
-      yield* _(Effect.forEach(errors, err => Effect.logInfo(err)))
+      const [errors, matches] = yield* parseTopic(channel.topic ?? "")
+      yield Effect.forEach(errors, err => Effect.logInfo(err))
       if (matches.length === 0) {
-        return yield* _(new MissingTopic())
+        return yield new MissingTopic()
       }
 
-      yield* _(
-        Effect.log("scheduling reminders"),
+      yield Effect.log("scheduling reminders").pipe(
         Effect.annotateLogs(
           "messages",
           matches.map(_ => _[1]),
         ),
       )
 
-      yield* _(
-        Effect.forEach(
-          matches,
-          ([expression, message]) =>
-            Effect.schedule(
-              createThread(channel.id, message),
-              Schedule.cron(expression),
-            ),
-          { discard: true, concurrency: "unbounded" },
-        ),
+      yield Effect.forEach(
+        matches,
+        ([expression, message]) =>
+          Effect.schedule(
+            createThread(channel.id, message),
+            Schedule.cron(expression),
+          ),
+        { discard: true, concurrency: "unbounded" },
+      ).pipe(
         Effect.catchAllCause(Effect.logError),
         FiberMap.run(fibers, channel.id),
       )
@@ -87,26 +85,20 @@ const make = Effect.gen(function* (_) {
       Effect.withSpan("Reminders.createThread", { attributes: { message } }),
     )
 
-  yield* _(
-    gateway.handleDispatch("GUILD_CREATE", ({ channels }) =>
+  yield gateway
+    .handleDispatch("GUILD_CREATE", ({ channels }) =>
       Effect.forEach(channels, handleChannel),
-    ),
-    Effect.forkScoped,
-  )
-  yield* _(
-    gateway.handleDispatch("CHANNEL_CREATE", handleChannel),
-    Effect.forkScoped,
-  )
-  yield* _(
-    gateway.handleDispatch("CHANNEL_UPDATE", handleChannel),
-    Effect.forkScoped,
-  )
-  yield* _(
-    gateway.handleDispatch("CHANNEL_DELETE", ({ id }) =>
-      FiberMap.remove(fibers, id),
-    ),
-    Effect.forkScoped,
-  )
+    )
+    .pipe(Effect.forkScoped)
+  yield gateway
+    .handleDispatch("CHANNEL_CREATE", handleChannel)
+    .pipe(Effect.forkScoped)
+  yield gateway
+    .handleDispatch("CHANNEL_UPDATE", handleChannel)
+    .pipe(Effect.forkScoped)
+  yield gateway
+    .handleDispatch("CHANNEL_DELETE", ({ id }) => FiberMap.remove(fibers, id))
+    .pipe(Effect.forkScoped)
 }).pipe(Effect.annotateLogs({ service: "Reminders" }))
 
 export const RemindersLive = Layer.scopedDiscard(make).pipe(

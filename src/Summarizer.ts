@@ -20,14 +20,14 @@ export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError",
 )<{}> {}
 
-const make = Effect.gen(function* (_) {
-  const rest = yield* _(DiscordREST)
-  const channels = yield* _(ChannelsCache)
-  const registry = yield* _(InteractionsRegistry)
-  const members = yield* _(MemberCache)
-  const messages = yield* _(Messages)
-  const scope = yield* _(Effect.scope)
-  const application = yield* _(rest.getCurrentBotApplicationInformation().json)
+const make = Effect.gen(function* () {
+  const rest = yield* DiscordREST
+  const channels = yield* ChannelsCache
+  const registry = yield* InteractionsRegistry
+  const members = yield* MemberCache
+  const messages = yield* Messages
+  const scope = yield* Effect.scope
+  const application = yield* rest.getCurrentBotApplicationInformation().json
 
   const summarizeThread = (channel: Discord.Channel, small = true) =>
     pipe(
@@ -100,9 +100,9 @@ ${messageContent.join("\n\n")}`,
     replyTo: Option.Option<readonly [Discord.Message, number]>,
     small: boolean,
   ) =>
-    Effect.gen(function* (_) {
+    Effect.gen(function* () {
       const user = message.author
-      const member = yield* _(members.get(thread.guild_id!, message.author.id))
+      const member = yield* members.get(thread.guild_id!, message.author.id)
       const username = member.nick ?? user.username
 
       const smallOpen = small ? "<small>" : ""
@@ -241,7 +241,7 @@ ${message.content}${imagesContent}`
     )
     .catchAllCause(Effect.logError)
 
-  yield* _(registry.register(ix))
+  yield registry.register(ix)
 
   return {
     thread: summarizeThread,
