@@ -10,13 +10,13 @@ class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
 }> {}
 
-const make = Effect.gen(function* (_) {
-  const rest = yield* _(DiscordREST)
-  const gateway = yield* _(DiscordGateway)
-  const channels = yield* _(ChannelsCache)
-  const openai = yield* _(OpenAI)
+const make = Effect.gen(function* () {
+  const rest = yield* DiscordREST
+  const gateway = yield* DiscordGateway
+  const channels = yield* ChannelsCache
+  const openai = yield* OpenAI
 
-  const botUser = yield* _(rest.getCurrentUser().json)
+  const botUser = yield* rest.getCurrentUser().json
 
   const generateContext = (
     thread: Discord.Channel,
@@ -96,7 +96,7 @@ const make = Effect.gen(function* (_) {
     ),
   )
 
-  yield* _(run, Effect.forkScoped)
+  yield Effect.forkScoped(run)
 })
 
 export const MentionsLive = Layer.scopedDiscard(make).pipe(

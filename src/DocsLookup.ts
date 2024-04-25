@@ -8,8 +8,8 @@ import * as Prettier from "prettier"
 
 const docUrls = ["https://effect-ts.github.io/effect"]
 
-const make = Effect.gen(function* (_) {
-  const registry = yield* _(InteractionsRegistry)
+const make = Effect.gen(function* () {
+  const registry = yield* InteractionsRegistry
 
   const docsClient = pipe(
     Http.client.fetchOk,
@@ -23,8 +23,9 @@ const make = Effect.gen(function* (_) {
   const loadDocs = (baseUrl: string) =>
     docsClient(Http.request.get(`${baseUrl}/assets/js/search-data.json`))
 
-  const allDocs = yield* _(
-    Effect.forEach(docUrls, loadDocs, { concurrency: "unbounded" }),
+  const allDocs = yield* Effect.forEach(docUrls, loadDocs, {
+    concurrency: "unbounded",
+  }).pipe(
     Effect.map(_ =>
       _.flat().reduce(
         (acc, entry) => {
@@ -47,7 +48,7 @@ const make = Effect.gen(function* (_) {
   )
 
   // prime the cache
-  yield* _(allDocs)
+  yield allDocs
 
   const search = (query: string) => {
     query = query.toLowerCase()
@@ -166,7 +167,7 @@ const make = Effect.gen(function* (_) {
     .add(autocomplete)
     .catchAllCause(Effect.logError)
 
-  yield* _(registry.register(ix))
+  yield registry.register(ix)
 })
 
 export const DocsLookupLive = Layer.effectDiscard(make).pipe(

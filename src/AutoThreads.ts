@@ -59,12 +59,12 @@ const messageInfo = new OpenAIFn(
 )
 
 const make = ({ topicKeyword }: { readonly topicKeyword: string }) =>
-  Effect.gen(function* (_) {
-    const openai = yield* _(OpenAI)
-    const gateway = yield* _(DiscordGateway)
-    const rest = yield* _(DiscordREST)
-    const channels = yield* _(ChannelsCache)
-    const registry = yield* _(InteractionsRegistry)
+  Effect.gen(function* () {
+    const openai = yield* OpenAI
+    const gateway = yield* DiscordGateway
+    const rest = yield* DiscordREST
+    const channels = yield* ChannelsCache
+    const registry = yield* InteractionsRegistry
 
     const EligibleChannel = Schema.Struct({
       id: Schema.String,
@@ -160,18 +160,21 @@ ${"\\`\\`\\`"}
     const hasManage = Perms.has(Discord.PermissionFlag.MANAGE_CHANNELS)
 
     const withEditPermissions = <R, E, A>(self: Effect.Effect<A, E, R>) =>
-      Effect.gen(function* ($) {
-        const ix = yield* $(Ix.Interaction)
-        const ctx = yield* $(Ix.MessageComponentData)
+      Effect.gen(function* () {
+        const ix = yield* Ix.Interaction
+        const ctx = yield* Ix.MessageComponentData
         const authorId = ctx.custom_id.split("_")[1]
         const canEdit =
           authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
 
         if (!canEdit) {
-          yield* _(new PermissionsError({ action: "edit", subject: "thread" }))
+          return yield new PermissionsError({
+            action: "edit",
+            subject: "thread",
+          })
         }
 
-        return yield* $(self)
+        return yield* self
       })
 
     const edit = Ix.messageComponent(
@@ -256,8 +259,8 @@ ${"\\`\\`\\`"}
       )
       .catchAllCause(Effect.logError)
 
-    yield* _(registry.register(ix))
-    yield* _(handleMessages, Effect.forkScoped)
+    yield registry.register(ix)
+    yield Effect.forkScoped(handleMessages)
   }).pipe(Effect.annotateLogs({ service: "AutoThreads" }))
 
 export class AutoThreadsConfig extends Context.Tag("app/AutoThreadsConfig")<

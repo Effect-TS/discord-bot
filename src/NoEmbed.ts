@@ -12,10 +12,10 @@ const make = ({
   readonly topicKeyword: string
   readonly urlWhitelist: readonly string[]
 }) =>
-  Effect.gen(function* (_) {
-    const gateway = yield* _(DiscordGateway)
-    const rest = yield* _(DiscordREST)
-    const channels = yield* _(ChannelsCache)
+  Effect.gen(function* () {
+    const gateway = yield* DiscordGateway
+    const rest = yield* DiscordREST
+    const channels = yield* ChannelsCache
 
     const getChannel = (guildId: string, id: string) =>
       Effect.flatMap(channels.get(guildId, id), _ =>
@@ -82,17 +82,13 @@ const make = ({
         Effect.catchAllCause(Effect.logError),
       )
 
-    yield* _(
-      gateway.handleDispatch("MESSAGE_CREATE", handleMessage),
-      Effect.retry(Schedule.spaced("1 seconds")),
-      Effect.forkScoped,
-    )
+    yield gateway
+      .handleDispatch("MESSAGE_CREATE", handleMessage)
+      .pipe(Effect.retry(Schedule.spaced("1 seconds")), Effect.forkScoped)
 
-    yield* _(
-      gateway.handleDispatch("MESSAGE_UPDATE", handleMessage),
-      Effect.retry(Schedule.spaced("1 seconds")),
-      Effect.forkScoped,
-    )
+    yield gateway
+      .handleDispatch("MESSAGE_UPDATE", handleMessage)
+      .pipe(Effect.retry(Schedule.spaced("1 seconds")), Effect.forkScoped)
   }).pipe(
     Effect.annotateLogs({
       service: "NoEmbed",

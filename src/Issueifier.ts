@@ -26,18 +26,18 @@ const githubRepos = [
 ]
 type GithubRepo = (typeof githubRepos)[number]
 
-const make = Effect.gen(function* (_) {
-  const rest = yield* _(DiscordREST)
-  const channels = yield* _(ChannelsCache)
-  const openai = yield* _(OpenAI)
-  const messages = yield* _(Messages)
-  const registry = yield* _(InteractionsRegistry)
-  const github = yield* _(Github)
-  const fiberMap = yield* _(FiberMap.make<Discord.Snowflake>())
+const make = Effect.gen(function* () {
+  const rest = yield* DiscordREST
+  const channels = yield* ChannelsCache
+  const openai = yield* OpenAI
+  const messages = yield* Messages
+  const registry = yield* InteractionsRegistry
+  const github = yield* Github
+  const fiberMap = yield* FiberMap.make<Discord.Snowflake>()
 
   const createGithubIssue = github.wrap(_ => _.issues.create)
 
-  const application = yield* _(rest.getCurrentBotApplicationInformation().json)
+  const application = yield* rest.getCurrentBotApplicationInformation().json
 
   const createIssue = (channel: Discord.Channel, repo: GithubRepo) =>
     pipe(
@@ -129,19 +129,19 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       ],
     },
     ix =>
-      Effect.gen(function* (_) {
-        const context = yield* _(Ix.Interaction)
-        const repoIndex = yield* _(ix.optionValue("repository"))
+      Effect.gen(function* () {
+        const context = yield* Ix.Interaction
+        const repoIndex = yield* ix.optionValue("repository")
         const repo = githubRepos[repoIndex]
-        yield* _(Effect.annotateCurrentSpan({ repo: repo.label }))
-        const channel = yield* _(
-          channels.get(context.guild_id!, context.channel_id!),
+        yield Effect.annotateCurrentSpan({ repo: repo.label })
+        const channel = yield* channels.get(
+          context.guild_id!,
+          context.channel_id!,
         )
         if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
-          return yield* _(new NotInThreadError())
+          return yield new NotInThreadError()
         }
-        yield* _(
-          followUp(context, channel, repo),
+        yield followUp(context, channel, repo).pipe(
           Effect.annotateLogs("repo", repo.label),
           Effect.annotateLogs("thread", channel.id),
           FiberMap.run(fiberMap, context.id),
@@ -171,7 +171,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
     )
     .catchAllCause(Effect.logError)
 
-  yield* _(registry.register(ix))
+  yield registry.register(ix)
 })
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(

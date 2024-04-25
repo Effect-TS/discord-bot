@@ -10,19 +10,17 @@ export const cleanupMarkdown = (content: string) =>
     .replace(/[^\n]```/gm, "\n\n```")
     .replace(/([^\n])\n```([^\n]*\n[^\n])/gm, "$1\n\n```$2")
 
-const make = Effect.gen(function* (_) {
-  const rest = yield* _(DiscordREST)
-  const members = yield* _(MemberCache)
+const make = Effect.gen(function* () {
+  const rest = yield* DiscordREST
+  const members = yield* MemberCache
 
   const replaceMentions = (guildId: Discord.Snowflake, content: string) =>
-    Effect.gen(function* (_) {
-      const mentions = yield* _(
-        Effect.forEach(
-          content.matchAll(/<@(\d+)>/g),
-          ([, userId]) =>
-            Effect.option(members.get(guildId, userId as Discord.Snowflake)),
-          { concurrency: "unbounded" },
-        ),
+    Effect.gen(function* () {
+      const mentions = yield* Effect.forEach(
+        content.matchAll(/<@(\d+)>/g),
+        ([, userId]) =>
+          Effect.option(members.get(guildId, userId as Discord.Snowflake)),
+        { concurrency: "unbounded" },
       )
 
       return mentions.reduce(
