@@ -2,6 +2,8 @@ import { JSONSchema, Schema } from "@effect/schema"
 import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import {
+  Config,
+  ConfigProvider,
   Context,
   Data,
   Effect,
@@ -102,15 +104,13 @@ export class OpenAIFn<A> {
   }
 }
 
-const make = (params: {
-  readonly apiKey: Secret.Secret
-  readonly organization: Option.Option<Secret.Secret>
-}) => {
+const make = Effect.gen(function* () {
+  const apiKey = yield* Config.secret("apiKey")
+  const organization = yield* Config.option(Config.secret("organization"))
+
   const client = new OAI.OpenAI({
-    apiKey: Secret.value(params.apiKey),
-    organization: Option.getOrUndefined(
-      Option.map(params.organization, Secret.value),
-    ),
+    apiKey: Secret.value(apiKey),
+    organization: Option.getOrUndefined(Option.map(organization, Secret.value)),
   })
 
   const call = <A>(f: (api: OAI.OpenAI, signal: AbortSignal) => Promise<A>) =>
@@ -278,20 +278,20 @@ The title of this chat is "${title}".`,
     generateDocs,
     generateSummary,
   } as const
-}
-
-export class OpenAIConfig extends Context.Tag("app/OpenAIConfig")<
-  OpenAIConfig,
-  Parameters<typeof make>[0]
->() {
-  static layer = LayerUtils.config(this)
-}
+}).pipe(
+  Effect.withConfigProvider(
+    ConfigProvider.fromEnv().pipe(
+      ConfigProvider.nested("openai"),
+      ConfigProvider.constantCase,
+    ),
+  ),
+)
 
 export class OpenAI extends Context.Tag("app/OpenAI")<
   OpenAI,
-  ReturnType<typeof make>
+  Effect.Effect.Success<typeof make>
 >() {
-  static Live = Layer.effect(OpenAI, Effect.map(OpenAIConfig, make))
+  static Live = Layer.effect(OpenAI, make)
 }
 
 const cleanTitle = (_: string) =>

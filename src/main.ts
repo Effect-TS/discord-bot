@@ -1,13 +1,20 @@
-import { AutoThreadsConfig, AutoThreadsLive } from "bot/AutoThreads"
+import { AutoThreadsLive } from "bot/AutoThreads"
 import { DocsLookupLive } from "bot/DocsLookup"
-import { GithubConfig } from "bot/Github"
 import { IssueifierLive } from "bot/Issueifier"
-import { NoEmbedConfig, NoEmbedLive } from "bot/NoEmbed"
-import { OpenAIConfig } from "bot/OpenAI"
+import { NoEmbedLive } from "bot/NoEmbed"
 import { Summarizer } from "bot/Summarizer"
 import { DiscordConfig, Intents } from "dfx"
 import * as Dotenv from "dotenv"
-import { Config, Effect, Layer, LogLevel, Logger, pipe } from "effect"
+import {
+  Config,
+  ConfigError,
+  ConfigProvider,
+  Effect,
+  Layer,
+  LogLevel,
+  Logger,
+  pipe,
+} from "effect"
 import { RemindersLive } from "./Reminders.js"
 import { NodeHttpClient } from "@effect/platform-node"
 import { TracingLive } from "bot/Tracing"
@@ -31,30 +38,6 @@ const LogLevelLive = Layer.unwrapEffect(
   }),
 )
 
-const OpenAIOptions = OpenAIConfig.layer({
-  apiKey: Config.secret("OPENAI_API_KEY"),
-  organization: Config.option(Config.secret("OPENAI_ORGANIZATION")),
-})
-
-const AutoThreadsOptions = AutoThreadsConfig.layer({
-  topicKeyword: Config.withDefault(
-    Config.string("AUTOTHREADS_KEYWORD"),
-    "[threads]",
-  ),
-})
-
-const NoEmbedOptions = NoEmbedConfig.layer({
-  topicKeyword: Config.withDefault(
-    Config.string("NOEMBED_KEYWORD"),
-    "[noembed]",
-  ),
-  urlWhitelist: Config.succeed(["effect.website"]),
-})
-
-const GithubConfigLive = GithubConfig.layer({
-  token: Config.secret("GITHUB_TOKEN"),
-})
-
 const MainLive = Layer.mergeAll(
   AutoThreadsLive,
   NoEmbedLive,
@@ -64,10 +47,6 @@ const MainLive = Layer.mergeAll(
   Summarizer.Live,
 ).pipe(
   Layer.provide(DiscordConfigLive),
-  Layer.provide(AutoThreadsOptions),
-  Layer.provide(NoEmbedOptions),
-  Layer.provide(OpenAIOptions),
-  Layer.provide(GithubConfigLive),
   Layer.provide(NodeHttpClient.layerUndici),
   Layer.provide(TracingLive),
   Layer.provide(LogLevelLive),
