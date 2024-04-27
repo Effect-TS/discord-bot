@@ -6,20 +6,20 @@ settings:
 
 dependencies:
   '@effect/experimental':
-    specifier: ^0.15.10
-    version: 0.15.10(@effect/platform-node@0.47.5)(@effect/platform@0.50.5)(@effect/schema@0.66.8)(effect@3.0.5)(ws@8.16.0)
+    specifier: ^0.15.11
+    version: 0.15.11(@effect/platform-node@0.47.6)(@effect/platform@0.50.6)(@effect/schema@0.66.9)(effect@3.0.6)(ws@8.16.0)
   '@effect/opentelemetry':
-    specifier: ^0.33.2
-    version: 0.33.2(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.24.0)(@opentelemetry/sdk-metrics@1.24.0)(@opentelemetry/sdk-trace-base@1.24.0)(@opentelemetry/sdk-trace-node@1.24.0)(@opentelemetry/semantic-conventions@1.24.0)(effect@3.0.5)
+    specifier: ^0.33.3
+    version: 0.33.3(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.24.0)(@opentelemetry/sdk-metrics@1.24.0)(@opentelemetry/sdk-trace-base@1.24.0)(@opentelemetry/sdk-trace-node@1.24.0)(@opentelemetry/semantic-conventions@1.24.0)(effect@3.0.6)
   '@effect/platform':
-    specifier: ^0.50.5
-    version: 0.50.5(@effect/schema@0.66.8)(effect@3.0.5)(ws@8.16.0)
+    specifier: ^0.50.6
+    version: 0.50.6(@effect/schema@0.66.9)(effect@3.0.6)(ws@8.16.0)
   '@effect/platform-node':
-    specifier: ^0.47.5
-    version: 0.47.5(@effect/platform@0.50.5)(effect@3.0.5)
+    specifier: ^0.47.6
+    version: 0.47.6(@effect/platform@0.50.6)(effect@3.0.6)
   '@effect/schema':
-    specifier: ^0.66.8
-    version: 0.66.8(effect@3.0.5)(fast-check@3.17.2)
+    specifier: ^0.66.9
+    version: 0.66.9(effect@3.0.6)(fast-check@3.17.2)
   '@opentelemetry/exporter-metrics-otlp-http':
     specifier: ^0.51.0
     version: 0.51.0(@opentelemetry/api@1.8.0)
@@ -36,14 +36,14 @@ dependencies:
     specifier: ^1.24.0
     version: 1.24.0(@opentelemetry/api@1.8.0)
   dfx:
-    specifier: ^0.94.0
-    version: 0.94.0(@effect/platform@0.50.5)(effect@3.0.5)
+    specifier: ^0.95.1
+    version: 0.95.1(@effect/platform@0.50.6)(effect@3.0.6)
   dotenv:
     specifier: ^16.4.5
     version: 16.4.5
   effect:
-    specifier: 3.0.5
-    version: 3.0.5
+    specifier: 3.0.6
+    version: 3.0.6
   gpt-tokenizer:
     specifier: ^2.1.2
     version: 2.1.2
@@ -71,21 +71,21 @@ devDependencies:
     specifier: ^20.12.7
     version: 20.12.7
   tsx:
-    specifier: ^4.7.2
-    version: 4.7.2
+    specifier: ^4.7.3
+    version: 4.7.3
   typescript:
     specifier: ^5.4.5
     version: 5.4.5
 
 packages:
 
-  /@effect/experimental@0.15.10(@effect/platform-node@0.47.5)(@effect/platform@0.50.5)(@effect/schema@0.66.8)(effect@3.0.5)(ws@8.16.0):
-    resolution: {integrity: sha512-cv7kiGmD3cgxnlDW9eAiTzOUqhAXdCTG8JZDdm88jBwwxThlUe26VfrIrucOuAvzgmKHEQC2EA3cWX9tVL+2bw==}
+  /@effect/experimental@0.15.11(@effect/platform-node@0.47.6)(@effect/platform@0.50.6)(@effect/schema@0.66.9)(effect@3.0.6)(ws@8.16.0):
+    resolution: {integrity: sha512-f9YzRWmsYDZJ+VXUavAvSJCiFiaUf8ewtlZ/q84R+SeRnvfDMYWey+LE22LVrY8wIB8wXv2D4n7rUeV2jbg0nw==}
     peerDependencies:
-      '@effect/platform': ^0.50.5
-      '@effect/platform-node': ^0.47.5
-      '@effect/schema': ^0.66.8
-      effect: ^3.0.5
+      '@effect/platform': ^0.50.6
+      '@effect/platform-node': ^0.47.6
+      '@effect/schema': ^0.66.9
+      effect: ^3.0.6
       ioredis: ^5.3.2
       lmdb: ^2.9.2
       ws: ^8.14
@@ -99,10 +99,10 @@ packages:
       ws:
         optional: true
     dependencies:
-      '@effect/platform': 0.50.5(@effect/schema@0.66.8)(effect@3.0.5)(ws@8.16.0)
-      '@effect/platform-node': 0.47.5(@effect/platform@0.50.5)(effect@3.0.5)
-      '@effect/schema': 0.66.8(effect@3.0.5)(fast-check@3.17.2)
-      effect: 3.0.5
+      '@effect/platform': 0.50.6(@effect/schema@0.66.9)(effect@3.0.6)(ws@8.16.0)
+      '@effect/platform-node': 0.47.6(@effect/platform@0.50.6)(effect@3.0.6)
+      '@effect/schema': 0.66.9(effect@3.0.6)(fast-check@3.17.2)
+      effect: 3.0.6
       msgpackr: 1.10.1
       ws: 8.16.0
     dev: false
@@ -111,8 +111,8 @@ packages:
     resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
     dev: true
 
-  /@effect/opentelemetry@0.33.2(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.24.0)(@opentelemetry/sdk-metrics@1.24.0)(@opentelemetry/sdk-trace-base@1.24.0)(@opentelemetry/sdk-trace-node@1.24.0)(@opentelemetry/semantic-conventions@1.24.0)(effect@3.0.5):
-    resolution: {integrity: sha512-kna6JvpGf4Ai/dEyJ+W1J5CPbmAlDrNycmM7V/Rfd79sSY6eMzq0/xLVHelk6+c+ZtgaKAA13n5cRBitaiS61A==}
+  /@effect/opentelemetry@0.33.3(@opentelemetry/api@1.8.0)(@opentelemetry/resources@1.24.0)(@opentelemetry/sdk-metrics@1.24.0)(@opentelemetry/sdk-trace-base@1.24.0)(@opentelemetry/sdk-trace-node@1.24.0)(@opentelemetry/semantic-conventions@1.24.0)(effect@3.0.6):
+    resolution: {integrity: sha512-5n6MtE/hPkntN1BIMxdOBrPL7VmfZQifw4DSirZHuf6IbeF5LrLvyjxF6ZuVEczjwmRggji1nPh0adk+Uhbvpw==}
     peerDependencies:
       '@opentelemetry/api': ^1.6
       '@opentelemetry/resources': ^1.22
@@ -121,7 +121,7 @@ packages:
       '@opentelemetry/sdk-trace-node': ^1.22
       '@opentelemetry/sdk-trace-web': ^1.22
       '@opentelemetry/semantic-conventions': ^1.22
-      effect: ^3.0.5
+      effect: ^3.0.6
     peerDependenciesMeta:
       '@opentelemetry/sdk-metrics':
         optional: true
@@ -138,30 +138,30 @@ packages:
       '@opentelemetry/sdk-trace-base': 1.24.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/sdk-trace-node': 1.24.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/semantic-conventions': 1.24.0
-      effect: 3.0.5
+      effect: 3.0.6
     dev: false
 
-  /@effect/platform-node-shared@0.4.10(@effect/platform@0.50.5)(effect@3.0.5):
-    resolution: {integrity: sha512-fZGHgpuvym7E3nxwM2WXWVkGy+HTUfJ1wqqZLJq6vTRRnW+H637djvcWyodF3hjGZQWQiVE3pazobrjAIg9Ptg==}
+  /@effect/platform-node-shared@0.4.11(@effect/platform@0.50.6)(effect@3.0.6):
+    resolution: {integrity: sha512-vDkij9/e+ApOTJRSKEekIi+PHg2RZOu/tzitnI4i0rlszorlc+xBu4Z+LU4Rou56Y3WHA5aqEyetRQxB78N15w==}
     peerDependencies:
-      '@effect/platform': ^0.50.5
-      effect: ^3.0.5
+      '@effect/platform': ^0.50.6
+      effect: ^3.0.6
     dependencies:
-      '@effect/platform': 0.50.5(@effect/schema@0.66.8)(effect@3.0.5)(ws@8.16.0)
+      '@effect/platform': 0.50.6(@effect/schema@0.66.9)(effect@3.0.6)(ws@8.16.0)
       '@parcel/watcher': 2.4.1
-      effect: 3.0.5
+      effect: 3.0.6
       multipasta: 0.2.0
     dev: false
 
-  /@effect/platform-node@0.47.5(@effect/platform@0.50.5)(effect@3.0.5):
-    resolution: {integrity: sha512-/+DHaNDmjJ3BAAF6yljgwKOlxGKPEbUh+ilOkehovpKCkF5eBTLfabHegN1iNALCkSG6V4dbc6ZTu2EAOtwwKA==}
+  /@effect/platform-node@0.47.6(@effect/platform@0.50.6)(effect@3.0.6):
+    resolution: {integrity: sha512-3nyCbPJJhqNOQ66yS2cvvIdaw4HtNvY5caiQ9ai5gnm6djIUTkRLl3qLqScxGzrRj2IDhClRUI6UCXKXmfIxbQ==}
     peerDependencies:
-      '@effect/platform': ^0.50.5
-      effect: ^3.0.5
+      '@effect/platform': ^0.50.6
+      effect: ^3.0.6
     dependencies:
-      '@effect/platform': 0.50.5(@effect/schema@0.66.8)(effect@3.0.5)(ws@8.16.0)
-      '@effect/platform-node-shared': 0.4.10(@effect/platform@0.50.5)(effect@3.0.5)
-      effect: 3.0.5
+      '@effect/platform': 0.50.6(@effect/schema@0.66.9)(effect@3.0.6)(ws@8.16.0)
+      '@effect/platform-node-shared': 0.4.11(@effect/platform@0.50.6)(effect@3.0.6)
+      effect: 3.0.6
       mime: 3.0.0
       undici: 6.14.1
       ws: 8.16.0
@@ -170,14 +170,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@effect/platform@0.50.5(@effect/schema@0.66.8)(effect@3.0.5)(ws@8.16.0):
-    resolution: {integrity: sha512-l9umNU8Ozd4dt2PuoqJNqrJTTpDDKbStBr82268yGb+qOHNOxXGJ7ajHRpgfEEIY0qar5xPw1GT7wW2jFrbPyQ==}
+  /@effect/platform@0.50.6(@effect/schema@0.66.9)(effect@3.0.6)(ws@8.16.0):
+    resolution: {integrity: sha512-eqqMGGiFbZUpLZLPbSCMZCV35AYXnH1sN1kyFY098Sj5Uf//qiCYFgklHruP/stcN/KlNBdg2JR7n+OgTKyBWQ==}
     peerDependencies:
-      '@effect/schema': ^0.66.8
-      effect: ^3.0.5
+      '@effect/schema': ^0.66.9
+      effect: ^3.0.6
     dependencies:
-      '@effect/schema': 0.66.8(effect@3.0.5)(fast-check@3.17.2)
-      effect: 3.0.5
+      '@effect/schema': 0.66.9(effect@3.0.6)(fast-check@3.17.2)
+      effect: 3.0.6
       find-my-way-ts: 0.1.1
       isows: 1.0.4(ws@8.16.0)
       multipasta: 0.2.0
@@ -186,13 +186,13 @@ packages:
       - ws
     dev: false
 
-  /@effect/schema@0.66.8(effect@3.0.5)(fast-check@3.17.2):
-    resolution: {integrity: sha512-TJ2wGt1O4WqNrZtz9bRd+Mo8sitS33Ifj1u9TqXAg8FlWn7OA+MtULQmktdDVAlWw18QmamKX7grKeatL+0iCg==}
+  /@effect/schema@0.66.9(effect@3.0.6)(fast-check@3.17.2):
+    resolution: {integrity: sha512-52sB+G4GqbUur8tDmiQnwcrqTU2XeZQiVr78SLOvsK3KwLcqHRxQpiHso7zVUbpXHEH/yTa3shbYTz0JNmD9Pg==}
     peerDependencies:
-      effect: ^3.0.5
+      effect: ^3.0.6
       fast-check: ^3.13.2
     dependencies:
-      effect: 3.0.5
+      effect: 3.0.6
       fast-check: 3.17.2
     dev: false
 
@@ -1197,14 +1197,14 @@ packages:
     hasBin: true
     dev: false
 
-  /dfx@0.94.0(@effect/platform@0.50.5)(effect@3.0.5):
-    resolution: {integrity: sha512-W5OAo1GAZBhwydHrhgp4yYjdx4rvA9W2Cy5O9rIAEUOfay0QHyDbtDdNzaegFkoaPrrpphISZoCsVfrYK8xXrA==}
+  /dfx@0.95.1(@effect/platform@0.50.6)(effect@3.0.6):
+    resolution: {integrity: sha512-zcNCKrmCymaXs8ceDFJ009sYNRX/fPryqnQBhLPOw9jtKRLIvPoMqs3my3nuS2xkHxDwjINihrInUKe5VDO7iQ==}
     peerDependencies:
       '@effect/platform': ^0.50.2
-      effect: ^3.0.0
+      effect: ^3.0.5
     dependencies:
-      '@effect/platform': 0.50.5(@effect/schema@0.66.8)(effect@3.0.5)(ws@8.16.0)
-      effect: 3.0.5
+      '@effect/platform': 0.50.6(@effect/schema@0.66.9)(effect@3.0.6)(ws@8.16.0)
+      effect: 3.0.6
     optionalDependencies:
       bufferutil: 4.0.8
       discord-verify: 1.2.0
@@ -1232,8 +1232,8 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /effect@3.0.5:
-    resolution: {integrity: sha512-cXAKns46iWEQkZHgRU+ehgfV2Au34HopVIBkWwTbD+iRR50zMOHNEHEjXGnyJPtWyYlLBQtB9AZXFoc72ChwPA==}
+  /effect@3.0.6:
+    resolution: {integrity: sha512-mm83ZhJnSH1BRnnWnVxk0w+gMN1WPaxq2LEoxATv2esCtd8bSq9BFLuWysWWmnEO3Q8wkGIcjmeIxZymHo2qZw==}
     dev: false
 
   /esbuild@0.19.12:
@@ -1644,8 +1644,8 @@ packages:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: false
 
-  /tsx@4.7.2:
-    resolution: {integrity: sha512-BCNd4kz6fz12fyrgCTEdZHGJ9fWTGeUzXmQysh0RVocDY3h4frk05ZNCXSy4kIenF7y/QnrdiVpTsyNRn6vlAw==}
+  /tsx@4.7.3:
+    resolution: {integrity: sha512-+fQnMqIp/jxZEXLcj6WzYy9FhcS5/Dfk8y4AtzJ6ejKcKqmfTF8Gso/jtrzDggCF2zTU20gJa6n8XqPYwDAUYQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:

@@ -241,7 +241,7 @@ ${message.content}${imagesContent}`
     )
     .catchAllCause(Effect.logError)
 
-  yield registry.register(ix)
+  yield* registry.register(ix)
 
   return {
     thread: summarizeThread,

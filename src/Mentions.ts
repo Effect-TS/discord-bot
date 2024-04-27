@@ -96,7 +96,7 @@ const make = Effect.gen(function* () {
     ),
   )
 
-  yield Effect.forkScoped(run)
+  yield* Effect.forkScoped(run)
 })
 
 export const MentionsLive = Layer.scopedDiscard(make).pipe(

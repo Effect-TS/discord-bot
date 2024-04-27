@@ -1,13 +1,15 @@
 import type { OctokitResponse } from "@octokit/types"
-import { LayerUtils } from "bot/_common"
 import {
   Chunk,
-  Secret,
+  Config,
+  ConfigError,
+  ConfigProvider,
   Context,
-  Effect,
   Data,
+  Effect,
   Layer,
   Option,
+  Secret,
   Stream,
   pipe,
 } from "effect"
@@ -17,7 +19,8 @@ export class GithubError extends Data.TaggedError("GithubError")<{
   readonly reason: unknown
 }> {}
 
-const make = ({ token }: { readonly token: Secret.Secret }) => {
+const make = Effect.gen(function* () {
+  const token = yield* Config.secret("token")
   const octokit = new Octokit({ auth: Secret.value(token) })
 
   const rest = octokit.rest
@@ -62,20 +65,20 @@ const make = ({ token }: { readonly token: Secret.Secret }) => {
     )
 
   return { octokit, token, request, wrap, stream } as const
-}
-
-export class GithubConfig extends Context.Tag("app/GithubConfig")<
-  GithubConfig,
-  Parameters<typeof make>[0]
->() {
-  static layer = LayerUtils.config(this)
-}
+}).pipe(
+  Effect.withConfigProvider(
+    ConfigProvider.fromEnv().pipe(
+      ConfigProvider.nested("github"),
+      ConfigProvider.constantCase,
+    ),
+  ),
+)
 
 export class Github extends Context.Tag("app/Github")<
   Github,
-  ReturnType<typeof make>
+  Effect.Effect.Success<typeof make>
 >() {
-  static Live = GithubConfig.pipe(Effect.map(make), Layer.effect(this))
+  static Live = Layer.effect(Github, make)
 }
 
 // == helpers

@@ -48,7 +48,7 @@ const make = Effect.gen(function* () {
   )
 
   // prime the cache
-  yield allDocs
+  yield* allDocs
 
   const search = (query: string) => {
     query = query.toLowerCase()
@@ -167,7 +167,7 @@ const make = Effect.gen(function* () {
     .add(autocomplete)
     .catchAllCause(Effect.logError)
 
-  yield registry.register(ix)
+  yield* registry.register(ix)
 })
 
 export const DocsLookupLive = Layer.effectDiscard(make).pipe(

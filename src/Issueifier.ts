@@ -133,15 +133,15 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         const context = yield* Ix.Interaction
         const repoIndex = yield* ix.optionValue("repository")
         const repo = githubRepos[repoIndex]
-        yield Effect.annotateCurrentSpan({ repo: repo.label })
+        yield* Effect.annotateCurrentSpan({ repo: repo.label })
         const channel = yield* channels.get(
           context.guild_id!,
           context.channel_id!,
         )
         if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
-          return yield new NotInThreadError()
+          return yield* new NotInThreadError()
         }
-        yield followUp(context, channel, repo).pipe(
+        yield* followUp(context, channel, repo).pipe(
           Effect.annotateLogs("repo", repo.label),
           Effect.annotateLogs("thread", channel.id),
           FiberMap.run(fiberMap, context.id),
@@ -171,7 +171,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
     )
     .catchAllCause(Effect.logError)
 
-  yield registry.register(ix)
+  yield* registry.register(ix)
 })
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
