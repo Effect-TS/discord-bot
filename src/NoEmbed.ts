@@ -1,17 +1,8 @@
 import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
-import { LayerUtils } from "bot/_common"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway, DiscordLive } from "dfx/gateway"
-import {
-  Config,
-  ConfigProvider,
-  Context,
-  Effect,
-  Layer,
-  Schedule,
-  pipe,
-} from "effect"
+import { Config, ConfigProvider, Effect, Layer, Schedule, pipe } from "effect"
 
 const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.string("keyword").pipe(

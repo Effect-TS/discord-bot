@@ -1,5 +1,4 @@
 import { JSONSchema, Schema } from "@effect/schema"
-import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import {
   Config,

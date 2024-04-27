@@ -36,8 +36,8 @@ dependencies:
     specifier: ^1.24.0
     version: 1.24.0(@opentelemetry/api@1.8.0)
   dfx:
-    specifier: ^0.95.0
-    version: 0.95.0(@effect/platform@0.50.6)(effect@3.0.6)
+    specifier: ^0.95.1
+    version: 0.95.1(@effect/platform@0.50.6)(effect@3.0.6)
   dotenv:
     specifier: ^16.4.5
     version: 16.4.5
@@ -1197,8 +1197,8 @@ packages:
     hasBin: true
     dev: false
 
-  /dfx@0.95.0(@effect/platform@0.50.6)(effect@3.0.6):
-    resolution: {integrity: sha512-rgILT9e++VHmtrFY9jbZW3vhsmw4aPW5gr3qN6vNGPMNvVFJOf0NGkMkvHjlnTt/LsNyoiAg1GDqAByfyZ8bsw==}
+  /dfx@0.95.1(@effect/platform@0.50.6)(effect@3.0.6):
+    resolution: {integrity: sha512-zcNCKrmCymaXs8ceDFJ009sYNRX/fPryqnQBhLPOw9jtKRLIvPoMqs3my3nuS2xkHxDwjINihrInUKe5VDO7iQ==}
     peerDependencies:
       '@effect/platform': ^0.50.2
       effect: ^3.0.5

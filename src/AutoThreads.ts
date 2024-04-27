@@ -1,7 +1,6 @@
 import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { OpenAI, OpenAIFn } from "bot/OpenAI"
-import { LayerUtils } from "bot/_common"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
 import {
@@ -12,7 +11,6 @@ import {
 import {
   Config,
   ConfigProvider,
-  Context,
   Data,
   Duration,
   Effect,
