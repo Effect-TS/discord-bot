@@ -89,11 +89,11 @@ const make = Effect.gen(function* () {
       Effect.catchAllCause(Effect.logError),
     )
 
-  yield gateway
+  yield* gateway
     .handleDispatch("MESSAGE_CREATE", handleMessage)
     .pipe(Effect.retry(Schedule.spaced("1 seconds")), Effect.forkScoped)
 
-  yield gateway
+  yield* gateway
     .handleDispatch("MESSAGE_UPDATE", handleMessage)
     .pipe(Effect.retry(Schedule.spaced("1 seconds")), Effect.forkScoped)
 }).pipe(

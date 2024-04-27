@@ -172,7 +172,7 @@ ${"\\`\\`\\`"}
         authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
 
       if (!canEdit) {
-        return yield new PermissionsError({
+        return yield* new PermissionsError({
           action: "edit",
           subject: "thread",
         })
@@ -261,8 +261,8 @@ ${"\\`\\`\\`"}
     )
     .catchAllCause(Effect.logError)
 
-  yield registry.register(ix)
-  yield Effect.forkScoped(handleMessages)
+  yield* registry.register(ix)
+  yield* Effect.forkScoped(handleMessages)
 }).pipe(
   Effect.annotateLogs({ service: "AutoThreads" }),
   Effect.withConfigProvider(

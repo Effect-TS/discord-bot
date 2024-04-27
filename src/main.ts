@@ -1,23 +1,14 @@
+import { NodeHttpClient } from "@effect/platform-node"
 import { AutoThreadsLive } from "bot/AutoThreads"
 import { DocsLookupLive } from "bot/DocsLookup"
 import { IssueifierLive } from "bot/Issueifier"
 import { NoEmbedLive } from "bot/NoEmbed"
 import { Summarizer } from "bot/Summarizer"
+import { TracingLive } from "bot/Tracing"
 import { DiscordConfig, Intents } from "dfx"
 import * as Dotenv from "dotenv"
-import {
-  Config,
-  ConfigError,
-  ConfigProvider,
-  Effect,
-  Layer,
-  LogLevel,
-  Logger,
-  pipe,
-} from "effect"
+import { Config, Effect, Layer, LogLevel, Logger, pipe } from "effect"
 import { RemindersLive } from "./Reminders.js"
-import { NodeHttpClient } from "@effect/platform-node"
-import { TracingLive } from "bot/Tracing"
 
 Dotenv.config()
 

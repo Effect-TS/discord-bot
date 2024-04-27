@@ -34,22 +34,22 @@ const make = Effect.gen(function* () {
 
   const handleChannel = (channel: Discord.Channel) =>
     Effect.gen(function* (_) {
-      yield FiberMap.remove(fibers, channel.id)
+      yield* FiberMap.remove(fibers, channel.id)
 
       const [errors, matches] = yield* parseTopic(channel.topic ?? "")
-      yield Effect.forEach(errors, err => Effect.logInfo(err))
+      yield* Effect.forEach(errors, err => Effect.logInfo(err))
       if (matches.length === 0) {
-        return yield new MissingTopic()
+        return yield* new MissingTopic()
       }
 
-      yield Effect.log("scheduling reminders").pipe(
+      yield* Effect.log("scheduling reminders").pipe(
         Effect.annotateLogs(
           "messages",
           matches.map(_ => _[1]),
         ),
       )
 
-      yield Effect.forEach(
+      yield* Effect.forEach(
         matches,
         ([expression, message]) =>
           Effect.schedule(
@@ -85,18 +85,18 @@ const make = Effect.gen(function* () {
       Effect.withSpan("Reminders.createThread", { attributes: { message } }),
     )
 
-  yield gateway
+  yield* gateway
     .handleDispatch("GUILD_CREATE", ({ channels }) =>
       Effect.forEach(channels, handleChannel),
     )
     .pipe(Effect.forkScoped)
-  yield gateway
+  yield* gateway
     .handleDispatch("CHANNEL_CREATE", handleChannel)
     .pipe(Effect.forkScoped)
-  yield gateway
+  yield* gateway
     .handleDispatch("CHANNEL_UPDATE", handleChannel)
     .pipe(Effect.forkScoped)
-  yield gateway
+  yield* gateway
     .handleDispatch("CHANNEL_DELETE", ({ id }) => FiberMap.remove(fibers, id))
     .pipe(Effect.forkScoped)
 }).pipe(Effect.annotateLogs({ service: "Reminders" }))
