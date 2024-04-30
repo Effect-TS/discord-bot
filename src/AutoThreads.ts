@@ -44,7 +44,7 @@ class MessageInfo extends Schema.Class<MessageInfo>("MessageInfo")({
     Schema.description("Are there code examples in the message?"),
   ),
   has_code_fences: Schema.Boolean.pipe(
-    Schema.description("Does the message contain code fences, e.g. ```"),
+    Schema.description("Does the message contain code fences, e.g. ``` or `"),
   ),
 }) {
   get missingCodeFences() {
@@ -111,6 +111,7 @@ const make = Effect.gen(function* () {
           ),
         ),
       ),
+      Effect.tap(({ info }) => Effect.annotateCurrentSpan("info", info)),
       Effect.bind(
         "thread",
         ({ channel, info }) =>

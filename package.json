@@ -17,17 +17,17 @@
   "license": "ISC",
   "devDependencies": {
     "@effect/language-service": "^0.1.0",
-    "@octokit/types": "^13.4.1",
+    "@octokit/types": "^13.5.0",
     "@types/node": "^20.12.7",
     "tsx": "^4.7.3",
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@effect/experimental": "^0.15.12",
-    "@effect/opentelemetry": "^0.33.4",
-    "@effect/platform": "^0.50.7",
-    "@effect/platform-node": "^0.47.7",
-    "@effect/schema": "^0.66.10",
+    "@effect/experimental": "^0.15.13",
+    "@effect/opentelemetry": "^0.33.5",
+    "@effect/platform": "^0.50.8",
+    "@effect/platform-node": "^0.47.8",
+    "@effect/schema": "^0.66.11",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.51.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.51.0",
     "@opentelemetry/sdk-metrics": "^1.24.0",
@@ -35,11 +35,11 @@
     "@opentelemetry/sdk-trace-node": "^1.24.0",
     "dfx": "^0.95.3",
     "dotenv": "^16.4.5",
-    "effect": "3.0.7",
+    "effect": "3.0.8",
     "gpt-tokenizer": "^2.1.2",
     "html-entities": "^2.5.2",
     "octokit": "^3.2.0",
-    "openai": "^4.38.5",
+    "openai": "^4.39.0",
     "prettier": "^3.2.5"
   }
 }
