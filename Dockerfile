@@ -1,19 +1,17 @@
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 WORKDIR /app
-RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN corepack pnpm install --frozen-lockfile
 
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
-RUN npm install -g pnpm
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
-RUN pnpm build 
-RUN pnpm prune --prod
+RUN corepack pnpm build 
+RUN corepack pnpm prune --prod
 
 
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

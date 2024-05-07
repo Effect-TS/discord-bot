@@ -1,5 +1,6 @@
+import { DiscordLive } from "bot/Discord"
 import { DiscordREST } from "dfx/DiscordREST"
-import { DiscordGateway, DiscordLive } from "dfx/gateway"
+import { DiscordGateway } from "dfx/gateway"
 import { Discord } from "dfx/index"
 import { Cron, Data, Effect, FiberMap, Layer, Schedule, pipe } from "effect"
 

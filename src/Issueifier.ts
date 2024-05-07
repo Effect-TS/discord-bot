@@ -1,9 +1,10 @@
 import { ChannelsCache } from "bot/ChannelsCache"
+import { DiscordLive } from "bot/Discord"
 import { Github } from "bot/Github"
 import { Messages } from "bot/Messages"
 import { Message, OpenAI } from "bot/OpenAI"
 import { Discord, DiscordREST, Ix } from "dfx"
-import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
+import { InteractionsRegistry } from "dfx/gateway"
 import {
   Array,
   Cause,
@@ -175,7 +176,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 })
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(DiscordIxLive),
+  Layer.provide(DiscordLive),
   Layer.provide(ChannelsCache.Live),
   Layer.provide(Messages.Live),
   Layer.provide(OpenAI.Live),

@@ -1,6 +1,6 @@
+import { DiscordLive } from "bot/Discord"
 import { MemberCache } from "bot/MemberCache"
 import { Discord, DiscordREST } from "dfx"
-import { DiscordLive } from "dfx/gateway"
 import { Chunk, Context, Effect, Layer, Option, Stream, pipe } from "effect"
 
 export const cleanupMarkdown = (content: string) =>

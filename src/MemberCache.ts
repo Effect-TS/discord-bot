@@ -1,5 +1,5 @@
+import { DiscordLive } from "bot/Discord"
 import { Discord, DiscordREST } from "dfx"
-import { DiscordLive } from "dfx/gateway"
 import { Cache, Context, Data, Duration, Effect, Layer } from "effect"
 
 export class GetMember extends Data.TaggedClass("GetMember")<{

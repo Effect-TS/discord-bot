@@ -1,15 +1,16 @@
 import { ChannelsCache } from "bot/ChannelsCache"
+import { DiscordLive } from "bot/Discord"
 import { MemberCache } from "bot/MemberCache"
 import { Messages } from "bot/Messages"
 import { Http } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
-import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
+import { InteractionsRegistry } from "dfx/gateway"
 import {
   Cause,
   Chunk,
   Context,
-  Effect,
   Data,
+  Effect,
   Layer,
   Option,
   Stream,
@@ -260,7 +261,7 @@ export class Summarizer extends Context.Tag("app/Summarizer")<
         ChannelsCache.Live,
         MemberCache.Live,
         Messages.Live,
-        DiscordIxLive,
+        DiscordLive,
       ),
     ),
   )
