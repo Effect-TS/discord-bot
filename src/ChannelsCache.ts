@@ -1,5 +1,6 @@
+import { DiscordLive } from "bot/Discord"
 import { Cache } from "dfx"
-import { CachePrelude, DiscordLive } from "dfx/gateway"
+import { CachePrelude } from "dfx/gateway"
 import { Context, Duration, Effect, Layer } from "effect"
 
 const makeChannelsCache = CachePrelude.channels(

@@ -1,13 +1,10 @@
 import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
+import { DiscordLive } from "bot/Discord"
 import { OpenAI, OpenAIFn } from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
-import {
-  DiscordGateway,
-  DiscordIxLive,
-  InteractionsRegistry,
-} from "dfx/gateway"
+import { DiscordGateway, InteractionsRegistry } from "dfx/gateway"
 import {
   Config,
   ConfigProvider,
@@ -275,5 +272,5 @@ ${"\\`\\`\\`"}
 export const AutoThreadsLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(ChannelsCache.Live),
   Layer.provide(OpenAI.Live),
-  Layer.provide(DiscordIxLive),
+  Layer.provide(DiscordLive),
 )

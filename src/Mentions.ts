@@ -1,9 +1,9 @@
 import { ChannelsCache } from "bot/ChannelsCache"
+import { DiscordLive } from "bot/Discord"
 import { Message, OpenAI } from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
-import { DiscordLive } from "dfx/gateway"
 import { Effect, Data, Layer, pipe } from "effect"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
