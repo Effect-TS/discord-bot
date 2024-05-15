@@ -126,7 +126,7 @@ const make = Effect.gen(function* () {
     call((_, signal) =>
       _.chat.completions.create(
         {
-          model: "gpt-4-turbo-preview",
+          model: "gpt-4o",
           tools: [tool.tool],
           tool_choice: {
             type: "function",
@@ -152,7 +152,7 @@ const make = Effect.gen(function* () {
     call((_, signal) =>
       _.chat.completions.create(
         {
-          model: "gpt-4-turbo-preview",
+          model: "gpt-4o",
           messages: [
             {
               role: "user",
@@ -184,7 +184,7 @@ ${Str.truncateWords(prompt, 75)}`,
       call((_, signal) =>
         _.chat.completions.create(
           {
-            model: "gpt-4-turbo-preview",
+            model: "gpt-4o",
             temperature: 1,
             top_p: 1,
             max_tokens: 256,
@@ -229,7 +229,7 @@ The title of this conversation is "${title}".`,
       call((_, signal) =>
         _.chat.completions.create(
           {
-            model: "gpt-4-turbo-preview",
+            model: "gpt-4o",
             temperature: 0.25,
             messages: [
               {
