@@ -17,6 +17,10 @@ import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
 export const TracingLive = Layer.unwrapEffect(
   Effect.gen(function* () {
     const apiKey = yield* Config.option(Config.secret("HONEYCOMB_API_KEY"))
+    const dataset = yield* Config.withDefault(
+      Config.string("HONEYCOMB_DATASET"),
+      "discord-bot",
+    )
     if (apiKey._tag === "None") {
       return DevTools.layer().pipe(
         Layer.locally(FiberRef.currentMinimumLogLevel, LogLevel.None),
@@ -25,12 +29,12 @@ export const TracingLive = Layer.unwrapEffect(
 
     const headers = {
       "X-Honeycomb-Team": Secret.value(apiKey.value),
-      "X-Honeycomb-Dataset": "discord-bot",
+      "X-Honeycomb-Dataset": dataset,
     }
 
     return NodeSdk.layer(() => ({
       resource: {
-        serviceName: "discord-bot",
+        serviceName: dataset,
       },
       spanProcessor: new BatchSpanProcessor(
         new OTLPTraceExporter({
