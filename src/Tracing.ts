@@ -1,18 +1,10 @@
-import {
-  Config,
-  Effect,
-  FiberRef,
-  Layer,
-  LogLevel,
-  Logger,
-  Secret,
-} from "effect"
 import * as DevTools from "@effect/experimental/DevTools"
 import * as NodeSdk from "@effect/opentelemetry/NodeSdk"
-import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base"
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http"
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http"
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
+import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base"
+import { Config, Effect, FiberRef, Layer, LogLevel, Secret } from "effect"
 
 export const TracingLive = Layer.unwrapEffect(
   Effect.gen(function* () {
