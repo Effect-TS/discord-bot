@@ -7,7 +7,7 @@ import { Config, ConfigProvider, Effect, Layer, Schedule, pipe } from "effect"
 
 const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.string("keyword").pipe(
-    Config.withDefault("[threads]"),
+    Config.withDefault("[noembed]"),
   )
   const urlWhitelist = yield* Config.array(Config.string("urlWhitelist")).pipe(
     Config.withDefault(["effect.website"]),
