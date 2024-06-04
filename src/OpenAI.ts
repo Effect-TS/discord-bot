@@ -158,12 +158,11 @@ const make = Effect.gen(function* () {
               role: "user",
               content: `Create a short title summarizing the following text:
 
-${Str.truncateWords(prompt, 75)}`,
+${Str.truncateWords(prompt, 150)}`,
             },
           ],
           temperature: 0.25,
           max_tokens: 64,
-          top_p: 1,
           frequency_penalty: 0,
           presence_penalty: 0,
         },

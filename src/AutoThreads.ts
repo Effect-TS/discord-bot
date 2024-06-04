@@ -1,7 +1,7 @@
 import { Schema, TreeFormatter } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
-import { OpenAI, OpenAIFn } from "bot/OpenAI"
+import { OpenAI } from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
 import { DiscordGateway, InteractionsRegistry } from "dfx/gateway"
@@ -32,28 +32,6 @@ export class PermissionsError extends Data.TaggedError("PermissionsError")<{
   readonly action: string
   readonly subject: string
 }> {}
-
-class MessageInfo extends Schema.Class<MessageInfo>("MessageInfo")({
-  short_title: Schema.String.pipe(
-    Schema.description("A short title summarizing the message"),
-  ),
-  has_code_examples: Schema.Boolean.pipe(
-    Schema.description("Are there code examples in the message?"),
-  ),
-  has_code_fences: Schema.Boolean.pipe(
-    Schema.description("Does the message contain code fences, e.g. ``` or `"),
-  ),
-}) {
-  get missingCodeFences() {
-    return this.has_code_examples && !this.has_code_fences
-  }
-}
-
-const messageInfo = new OpenAIFn(
-  "message_info",
-  "Extract a short title and validate a message",
-  MessageInfo,
-)
 
 const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.string("keyword").pipe(
@@ -87,33 +65,28 @@ const make = Effect.gen(function* () {
         .get(message.guild_id!, message.channel_id)
         .pipe(Effect.flatMap(EligibleChannel)),
     }).pipe(
-      Effect.bind("info", () =>
-        openai.fn(messageInfo, message.content).pipe(
+      Effect.bind("title", () =>
+        openai.generateTitle(message.content).pipe(
           Effect.retry({
             schedule: retryPolicy,
             while: err => err._tag === "OpenAIError",
           }),
-          Effect.tapErrorCause(_ => Effect.log(_)),
+          Effect.withSpan("AutoThreads.generateTitle"),
           Effect.orElseSucceed(() =>
             pipe(
               Option.fromNullable(message.member?.nick),
               Option.getOrElse(() => message.author.username),
-              _ =>
-                new MessageInfo({
-                  short_title: `${_}'s thread`,
-                  has_code_examples: false,
-                  has_code_fences: false,
-                }),
+              _ => `${_}'s thread`,
             ),
           ),
         ),
       ),
-      Effect.tap(({ info }) => Effect.annotateCurrentSpan("info", info)),
+      Effect.tap(({ title }) => Effect.annotateCurrentSpan({ title })),
       Effect.bind(
         "thread",
-        ({ channel, info }) =>
+        ({ channel, title }) =>
           rest.startThreadFromMessage(channel.id, message.id, {
-            name: Str.truncate(info.short_title, 100),
+            name: Str.truncate(title, 100),
             auto_archive_duration: 1440,
           }).json,
       ),
@@ -133,20 +106,6 @@ const make = Effect.gen(function* () {
             ],
           ]),
         }),
-      ),
-      Effect.tap(({ thread, info }) =>
-        rest
-          .createMessage(thread.id, {
-            content: `It looks like your code examples might be missing code fences.
-
-You can wrap your code like this:
-
-${"\\`\\`\\`"}ts
-const a = 123
-${"\\`\\`\\`"}
-`,
-          })
-          .pipe(Effect.when(() => info.missingCodeFences)),
       ),
       Effect.withSpan("AutoThreads.handleMessages"),
       Effect.catchTags({
