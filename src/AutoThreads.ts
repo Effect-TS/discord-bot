@@ -108,10 +108,6 @@ const make = Effect.gen(function* () {
         }),
       ),
       Effect.withSpan("AutoThreads.handleMessages"),
-      Effect.catchTags({
-        ParseError: error =>
-          Effect.logDebug(TreeFormatter.formatIssueSync(error.error)),
-      }),
       Effect.catchAllCause(Effect.logError),
     ),
   )

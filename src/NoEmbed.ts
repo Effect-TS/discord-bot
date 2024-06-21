@@ -74,10 +74,6 @@ const make = Effect.gen(function* () {
         }),
       ),
       Effect.withSpan("NoEmbed.handleMessage"),
-      Effect.catchTags({
-        ParseError: error =>
-          Effect.logDebug(TreeFormatter.formatIssueSync(error.error)),
-      }),
       Effect.catchAllCause(Effect.logError),
     )
 

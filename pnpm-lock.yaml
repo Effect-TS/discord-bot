@@ -9,44 +9,44 @@ importers:
   .:
     dependencies:
       '@effect/experimental':
-        specifier: ^0.16.26
-        version: 0.16.26(@effect/platform-node@0.51.10(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(bufferutil@4.0.8)(effect@3.3.2)(utf-8-validate@6.0.4))(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2)(ws@8.17.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+        specifier: ^0.17.0
+        version: 0.17.0(@effect/platform-node@0.53.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(bufferutil@4.0.8)(effect@3.4.0)(utf-8-validate@6.0.4))(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0)(ws@8.17.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@effect/opentelemetry':
-        specifier: ^0.34.19
-        version: 0.34.19(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.0)(effect@3.3.2)
+        specifier: ^0.34.23
+        version: 0.34.23(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)(effect@3.4.0)
       '@effect/platform':
-        specifier: ^0.57.1
-        version: 0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2)
+        specifier: ^0.58.1
+        version: 0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0)
       '@effect/platform-node':
-        specifier: ^0.51.10
-        version: 0.51.10(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(bufferutil@4.0.8)(effect@3.3.2)(utf-8-validate@6.0.4)
+        specifier: ^0.53.0
+        version: 0.53.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(bufferutil@4.0.8)(effect@3.4.0)(utf-8-validate@6.0.4)
       '@effect/schema':
-        specifier: ^0.67.23
-        version: 0.67.23(effect@3.3.2)
+        specifier: ^0.68.4
+        version: 0.68.4(effect@3.4.0)
       '@opentelemetry/exporter-metrics-otlp-http':
-        specifier: ^0.52.0
-        version: 0.52.0(@opentelemetry/api@1.9.0)
+        specifier: ^0.52.1
+        version: 0.52.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-trace-otlp-http':
-        specifier: ^0.52.0
-        version: 0.52.0(@opentelemetry/api@1.9.0)
+        specifier: ^0.52.1
+        version: 0.52.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-metrics':
-        specifier: ^1.25.0
-        version: 1.25.0(@opentelemetry/api@1.9.0)
+        specifier: ^1.25.1
+        version: 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base':
-        specifier: ^1.25.0
-        version: 1.25.0(@opentelemetry/api@1.9.0)
+        specifier: ^1.25.1
+        version: 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-node':
-        specifier: ^1.25.0
-        version: 1.25.0(@opentelemetry/api@1.9.0)
+        specifier: ^1.25.1
+        version: 1.25.1(@opentelemetry/api@1.9.0)
       dfx:
-        specifier: ^0.97.7
-        version: 0.97.7(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(effect@3.3.2)
+        specifier: ^0.98.0
+        version: 0.98.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(effect@3.4.0)
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
       effect:
-        specifier: ^3.3.2
-        version: 3.3.2
+        specifier: ^3.4.0
+        version: 3.4.0
       gpt-tokenizer:
         specifier: ^2.1.2
         version: 2.1.2
@@ -57,8 +57,8 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
       openai:
-        specifier: ^4.51.0
-        version: 4.51.0
+        specifier: ^4.52.0
+        version: 4.52.0
       prettier:
         specifier: ^3.3.2
         version: 3.3.2
@@ -70,24 +70,24 @@ importers:
         specifier: ^13.5.0
         version: 13.5.0
       '@types/node':
-        specifier: ^20.14.2
-        version: 20.14.2
+        specifier: ^20.14.7
+        version: 20.14.7
       tsx:
-        specifier: ^4.15.5
-        version: 4.15.5
+        specifier: ^4.15.6
+        version: 4.15.6
       typescript:
-        specifier: 5.5.0-dev.20240514
-        version: 5.5.0-dev.20240514
+        specifier: 5.5.2
+        version: 5.5.2
 
 packages:
 
-  '@effect/experimental@0.16.26':
-    resolution: {integrity: sha512-dPtHEypgRJunRdwwKyBojmwF6UH0rklQqNBDrD2hbP74tZHzDPTo4wq3apwN4vrSIlduDtciYzTFGGUZUeNL2Q==}
+  '@effect/experimental@0.17.0':
+    resolution: {integrity: sha512-jCKuMnHezaw7X5jvs51Ax9151udLXQpaxDqmLnAbm08b0Y2WOIN/CDZh/sE917NJ4tW/TXpfJPTjJRYNlnsOig==}
     peerDependencies:
-      '@effect/platform': ^0.57.1
-      '@effect/platform-node': ^0.51.10
-      '@effect/schema': ^0.67.23
-      effect: ^3.3.2
+      '@effect/platform': ^0.58.1
+      '@effect/platform-node': ^0.53.0
+      '@effect/schema': ^0.68.4
+      effect: ^3.4.0
       ioredis: ^5
       lmdb: ^3
       ws: ^8
@@ -104,8 +104,8 @@ packages:
   '@effect/language-service@0.1.0':
     resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
 
-  '@effect/opentelemetry@0.34.19':
-    resolution: {integrity: sha512-0rpLzLos+PrT6trzvlWqHti2kPwkRO1S42NvFDyI2XjN4zmW/oysbjxbEPhEy4dpZvEr4ihT5CdrpepmTzxkrg==}
+  '@effect/opentelemetry@0.34.23':
+    resolution: {integrity: sha512-C8Bp7SziKIqoJm1oUHhgqu+TZ21ZiyCXveH2pPtgQaAZgMHRY5825sweE5FrUlYit/UrQJnK0U5uwznm5eckjw==}
     peerDependencies:
       '@opentelemetry/api': ^1.6
       '@opentelemetry/resources': ^1.22
@@ -114,7 +114,7 @@ packages:
       '@opentelemetry/sdk-trace-node': ^1.22
       '@opentelemetry/sdk-trace-web': ^1.22
       '@opentelemetry/semantic-conventions': ^1.24.1
-      effect: ^3.3.2
+      effect: ^3.4.0
     peerDependenciesMeta:
       '@opentelemetry/sdk-metrics':
         optional: true
@@ -125,28 +125,28 @@ packages:
       '@opentelemetry/sdk-trace-web':
         optional: true
 
-  '@effect/platform-node-shared@0.6.10':
-    resolution: {integrity: sha512-h6mE8KEBNYBOy2KTmSJUKhqQ+6uYzExDj/JaL0rvsvcDee3qrh4gxOBidsmwyJrSexlqkMp7p7ihPIRY9QQ84g==}
+  '@effect/platform-node-shared@0.8.0':
+    resolution: {integrity: sha512-vshs2Cf4xkz4Vocby1F83yVQy+vXFs6Vf5ML/svU3hl8AvZnb9XSs4CFwTz1TzkX6qCOjEzK9iP5lmN4V3bnIw==}
     peerDependencies:
-      '@effect/platform': ^0.57.1
-      effect: ^3.3.2
+      '@effect/platform': ^0.58.1
+      effect: ^3.4.0
 
-  '@effect/platform-node@0.51.10':
-    resolution: {integrity: sha512-9mzWTsjXuFTHWLu1PDCkFi/JtKDwlSArzxccfAGBKZfGgETib2TbCYRMqJBhHs8/f0F/oeZ2kDsdJQMIsR8veg==}
+  '@effect/platform-node@0.53.0':
+    resolution: {integrity: sha512-szeYgj5OlSj2LjaxozK5AHilMOqVnAwzyLQUMTWcE8f6WkS0avIzSj4Q6z4D2FzTtUd9Y2cc3mG2+J360ustpg==}
     peerDependencies:
-      '@effect/platform': ^0.57.1
-      effect: ^3.3.2
+      '@effect/platform': ^0.58.1
+      effect: ^3.4.0
 
-  '@effect/platform@0.57.1':
-    resolution: {integrity: sha512-O9x4YVtyFKKuoIc5KJkvr5dtu4J7W2HQSj4KGo5QU4FZKW4HkCNQqBpAGChJTMTA7RlqCea7Rn0Z22wzsm3svA==}
+  '@effect/platform@0.58.1':
+    resolution: {integrity: sha512-ORV470aAMR/9g+d5GujCBTp2aJ0Tfm7q6LlktIW4r0fihEXt8w0B2d7rzKrV9mgnAtTyoOdd8A2E/Nj/QLPpRQ==}
     peerDependencies:
-      '@effect/schema': ^0.67.23
-      effect: ^3.3.2
+      '@effect/schema': ^0.68.4
+      effect: ^3.4.0
 
-  '@effect/schema@0.67.23':
-    resolution: {integrity: sha512-REKPOCm8guN6CEMvlQfR5ovjldeVRSnf3sj8FhyOIOeWuUtWlqghyBtgXLbAniSkjFFMFxWwDFyAoxVX9C0wGw==}
+  '@effect/schema@0.68.4':
+    resolution: {integrity: sha512-MLYK3gAW0QYdX+hVsH9dG8AZFoCH4oS0bfOsRTy+D5hN7EsbIomsUhzqYlhOy30oOuodTV9sdS1SQPLr74RL4g==}
     peerDependencies:
-      effect: ^3.3.2
+      effect: ^3.4.0
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -423,94 +423,94 @@ packages:
     resolution: {integrity: sha512-sPHCyi9uZuCs1gg0yF53FFocM+GsiiBEhQQV/itGzzQ8gjyv2GMJ1YvgdDY4lC0ePZeiV3juEw4GbS6w1VHhRw==}
     engines: {node: '>= 18'}
 
-  '@opentelemetry/api-logs@0.52.0':
-    resolution: {integrity: sha512-HxjD7xH9iAE4OyhNaaSec65i1H6QZYBWSwWkowFfsc5YAcDvJG30/J1sRKXEQqdmUcKTXEAnA66UciqZha/4+Q==}
+  '@opentelemetry/api-logs@0.52.1':
+    resolution: {integrity: sha512-qnSqB2DQ9TPP96dl8cDubDvrUyWc0/sK81xHTK8eSUspzDM3bsewX903qclQFvVhgStjRWdC5bLb3kQqMkfV5A==}
     engines: {node: '>=14'}
 
   '@opentelemetry/api@1.9.0':
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
     engines: {node: '>=8.0.0'}
 
-  '@opentelemetry/context-async-hooks@1.25.0':
-    resolution: {integrity: sha512-sBW313mnMyFg0cp/40BRzrZBWG+581s2j5gIsa5fgGadswyILk4mNFATsqrCOpAx945RDuZ2B7ThQLgor9OpfA==}
+  '@opentelemetry/context-async-hooks@1.25.1':
+    resolution: {integrity: sha512-UW/ge9zjvAEmRWVapOP0qyCvPulWU6cQxGxDbWEFfGOj1VBBZAuOqTo3X6yWmDTD3Xe15ysCZChHncr2xFMIfQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/core@1.25.0':
-    resolution: {integrity: sha512-n0B3s8rrqGrasTgNkXLKXzN0fXo+6IYP7M5b7AMsrZM33f/y6DS6kJ0Btd7SespASWq8bgL3taLo0oe0vB52IQ==}
+  '@opentelemetry/core@1.25.1':
+    resolution: {integrity: sha512-GeT/l6rBYWVQ4XArluLVB6WWQ8flHbdb6r2FCHC3smtdOAbrJBIv35tpV/yp9bmYUJf+xmZpu9DRTIeJVhFbEQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/exporter-metrics-otlp-http@0.52.0':
-    resolution: {integrity: sha512-fpIYQ+h2k74eAyhSMI6dhmWr4w2Tzh6L8lbJZKqqQtiZ/gLlLAoTLBIxADFKXywoTqEZi5SC+HyjpxFinpWcLQ==}
+  '@opentelemetry/exporter-metrics-otlp-http@0.52.1':
+    resolution: {integrity: sha512-oAHPOy1sZi58bwqXaucd19F/v7+qE2EuVslQOEeLQT94CDuZJJ4tbWzx8DpYBTrOSzKqqrMtx9+PMxkrcbxOyQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
 
-  '@opentelemetry/exporter-trace-otlp-http@0.52.0':
-    resolution: {integrity: sha512-umj9tOSEAuUdqw2EZua1Dby3c+FZ6xWGT2OF/KGLFLtyIvxhtTOSeMfBy/9CaxHn4vF8mAynmAP5MvVKnRYunA==}
+  '@opentelemetry/exporter-trace-otlp-http@0.52.1':
+    resolution: {integrity: sha512-05HcNizx0BxcFKKnS5rwOV+2GevLTVIRA0tRgWYyw4yCgR53Ic/xk83toYKts7kbzcI+dswInUg/4s8oyA+tqg==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
 
-  '@opentelemetry/otlp-exporter-base@0.52.0':
-    resolution: {integrity: sha512-rlyg5UKW9yMTNMUxYYib9XxEE/krpH7Q6mIuJNOBMbjLwmqe1WQ2MNKNzobVZTKop/FX4CvyNN3wUEl/6gnvfw==}
+  '@opentelemetry/otlp-exporter-base@0.52.1':
+    resolution: {integrity: sha512-z175NXOtX5ihdlshtYBe5RpGeBoTXVCKPPLiQlD6FHvpM4Ch+p2B0yWKYSrBfLH24H9zjJiBdTrtD+hLlfnXEQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
 
-  '@opentelemetry/otlp-transformer@0.52.0':
-    resolution: {integrity: sha512-40acy3JxCAqQYcYepypF/64GVB8jerC6Oiz1HRUXxiSTVwg+ud7UtywfOkPRpc9bjHiyJouWxTjiUPQ9VBMKbg==}
+  '@opentelemetry/otlp-transformer@0.52.1':
+    resolution: {integrity: sha512-I88uCZSZZtVa0XniRqQWKbjAUm73I8tpEy/uJYPPYw5d7BRdVk0RfTBQw8kSUl01oVWEuqxLDa802222MYyWHg==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
-  '@opentelemetry/propagator-b3@1.25.0':
-    resolution: {integrity: sha512-/A+1Tbnf0uwnP51OkoaQlrb9YILdHsoqIISna1MNXpZRzf42xm6LVLb49i+m/zlJoW1e8P4ekcrditR5pfmwog==}
+  '@opentelemetry/propagator-b3@1.25.1':
+    resolution: {integrity: sha512-p6HFscpjrv7//kE+7L+3Vn00VEDUJB0n6ZrjkTYHrJ58QZ8B3ajSJhRbCcY6guQ3PDjTbxWklyvIN2ojVbIb1A==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/propagator-jaeger@1.25.0':
-    resolution: {integrity: sha512-uwA5xqaPISXeX+YutqbjmzENnCGCvrIXlqIXP5gRoA5N6S3W28p+ExL77TugMKHN5gXklapF67jDfz7lq5ETzQ==}
+  '@opentelemetry/propagator-jaeger@1.25.1':
+    resolution: {integrity: sha512-nBprRf0+jlgxks78G/xq72PipVK+4or9Ypntw0gVZYNTCSK8rg5SeaGV19tV920CMqBD/9UIOiFr23Li/Q8tiA==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/resources@1.25.0':
-    resolution: {integrity: sha512-iHjydPMYJ+Li1auveJCq2rp5U2h6Mhq8BidiyE0jfVlDTFyR1ny8AfJHfmFzJ/RAM8vT8L7T21kcmGybxZC7lQ==}
+  '@opentelemetry/resources@1.25.1':
+    resolution: {integrity: sha512-pkZT+iFYIZsVn6+GzM0kSX+u3MSLCY9md+lIJOoKl/P+gJFfxJte/60Usdp8Ce4rOs8GduUpSPNe1ddGyDT1sQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/sdk-logs@0.52.0':
-    resolution: {integrity: sha512-Dp6g7w7WglrDZMn2yHBMAKRGqQy8C0PUbFovkSwcSsmL47n4FSEc3eeGblZTtueOUW+rTsPJpLHoUpEdS0Wibw==}
+  '@opentelemetry/sdk-logs@0.52.1':
+    resolution: {integrity: sha512-MBYh+WcPPsN8YpRHRmK1Hsca9pVlyyKd4BxOC4SsgHACnl/bPp4Cri9hWhVm5+2tiQ9Zf4qSc1Jshw9tOLGWQA==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.4.0 <1.10.0'
 
-  '@opentelemetry/sdk-metrics@1.25.0':
-    resolution: {integrity: sha512-IF+Sv4VHgBr/BPMKabl+GouJIhEqAOexCHgXVTISdz3q9P9H/uA8ScCF+22gitQ69aFtESbdYOV+Fen5+avQng==}
+  '@opentelemetry/sdk-metrics@1.25.1':
+    resolution: {integrity: sha512-9Mb7q5ioFL4E4dDrc4wC/A3NTHDat44v4I3p2pLPSxRvqUbDIQyMVr9uK+EU69+HWhlET1VaSrRzwdckWqY15Q==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
-  '@opentelemetry/sdk-trace-base@1.25.0':
-    resolution: {integrity: sha512-6+g2fiRQUG39guCsKVeY8ToeuUf3YUnPkN6DXRA1qDmFLprlLvZm9cS6+chgbW70cZJ406FTtSCDnJwxDC5sGQ==}
+  '@opentelemetry/sdk-trace-base@1.25.1':
+    resolution: {integrity: sha512-C8k4hnEbc5FamuZQ92nTOp8X/diCY56XUTnMiv9UTuJitCzaNNHAVsdm5+HLCdI8SLQsLWIrG38tddMxLVoftw==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/sdk-trace-node@1.25.0':
-    resolution: {integrity: sha512-sYdZmNCkqthPpjwCxAJk5aQNLxCOQjT1u3JMGvO6rb3Ic8uFdnzXavP13Md9uYPcZBo+KxetyDhCf0x8wJGRng==}
+  '@opentelemetry/sdk-trace-node@1.25.1':
+    resolution: {integrity: sha512-nMcjFIKxnFqoez4gUmihdBrbpsEnAX/Xj16sGvZm+guceYE0NE00vLhpDVK6f3q8Q4VFI5xG8JjlXKMB/SkTTQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/semantic-conventions@1.25.0':
-    resolution: {integrity: sha512-M+kkXKRAIAiAP6qYyesfrC5TOmDpDVtsxuGfPcqd9B/iBrac+E14jYwrgm0yZBUIbIP2OnqC3j+UgkXLm1vxUQ==}
+  '@opentelemetry/semantic-conventions@1.25.1':
+    resolution: {integrity: sha512-ZDjMJJQRlyk8A1KZFCc+bCbsyrn1wTwdNt56F7twdfUfnHUZUq77/WfONCj8p72NZOyP7pNTdUWSTYC3GTbuuQ==}
     engines: {node: '>=14'}
 
   '@parcel/watcher-android-arm64@2.4.1':
@@ -628,8 +628,8 @@ packages:
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
-  '@types/express-serve-static-core@4.19.3':
-    resolution: {integrity: sha512-KOzM7MhcBFlmnlr/fzISFF5vGWVSvN6fTd4T+ExOt08bA/dA5kpSzY52nMsI1KDFmUREpJelPYyuslLRSjjgCg==}
+  '@types/express-serve-static-core@4.19.5':
+    resolution: {integrity: sha512-y6W03tvrACO72aijJ5uF02FRq5cgDR9lUxddQ8vyF+GvmjJQqbzDcJngEjURc+ZsG31VI3hODNZJ2URj86pzmg==}
 
   '@types/express@4.17.21':
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
@@ -643,11 +643,11 @@ packages:
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
 
-  '@types/node@18.19.34':
-    resolution: {integrity: sha512-eXF4pfBNV5DAMKGbI02NnDtWrQ40hAN558/2vvS4gMpMIxaf6JmD7YjnZbq0Q9TDSSkKBamime8ewRoomHdt4g==}
+  '@types/node@18.19.38':
+    resolution: {integrity: sha512-SApYXUF7si4JJ+lO2o6X60OPOnA6wPpbiB09GMCkQ+JAwpa9hxUVG8p7GzA08TKQn5OhzK57rj1wFj+185YsGg==}
 
-  '@types/node@20.14.2':
-    resolution: {integrity: sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q==}
+  '@types/node@20.14.7':
+    resolution: {integrity: sha512-uTr2m2IbJJucF3KUxgnGOZvYbN0QgkGyWxG6973HCpMYFy2KfcgYuIwkJQMQkt1VbBMlvWRbpshFTLxnxCZjKQ==}
 
   '@types/qs@6.9.15':
     resolution: {integrity: sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg==}
@@ -711,11 +711,11 @@ packages:
     resolution: {integrity: sha512-bwy0MGW55bG41VqxxypOsdSdGqLwXPI/focwgTYCFMbdUiBAxLg9CFzG08sz2aqzknwiX7Hkl0bQENjg8iLByw==}
     engines: {node: '>=8'}
 
-  dfx@0.97.7:
-    resolution: {integrity: sha512-0efcKOLCLJf/ikblt4WQvWkbapTskUvGc1DhVFZt5deNaAj1Xj2b/HkQ/oviScZToEnC9+GUNqYpK2cifyPALw==}
+  dfx@0.98.0:
+    resolution: {integrity: sha512-FPaD5OBeFVZrAc3bVFexfLcJTKAiSugWaFZRiWd/MQMM1r3ab3gtUWdFtKqdU/dbG92GEPhXUEcKdQU5BkITzQ==}
     peerDependencies:
-      '@effect/platform': ^0.57.0
-      effect: ^3.2.1
+      '@effect/platform': ^0.58.1
+      effect: ^3.4.0
 
   discord-verify@1.2.0:
     resolution: {integrity: sha512-8qlrMROW8DhpzWWzgNq9kpeLDxKanWa4EDVoj/ASVv2nr+dSr4JPmu2tFSydf3hAGI/OIJTnZyD0JulMYIxx4w==}
@@ -725,8 +725,8 @@ packages:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
 
-  effect@3.3.2:
-    resolution: {integrity: sha512-695XQBtp+UUYG50oREG9ujnRoeQU7xhwHDhT6ZAexm3Q+umdml1kjxcPoYRrS65crmaLlhVpjZHePJNzWOODnA==}
+  effect@3.4.0:
+    resolution: {integrity: sha512-dBufbmIyeOi8Wog8kJUrpCIvVs/GcGMimtd6JIXhRIKdRLrVho9og/28sJmKjxHM+PG9Bn3t9XehcM3YfCB8og==}
 
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
@@ -755,8 +755,8 @@ packages:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
 
-  find-my-way-ts@0.1.2:
-    resolution: {integrity: sha512-AWsH49RGcyayzzxSAkwQKC1bToY5ForAfNreix88slo7wijg1wwTtCPvUUoVm/qhIY3UVSHBKApw8mOGPxsvSg==}
+  find-my-way-ts@0.1.4:
+    resolution: {integrity: sha512-naNl2YZ8m9LlYtPZathQBjXQQ8069uYBFq8We6w9AEGddJErVh0JZw8jd/C/2W9Ib3BjTnu+YN0/rR+ytWxNdw==}
 
   form-data-encoder@1.7.2:
     resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
@@ -839,8 +839,8 @@ packages:
   msgpackr@1.10.2:
     resolution: {integrity: sha512-L60rsPynBvNE+8BWipKKZ9jHcSGbtyJYIwjRq0VrIvQ08cRjntGXJYW/tmciZ2IHWIY8WEW32Qa2xbh5+SKBZA==}
 
-  multipasta@0.2.1:
-    resolution: {integrity: sha512-0NR15o5iewJFMsZ4jN6cztCd4izTLZPyHUfBrakbg/x70B8zplPE6qumbs+A7LmhGtQMzpN/K8MOOdifMgAKFA==}
+  multipasta@0.2.2:
+    resolution: {integrity: sha512-KKGdmXIJUmt9BV45LsbUdMnju8eCNSyF9KpbyqK2E3wQXjpPQOg52/Hc+nsmBacmEkNxLVT5h1y3ZgEXB4prXg==}
 
   node-addon-api@7.1.0:
     resolution: {integrity: sha512-mNcltoe1R8o7STTegSOHdnJNN7s5EUvhoS7ShnTHDyOSd+8H+UdWODq6qSv67PjC8Zc5JRT8+oLAMCr0SIXw7g==}
@@ -871,8 +871,8 @@ packages:
     resolution: {integrity: sha512-wbqF4uc1YbcldtiBFfkSnquHtECEIpYD78YUXI6ri1Im5OO2NLo6ZVpRdbJpdnpZ05zMrVPssNiEo6JQtea+Qg==}
     engines: {node: '>= 18'}
 
-  openai@4.51.0:
-    resolution: {integrity: sha512-UKuWc3/qQyklqhHM8CbdXCv0Z0obap6T0ECdcO5oATQxAbKE5Ky3YCXFQY207z+eGG6ez4U9wvAcuMygxhmStg==}
+  openai@4.52.0:
+    resolution: {integrity: sha512-xmiNcdA9QJ5wffHpZDpIsge6AsPTETJ6h5iqDNuFQ7qGSNtonHn8Qe0VHy4UwLE8rBWiSqh4j+iSvuYZSeKkPg==}
     hasBin: true
 
   path-browserify@1.0.1:
@@ -912,21 +912,21 @@ packages:
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
-  tsx@4.15.5:
-    resolution: {integrity: sha512-iKi8jQ2VBmZ2kU/FkGkL2OSHBHsazsUzsdC/W/RwhKIEsIoZ1alCclZHP5jGfNHEaEWUJFM1GquzCf+4db3b0w==}
+  tsx@4.15.6:
+    resolution: {integrity: sha512-is0VQQlfNZRHEuSSTKA6m4xw74IU4AizmuB6lAYLRt9XtuyeQnyJYexhNZOPCB59SqC4JzmSzPnHGBXxf3k0hA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  typescript@5.5.0-dev.20240514:
-    resolution: {integrity: sha512-NccALPZlTF/kDNV2Q071Or2T5CcoAHodWjsKseA4LZKfdqufQzebaQlPuZatC8AgHY2cnQJBcKMCHNFWW9ubpA==}
+  typescript@5.5.2:
+    resolution: {integrity: sha512-NcRtPEOsPFFWjobJEtfihkLCZCXZt/os3zf8nTxjVH3RvTSxjrCamJpbExGvYOF+tFHc3pA65qpdwPbzjohhew==}
     engines: {node: '>=14.17'}
     hasBin: true
 
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  undici@6.19.0:
-    resolution: {integrity: sha512-9gGwbSLgYMjp4r6M5P9bhqhx1E+RyUIHqZE0r7BmrRoqroJUG6xlVu5TXH9DnwmCPLkcaVNrcYtxUE9d3InnyQ==}
+  undici@6.19.2:
+    resolution: {integrity: sha512-JfjKqIauur3Q6biAtHJ564e3bWa8VvT+7cSiOJHFbX4Erv6CLGDpg8z+Fmg/1OI/47RA+GI2QZaF48SSaLvyBA==}
     engines: {node: '>=18.17'}
 
   universal-github-app-jwt@2.2.0:
@@ -953,8 +953,8 @@ packages:
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
-  ws@8.17.0:
-    resolution: {integrity: sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==}
+  ws@8.17.1:
+    resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -967,59 +967,59 @@ packages:
 
 snapshots:
 
-  '@effect/experimental@0.16.26(@effect/platform-node@0.51.10(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(bufferutil@4.0.8)(effect@3.3.2)(utf-8-validate@6.0.4))(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2)(ws@8.17.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@effect/experimental@0.17.0(@effect/platform-node@0.53.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(bufferutil@4.0.8)(effect@3.4.0)(utf-8-validate@6.0.4))(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0)(ws@8.17.1(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      '@effect/platform': 0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2)
-      '@effect/schema': 0.67.23(effect@3.3.2)
-      effect: 3.3.2
+      '@effect/platform': 0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0)
+      '@effect/schema': 0.68.4(effect@3.4.0)
+      effect: 3.4.0
       msgpackr: 1.10.2
     optionalDependencies:
-      '@effect/platform-node': 0.51.10(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(bufferutil@4.0.8)(effect@3.3.2)(utf-8-validate@6.0.4)
-      ws: 8.17.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      '@effect/platform-node': 0.53.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(bufferutil@4.0.8)(effect@3.4.0)(utf-8-validate@6.0.4)
+      ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
   '@effect/language-service@0.1.0': {}
 
-  '@effect/opentelemetry@0.34.19(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.0)(effect@3.3.2)':
+  '@effect/opentelemetry@0.34.23(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)(effect@3.4.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/resources': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.25.0
-      effect: 3.3.2
+      '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.25.1
+      effect: 3.4.0
     optionalDependencies:
-      '@opentelemetry/sdk-metrics': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-node': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-metrics': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-node': 1.25.1(@opentelemetry/api@1.9.0)
 
-  '@effect/platform-node-shared@0.6.10(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(effect@3.3.2)':
+  '@effect/platform-node-shared@0.8.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(effect@3.4.0)':
     dependencies:
-      '@effect/platform': 0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2)
+      '@effect/platform': 0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0)
       '@parcel/watcher': 2.4.1
-      effect: 3.3.2
-      multipasta: 0.2.1
+      effect: 3.4.0
+      multipasta: 0.2.2
 
-  '@effect/platform-node@0.51.10(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(bufferutil@4.0.8)(effect@3.3.2)(utf-8-validate@6.0.4)':
+  '@effect/platform-node@0.53.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(bufferutil@4.0.8)(effect@3.4.0)(utf-8-validate@6.0.4)':
     dependencies:
-      '@effect/platform': 0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2)
-      '@effect/platform-node-shared': 0.6.10(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(effect@3.3.2)
-      effect: 3.3.2
+      '@effect/platform': 0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0)
+      '@effect/platform-node-shared': 0.8.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(effect@3.4.0)
+      effect: 3.4.0
       mime: 3.0.0
-      undici: 6.19.0
-      ws: 8.17.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      undici: 6.19.2
+      ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2)':
+  '@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0)':
     dependencies:
-      '@effect/schema': 0.67.23(effect@3.3.2)
-      effect: 3.3.2
-      find-my-way-ts: 0.1.2
-      multipasta: 0.2.1
+      '@effect/schema': 0.68.4(effect@3.4.0)
+      effect: 3.4.0
+      find-my-way-ts: 0.1.4
+      multipasta: 0.2.2
       path-browserify: 1.0.1
 
-  '@effect/schema@0.67.23(effect@3.3.2)':
+  '@effect/schema@0.68.4(effect@3.4.0)':
     dependencies:
-      effect: 3.3.2
+      effect: 3.4.0
       fast-check: 3.19.0
 
   '@esbuild/aix-ppc64@0.21.5':
@@ -1256,104 +1256,104 @@ snapshots:
       '@octokit/webhooks-methods': 5.1.0
       aggregate-error: 5.0.0
 
-  '@opentelemetry/api-logs@0.52.0':
+  '@opentelemetry/api-logs@0.52.1':
     dependencies:
       '@opentelemetry/api': 1.9.0
 
   '@opentelemetry/api@1.9.0': {}
 
-  '@opentelemetry/context-async-hooks@1.25.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/context-async-hooks@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
 
-  '@opentelemetry/core@1.25.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/semantic-conventions': 1.25.0
+      '@opentelemetry/semantic-conventions': 1.25.1
 
-  '@opentelemetry/exporter-metrics-otlp-http@0.52.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/exporter-metrics-otlp-http@0.52.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/otlp-exporter-base': 0.52.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/otlp-transformer': 0.52.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-metrics': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/otlp-exporter-base': 0.52.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/otlp-transformer': 0.52.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-metrics': 1.25.1(@opentelemetry/api@1.9.0)
 
-  '@opentelemetry/exporter-trace-otlp-http@0.52.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/exporter-trace-otlp-http@0.52.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/otlp-exporter-base': 0.52.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/otlp-transformer': 0.52.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/otlp-exporter-base': 0.52.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/otlp-transformer': 0.52.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
 
-  '@opentelemetry/otlp-exporter-base@0.52.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/otlp-exporter-base@0.52.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/otlp-transformer': 0.52.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/otlp-transformer': 0.52.1(@opentelemetry/api@1.9.0)
 
-  '@opentelemetry/otlp-transformer@0.52.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/otlp-transformer@0.52.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/api-logs': 0.52.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-logs': 0.52.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-metrics': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/api-logs': 0.52.1
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-logs': 0.52.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-metrics': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
       protobufjs: 7.3.2
 
-  '@opentelemetry/propagator-b3@1.25.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/propagator-b3@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
 
-  '@opentelemetry/propagator-jaeger@1.25.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/propagator-jaeger@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
 
-  '@opentelemetry/resources@1.25.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/resources@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.25.0
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.25.1
 
-  '@opentelemetry/sdk-logs@0.52.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/sdk-logs@0.52.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/api-logs': 0.52.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/api-logs': 0.52.1
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
 
-  '@opentelemetry/sdk-metrics@1.25.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/sdk-metrics@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
       lodash.merge: 4.6.2
 
-  '@opentelemetry/sdk-trace-base@1.25.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.25.0
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.25.1
 
-  '@opentelemetry/sdk-trace-node@1.25.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/sdk-trace-node@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/context-async-hooks': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/propagator-b3': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/propagator-jaeger': 1.25.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/context-async-hooks': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/propagator-b3': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/propagator-jaeger': 1.25.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
       semver: 7.6.2
 
-  '@opentelemetry/semantic-conventions@1.25.0': {}
+  '@opentelemetry/semantic-conventions@1.25.1': {}
 
   '@parcel/watcher-android-arm64@2.4.1':
     optional: true
@@ -1439,17 +1439,17 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.14.2
+      '@types/node': 20.14.7
     optional: true
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.7
     optional: true
 
-  '@types/express-serve-static-core@4.19.3':
+  '@types/express-serve-static-core@4.19.5':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.7
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -1458,7 +1458,7 @@ snapshots:
   '@types/express@4.17.21':
     dependencies:
       '@types/body-parser': 1.19.5
-      '@types/express-serve-static-core': 4.19.3
+      '@types/express-serve-static-core': 4.19.5
       '@types/qs': 6.9.15
       '@types/serve-static': 1.15.7
     optional: true
@@ -1471,14 +1471,14 @@ snapshots:
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.7
       form-data: 4.0.0
 
-  '@types/node@18.19.34':
+  '@types/node@18.19.38':
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.14.2':
+  '@types/node@20.14.7':
     dependencies:
       undici-types: 5.26.5
 
@@ -1491,13 +1491,13 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.14.2
+      '@types/node': 20.14.7
     optional: true
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.14.2
+      '@types/node': 20.14.7
       '@types/send': 0.17.4
     optional: true
 
@@ -1544,10 +1544,10 @@ snapshots:
   detect-libc@2.0.3:
     optional: true
 
-  dfx@0.97.7(@effect/platform@0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2))(effect@3.3.2):
+  dfx@0.98.0(@effect/platform@0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0))(effect@3.4.0):
     dependencies:
-      '@effect/platform': 0.57.1(@effect/schema@0.67.23(effect@3.3.2))(effect@3.3.2)
-      effect: 3.3.2
+      '@effect/platform': 0.58.1(@effect/schema@0.68.4(effect@3.4.0))(effect@3.4.0)
+      effect: 3.4.0
     optionalDependencies:
       discord-verify: 1.2.0
 
@@ -1558,7 +1558,7 @@ snapshots:
 
   dotenv@16.4.5: {}
 
-  effect@3.3.2: {}
+  effect@3.4.0: {}
 
   esbuild@0.21.5:
     optionalDependencies:
@@ -1604,7 +1604,7 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
 
-  find-my-way-ts@0.1.2:
+  find-my-way-ts@0.1.4:
     dependencies:
       fast-querystring: 1.1.2
 
@@ -1685,7 +1685,7 @@ snapshots:
     optionalDependencies:
       msgpackr-extract: 3.0.3
 
-  multipasta@0.2.1: {}
+  multipasta@0.2.2: {}
 
   node-addon-api@7.1.0: {}
 
@@ -1716,9 +1716,9 @@ snapshots:
       '@octokit/request-error': 6.1.1
       '@octokit/types': 13.5.0
 
-  openai@4.51.0:
+  openai@4.52.0:
     dependencies:
-      '@types/node': 18.19.34
+      '@types/node': 18.19.38
       '@types/node-fetch': 2.6.11
       abort-controller: 3.0.0
       agentkeepalive: 4.5.0
@@ -1747,7 +1747,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.14.2
+      '@types/node': 20.14.7
       long: 5.2.3
 
   pure-rand@6.1.0: {}
@@ -1764,18 +1764,18 @@ snapshots:
 
   tr46@0.0.3: {}
 
-  tsx@4.15.5:
+  tsx@4.15.6:
     dependencies:
       esbuild: 0.21.5
       get-tsconfig: 4.7.5
     optionalDependencies:
       fsevents: 2.3.3
 
-  typescript@5.5.0-dev.20240514: {}
+  typescript@5.5.2: {}
 
   undici-types@5.26.5: {}
 
-  undici@6.19.0: {}
+  undici@6.19.2: {}
 
   universal-github-app-jwt@2.2.0: {}
 
@@ -1797,7 +1797,7 @@ snapshots:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
 
-  ws@8.17.0(bufferutil@4.0.8)(utf-8-validate@6.0.4):
+  ws@8.17.1(bufferutil@4.0.8)(utf-8-validate@6.0.4):
     optionalDependencies:
       bufferutil: 4.0.8
       utf-8-validate: 6.0.4
