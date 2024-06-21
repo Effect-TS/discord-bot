@@ -1,6 +1,6 @@
+import { HttpClient, HttpClientRequest } from "@effect/platform"
 import { Schema } from "@effect/schema"
 import { DiscordLive } from "bot/Discord"
-import { Http } from "bot/_common"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Data, Duration, Effect, Layer, Schedule, identity, pipe } from "effect"
@@ -12,17 +12,16 @@ const docUrls = ["https://effect-ts.github.io/effect"]
 const make = Effect.gen(function* () {
   const registry = yield* InteractionsRegistry
 
-  const docsClient = pipe(
-    Http.client.fetchOk,
-    Http.client.retry(retryPolicy),
-    Http.client.mapEffectScoped(_ => _.json),
-    Http.client.map(_ => Object.values(_ as object)),
-    Http.client.mapEffect(DocEntry.decodeArray),
-    Http.client.map(entries => entries.filter(_ => _.isSignature)),
+  const docsClient = HttpClient.fetchOk.pipe(
+    HttpClient.retry(retryPolicy),
+    HttpClient.mapEffectScoped(_ => _.json),
+    HttpClient.map(_ => Object.values(_ as object)),
+    HttpClient.mapEffect(DocEntry.decodeArray),
+    HttpClient.map(entries => entries.filter(_ => _.isSignature)),
   )
 
   const loadDocs = (baseUrl: string) =>
-    docsClient(Http.request.get(`${baseUrl}/assets/js/search-data.json`))
+    docsClient(HttpClientRequest.get(`${baseUrl}/assets/js/search-data.json`))
 
   const allDocs = yield* Effect.forEach(docUrls, loadDocs, {
     concurrency: "unbounded",

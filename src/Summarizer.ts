@@ -1,8 +1,8 @@
+import { HttpBody } from "@effect/platform"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import { MemberCache } from "bot/MemberCache"
 import { Messages } from "bot/Messages"
-import { Http } from "bot/_common"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import {
@@ -157,7 +157,7 @@ ${message.content}${imagesContent}`
           application.id,
           context.token,
           { content: "Here is your summary!" },
-          { body: Http.body.formData(formData) },
+          { body: HttpBody.formData(formData) },
         )
       }),
       Effect.catchAllCause(cause =>
