@@ -8,7 +8,7 @@ export const DiscordLive = DiscordIxLive.pipe(
   Layer.provide(NodeSocket.layerWebSocketConstructor),
   Layer.provide(
     DiscordConfig.layerConfig({
-      token: Config.secret("DISCORD_BOT_TOKEN"),
+      token: Config.redacted("DISCORD_BOT_TOKEN"),
       gateway: {
         intents: Config.succeed(
           Intents.fromList(["GUILD_MESSAGES", "MESSAGE_CONTENT", "GUILDS"]),
