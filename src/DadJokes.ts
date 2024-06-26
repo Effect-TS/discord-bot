@@ -4,21 +4,22 @@ import {
   HttpClientResponse,
 } from "@effect/platform"
 import { Schema } from "@effect/schema"
-import { DiscordIxLive, InteractionsRegistry } from "dfx/gateway"
+import { InteractionsRegistry } from "dfx/gateway"
 import { Ix } from "dfx"
 import { Effect, flow, Layer, Schedule } from "effect"
-import { NodeHttpClient } from "@effect/platform-node"
 import { DiscordLive } from "./Discord.js"
 
 const make = Effect.gen(function* () {
   const client = (yield* HttpClient.HttpClient).pipe(
     HttpClient.mapRequest(
-      flow(HttpClientRequest.prependUrl("https://icanhazdadjoke.com")),
+      flow(
+        HttpClientRequest.prependUrl("https://icanhazdadjoke.com"),
+        HttpClientRequest.acceptJson,
+      ),
     ),
   )
 
   const getJoke = HttpClientRequest.get("/").pipe(
-    HttpClientRequest.acceptJson,
     client,
     HttpClientResponse.schemaBodyJsonScoped(Joke),
     Effect.retry({
@@ -26,6 +27,7 @@ const make = Effect.gen(function* () {
       schedule: Schedule.exponential(200),
     }),
     Effect.orDie,
+    Effect.withSpan("DadJokes.getJoke"),
   )
 
   // discord
