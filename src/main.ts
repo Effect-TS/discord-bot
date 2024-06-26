@@ -7,6 +7,7 @@ import { TracingLive } from "bot/Tracing"
 import * as Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger, pipe } from "effect"
 import { RemindersLive } from "./Reminders.js"
+import { DadJokesLive } from "./DadJokes.js"
 
 Dotenv.config()
 
@@ -20,6 +21,7 @@ const LogLevelLive = Layer.unwrapEffect(
 
 const MainLive = Layer.mergeAll(
   AutoThreadsLive,
+  DadJokesLive,
   NoEmbedLive,
   DocsLookupLive,
   IssueifierLive,
