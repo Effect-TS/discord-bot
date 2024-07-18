@@ -1,4 +1,4 @@
-import { Schema, TreeFormatter } from "@effect/schema"
+import { Schema } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import { OpenAI } from "bot/OpenAI"
@@ -108,6 +108,7 @@ const make = Effect.gen(function* () {
         }),
       ),
       Effect.withSpan("AutoThreads.handleMessages"),
+      Effect.catchTag("ParseError", Effect.logDebug),
       Effect.catchAllCause(Effect.logError),
     ),
   )

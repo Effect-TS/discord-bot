@@ -1,9 +1,10 @@
-import { Schema, TreeFormatter } from "@effect/schema"
+import { Schema } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
-import { Config, ConfigProvider, Effect, Layer, Schedule, pipe } from "effect"
+import { Config, Effect, Layer, Schedule, pipe } from "effect"
+import { nestedConfigProvider } from "./utils/Config.js"
 
 const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.string("keyword").pipe(
@@ -12,9 +13,16 @@ const make = Effect.gen(function* () {
   const urlWhitelist = yield* Config.array(Config.string("urlWhitelist")).pipe(
     Config.withDefault(["effect.website"]),
   )
+  const urlExclude = yield* Config.array(Config.string("urlExclude")).pipe(
+    Config.withDefault(["effect.website/play"]),
+  )
   const gateway = yield* DiscordGateway
   const rest = yield* DiscordREST
   const channels = yield* ChannelsCache
+
+  const validUrl = (url: string) =>
+    urlWhitelist.some(_ => url.includes(_)) &&
+    !urlExclude.some(_ => url.includes(_))
 
   const getChannel = (guildId: string, id: string) =>
     Effect.flatMap(channels.get(guildId, id), _ =>
@@ -35,10 +43,9 @@ const make = Effect.gen(function* () {
     embeds: Schema.NonEmptyArray(
       Schema.Struct({
         url: Schema.String.pipe(
-          Schema.filter(
-            _ => urlWhitelist.some(url => _.includes(url)) === false,
-            { message: () => "url is whitelisted" },
-          ),
+          Schema.filter(url => !validUrl(url), {
+            message: () => "url is whitelisted",
+          }),
         ),
         type: Schema.String.pipe(
           Schema.filter(_ => _ !== Discord.EmbedType.GIFV, {
@@ -74,6 +81,7 @@ const make = Effect.gen(function* () {
         }),
       ),
       Effect.withSpan("NoEmbed.handleMessage"),
+      Effect.catchTag("ParseError", Effect.logDebug),
       Effect.catchAllCause(Effect.logError),
     )
 
@@ -86,12 +94,7 @@ const make = Effect.gen(function* () {
     .pipe(Effect.retry(Schedule.spaced("1 seconds")), Effect.forkScoped)
 }).pipe(
   Effect.annotateLogs({ service: "NoEmbed" }),
-  Effect.withConfigProvider(
-    ConfigProvider.fromEnv().pipe(
-      ConfigProvider.nested("noembed"),
-      ConfigProvider.constantCase,
-    ),
-  ),
+  Effect.withConfigProvider(nestedConfigProvider("noembed")),
 )
 
 export const NoEmbedLive = Layer.scopedDiscard(make).pipe(

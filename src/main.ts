@@ -30,7 +30,7 @@ const MainLive = Layer.mergeAll(
 ).pipe(
   Layer.provide(TracingLive),
   Layer.provide(LogLevelLive),
-  Layer.provide(Logger.logFmt),
+  Layer.provide(Logger.pretty),
 )
 
 pipe(

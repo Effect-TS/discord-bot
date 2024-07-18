@@ -1,4 +1,5 @@
 import { JSONSchema, Schema } from "@effect/schema"
+import { nestedConfigProvider } from "bot/utils/Config"
 import * as Str from "bot/utils/String"
 import {
   Config,
@@ -276,14 +277,7 @@ The title of this chat is "${title}".`,
     generateDocs,
     generateSummary,
   } as const
-}).pipe(
-  Effect.withConfigProvider(
-    ConfigProvider.fromEnv().pipe(
-      ConfigProvider.nested("openai"),
-      ConfigProvider.constantCase,
-    ),
-  ),
-)
+}).pipe(Effect.withConfigProvider(nestedConfigProvider("openai")))
 
 export class OpenAI extends Context.Tag("app/OpenAI")<
   OpenAI,

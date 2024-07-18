@@ -1,9 +1,8 @@
 import type { OctokitResponse } from "@octokit/types"
+import { nestedConfigProvider } from "bot/utils/Config"
 import {
   Chunk,
   Config,
-  ConfigError,
-  ConfigProvider,
   Context,
   Data,
   Effect,
@@ -65,14 +64,7 @@ const make = Effect.gen(function* () {
     )
 
   return { octokit, token, request, wrap, stream } as const
-}).pipe(
-  Effect.withConfigProvider(
-    ConfigProvider.fromEnv().pipe(
-      ConfigProvider.nested("github"),
-      ConfigProvider.constantCase,
-    ),
-  ),
-)
+}).pipe(Effect.withConfigProvider(nestedConfigProvider("github")))
 
 export class Github extends Context.Tag("app/Github")<
   Github,
