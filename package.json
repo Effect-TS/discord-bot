@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "packageManager": "pnpm@9.1.0",
+  "packageManager": "pnpm@9.5.0",
   "exports": {
     ".": "./dist/index.js",
     "./*": "./dist/*.js"
@@ -20,28 +20,28 @@
   "devDependencies": {
     "@effect/language-service": "^0.1.0",
     "@octokit/types": "^13.5.0",
-    "@types/node": "^20.14.9",
-    "tsx": "^4.15.7",
-    "typescript": "5.5.2"
+    "@types/node": "^20.14.11",
+    "tsx": "^4.16.2",
+    "typescript": "5.5.3"
   },
   "dependencies": {
-    "@effect/experimental": "^0.17.12",
-    "@effect/opentelemetry": "^0.34.28",
-    "@effect/platform": "^0.58.13",
-    "@effect/platform-node": "^0.53.12",
-    "@effect/schema": "^0.68.12",
+    "@effect/experimental": "^0.19.2",
+    "@effect/opentelemetry": "^0.34.38",
+    "@effect/platform": "^0.59.1",
+    "@effect/platform-node": "^0.54.2",
+    "@effect/schema": "^0.68.25",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.52.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
     "@opentelemetry/sdk-metrics": "^1.25.1",
     "@opentelemetry/sdk-trace-base": "^1.25.1",
     "@opentelemetry/sdk-trace-node": "^1.25.1",
-    "dfx": "^0.98.0",
+    "dfx": "^0.98.1",
     "dotenv": "^16.4.5",
-    "effect": "^3.4.5",
-    "gpt-tokenizer": "^2.1.2",
+    "effect": "^3.5.5",
+    "gpt-tokenizer": "^2.2.0",
     "html-entities": "^2.5.2",
     "octokit": "^4.0.2",
-    "openai": "^4.52.1",
-    "prettier": "^3.3.2"
+    "openai": "^4.52.7",
+    "prettier": "^3.3.3"
   }
 }

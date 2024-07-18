@@ -4,11 +4,11 @@ import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http"
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http"
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base"
-import { Config, Effect, FiberRef, Layer, LogLevel, Secret } from "effect"
+import { Config, Effect, FiberRef, Layer, LogLevel, Redacted } from "effect"
 
 export const TracingLive = Layer.unwrapEffect(
   Effect.gen(function* () {
-    const apiKey = yield* Config.option(Config.secret("HONEYCOMB_API_KEY"))
+    const apiKey = yield* Config.option(Config.redacted("HONEYCOMB_API_KEY"))
     const dataset = yield* Config.withDefault(
       Config.string("HONEYCOMB_DATASET"),
       "discord-bot",
@@ -20,7 +20,7 @@ export const TracingLive = Layer.unwrapEffect(
     }
 
     const headers = {
-      "X-Honeycomb-Team": Secret.value(apiKey.value),
+      "X-Honeycomb-Team": Redacted.value(apiKey.value),
       "X-Honeycomb-Dataset": dataset,
     }
 
