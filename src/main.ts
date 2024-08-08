@@ -27,14 +27,11 @@ const MainLive = Layer.mergeAll(
   IssueifierLive,
   RemindersLive,
   Summarizer.Live,
-).pipe(
-  Layer.provide(TracingLive),
-  Layer.provide(LogLevelLive),
-  Layer.provide(Logger.pretty),
-)
+).pipe(Layer.provide(TracingLive), Layer.provide(LogLevelLive))
 
 pipe(
   Layer.launch(MainLive),
   Effect.tapErrorCause(Effect.logError),
+  Effect.provide(Logger.pretty),
   Effect.runFork,
 )
