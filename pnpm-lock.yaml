@@ -39,8 +39,8 @@ importers:
         specifier: ^1.25.1
         version: 1.25.1(@opentelemetry/api@1.9.0)
       dfx:
-        specifier: ^0.99.0
-        version: 0.99.0(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(effect@3.6.1)
+        specifier: ^0.99.1
+        version: 0.99.1(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(effect@3.6.1)
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -711,8 +711,8 @@ packages:
     resolution: {integrity: sha512-bwy0MGW55bG41VqxxypOsdSdGqLwXPI/focwgTYCFMbdUiBAxLg9CFzG08sz2aqzknwiX7Hkl0bQENjg8iLByw==}
     engines: {node: '>=8'}
 
-  dfx@0.99.0:
-    resolution: {integrity: sha512-BdhTZbFjK76yDggWHllSZ/fQs3IsjM8797PMhUHfaEc++KU4+np8cZ02NWuMC15vxQ/HMgP5QeM8DxWS1+/k+g==}
+  dfx@0.99.1:
+    resolution: {integrity: sha512-1Wky+IM4qrtR2Fmw3rrVwKd0W4wBLJcD6IGgk8rVDf0OL8lJBxJVXfn5gymqYiJ7F6sYJ2Wye+OShATa6Or8Iw==}
     peerDependencies:
       '@effect/platform': ^0.61.4
       effect: ^3.4
@@ -1537,7 +1537,7 @@ snapshots:
   detect-libc@2.0.3:
     optional: true
 
-  dfx@0.99.0(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(effect@3.6.1):
+  dfx@0.99.1(@effect/platform@0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1))(effect@3.6.1):
     dependencies:
       '@effect/platform': 0.61.5(@effect/schema@0.70.2(effect@3.6.1))(effect@3.6.1)
       effect: 3.6.1
