@@ -8,7 +8,7 @@ import {
   Effect,
   Layer,
   Option,
-  Secret,
+  Redacted,
   Stream,
   pipe,
 } from "effect"
@@ -19,8 +19,8 @@ export class GithubError extends Data.TaggedError("GithubError")<{
 }> {}
 
 const make = Effect.gen(function* () {
-  const token = yield* Config.secret("token")
-  const octokit = new Octokit({ auth: Secret.value(token) })
+  const token = yield* Config.redacted("token")
+  const octokit = new Octokit({ auth: Redacted.value(token) })
 
   const rest = octokit.rest
   type Endpoints = typeof rest

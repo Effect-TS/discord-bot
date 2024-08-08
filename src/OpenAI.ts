@@ -3,7 +3,6 @@ import { nestedConfigProvider } from "bot/utils/Config"
 import * as Str from "bot/utils/String"
 import {
   Config,
-  ConfigProvider,
   Context,
   Data,
   Effect,
@@ -11,7 +10,7 @@ import {
   Metric,
   Option,
   Predicate,
-  Secret,
+  Redacted,
   pipe,
 } from "effect"
 import * as Tokenizer from "gpt-tokenizer"
@@ -105,12 +104,14 @@ export class OpenAIFn<A> {
 }
 
 const make = Effect.gen(function* () {
-  const apiKey = yield* Config.secret("apiKey")
-  const organization = yield* Config.option(Config.secret("organization"))
+  const apiKey = yield* Config.redacted("apiKey")
+  const organization = yield* Config.option(Config.redacted("organization"))
 
   const client = new OAI.OpenAI({
-    apiKey: Secret.value(apiKey),
-    organization: Option.getOrUndefined(Option.map(organization, Secret.value)),
+    apiKey: Redacted.value(apiKey),
+    organization: Option.getOrUndefined(
+      Option.map(organization, Redacted.value),
+    ),
   })
 
   const call = <A>(f: (api: OAI.OpenAI, signal: AbortSignal) => Promise<A>) =>

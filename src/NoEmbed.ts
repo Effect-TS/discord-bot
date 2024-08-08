@@ -38,7 +38,7 @@ const make = Effect.gen(function* () {
   const EligibleMessage = Schema.Struct({
     id: Schema.String,
     channel_id: Schema.String,
-    flags: Schema.optional(Schema.Number, { default: () => 0 }),
+    flags: Schema.optionalWith(Schema.Number, { default: () => 0 }),
     content: Schema.String,
     embeds: Schema.NonEmptyArray(
       Schema.Struct({
