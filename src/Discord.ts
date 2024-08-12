@@ -4,11 +4,7 @@ import { DiscordConfig, Intents } from "dfx"
 import { Config, Layer } from "effect"
 
 export const DiscordLive = DiscordIxLive.pipe(
-  Layer.provideMerge(
-    NodeHttpClient.layerUndiciWithoutDispatcher.pipe(
-      Layer.provide(NodeHttpClient.dispatcherLayer),
-    ),
-  ),
+  Layer.provideMerge(NodeHttpClient.layerUndici),
   Layer.provide(NodeSocket.layerWebSocketConstructor),
   Layer.provide(
     DiscordConfig.layerConfig({
