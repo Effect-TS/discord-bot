@@ -33,7 +33,9 @@ const make = Effect.gen(function* () {
 
   const EligibleChannel = Schema.Struct({
     topic: Schema.String.pipe(Schema.includes(topicKeyword)),
-  }).pipe(Schema.decodeUnknown)
+  })
+    .annotations({ identifier: "EligibleChannel" })
+    .pipe(Schema.decodeUnknown)
 
   const EligibleMessage = Schema.Struct({
     id: Schema.String,
@@ -52,14 +54,16 @@ const make = Effect.gen(function* () {
             message: () => "embed type is gif",
           }),
         ),
-      }),
+      }).annotations({ identifier: "EligibleEmbed" }),
     ),
-  }).pipe(
-    Schema.filter(_ => _.content.includes(_.embeds[0].url), {
-      message: () => "message content does not include embed url",
-    }),
-    Schema.decodeUnknown,
-  )
+  })
+    .annotations({ identifier: "EligibleMessage" })
+    .pipe(
+      Schema.filter(_ => _.content.includes(_.embeds[0].url), {
+        message: () => "message content does not include embed url",
+      }),
+      Schema.decodeUnknown,
+    )
 
   const handleMessage = (message: Discord.MessageCreateEvent) =>
     pipe(
