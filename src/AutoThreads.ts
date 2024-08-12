@@ -47,7 +47,9 @@ const make = Effect.gen(function* () {
     id: Schema.String,
     topic: Schema.String.pipe(Schema.includes(topicKeyword)),
     type: Schema.Literal(Discord.ChannelType.GUILD_TEXT),
-  }).pipe(Schema.decodeUnknown)
+  })
+    .annotations({ identifier: "EligibleChannel" })
+    .pipe(Schema.decodeUnknown)
 
   const EligibleMessage = Schema.Struct({
     id: Schema.String,
@@ -56,7 +58,9 @@ const make = Effect.gen(function* () {
     author: Schema.Struct({
       bot: Schema.optional(Schema.Literal(false)),
     }),
-  }).pipe(Schema.decodeUnknown)
+  })
+    .annotations({ identifier: "EligibleMessage" })
+    .pipe(Schema.decodeUnknown)
 
   const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
     Effect.all({
