@@ -20,16 +20,16 @@
   "devDependencies": {
     "@effect/language-service": "^0.1.0",
     "@octokit/types": "^13.5.0",
-    "@types/node": "^22.4.1",
-    "tsx": "^4.17.0",
+    "@types/node": "^22.5.1",
+    "tsx": "^4.19.0",
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "@effect/experimental": "^0.23.4",
-    "@effect/opentelemetry": "^0.35.5",
-    "@effect/platform": "^0.62.2",
-    "@effect/platform-node": "^0.57.2",
-    "@effect/schema": "^0.71.1",
+    "@effect/experimental": "^0.23.6",
+    "@effect/opentelemetry": "^0.35.7",
+    "@effect/platform": "^0.62.4",
+    "@effect/platform-node": "^0.57.4",
+    "@effect/schema": "^0.71.3",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.52.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
     "@opentelemetry/sdk-metrics": "^1.25.1",
@@ -37,11 +37,11 @@
     "@opentelemetry/sdk-trace-node": "^1.25.1",
     "dfx": "^0.100.0",
     "dotenv": "^16.4.5",
-    "effect": "^3.6.5",
+    "effect": "^3.6.7",
     "gpt-tokenizer": "^2.2.1",
     "html-entities": "^2.5.2",
     "octokit": "^4.0.2",
-    "openai": "^4.56.0",
+    "openai": "^4.56.1",
     "prettier": "^3.3.3"
   }
 }
