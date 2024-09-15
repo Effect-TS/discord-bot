@@ -19,9 +19,9 @@ const make = Effect.gen(function* () {
     ),
   )
 
-  const getJoke = HttpClientRequest.get("/").pipe(
-    client,
-    HttpClientResponse.schemaBodyJsonScoped(Joke),
+  const getJoke = client.get("/").pipe(
+    Effect.flatMap(HttpClientResponse.schemaBodyJson(Joke)),
+    Effect.scoped,
     Effect.retry({
       times: 3,
       schedule: Schedule.exponential(200),

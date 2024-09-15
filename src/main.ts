@@ -5,9 +5,10 @@ import { NoEmbedLive } from "bot/NoEmbed"
 import { Summarizer } from "bot/Summarizer"
 import { TracingLive } from "bot/Tracing"
 import * as Dotenv from "dotenv"
-import { Config, Effect, Layer, LogLevel, Logger, pipe } from "effect"
+import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 import { RemindersLive } from "./Reminders.js"
 import { DadJokesLive } from "./DadJokes.js"
+import { NodeRuntime } from "@effect/platform-node"
 
 Dotenv.config()
 
@@ -29,9 +30,4 @@ const MainLive = Layer.mergeAll(
   Summarizer.Live,
 ).pipe(Layer.provide(TracingLive), Layer.provide(LogLevelLive))
 
-pipe(
-  Layer.launch(MainLive),
-  Effect.tapErrorCause(Effect.logError),
-  Effect.provide(Logger.pretty),
-  Effect.runFork,
-)
+NodeRuntime.runMain(Layer.launch(MainLive))
