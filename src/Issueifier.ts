@@ -2,7 +2,6 @@ import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import { Github } from "bot/Github"
 import { Messages } from "bot/Messages"
-import { Message, OpenAI } from "bot/OpenAI"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import {
@@ -16,6 +15,8 @@ import {
   Stream,
   pipe,
 } from "effect"
+import { AiHelpers } from "./Ai.js"
+import { AiInput, AiRole } from "@effect/ai"
 
 export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError",
@@ -30,7 +31,7 @@ type GithubRepo = (typeof githubRepos)[number]
 const make = Effect.gen(function* () {
   const rest = yield* DiscordREST
   const channels = yield* ChannelsCache
-  const openai = yield* OpenAI
+  const ai = yield* AiHelpers
   const messages = yield* Messages
   const registry = yield* InteractionsRegistry
   const github = yield* Github
@@ -47,19 +48,14 @@ const make = Effect.gen(function* () {
       Effect.map(chunk =>
         Chunk.map(
           Chunk.reverse(chunk),
-          (msg): Message => ({
-            bot: false,
-            name: msg.author.username,
-            content: msg.content,
-          }),
+          (msg): AiInput.Message =>
+            AiInput.Message.fromInput(
+              msg.content,
+              AiRole.userWithName(msg.author.username),
+            ),
         ),
       ),
-      Effect.flatMap(openAiMessages =>
-        openai.generateSummary(
-          channel.name!,
-          Chunk.toReadonlyArray(openAiMessages),
-        ),
-      ),
+      Effect.flatMap(messages => ai.generateSummary(channel.name!, messages)),
       Effect.flatMap(summary =>
         createGithubIssue({
           owner: repo.owner,
@@ -179,6 +175,6 @@ export const IssueifierLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(DiscordLive),
   Layer.provide(ChannelsCache.Live),
   Layer.provide(Messages.Live),
-  Layer.provide(OpenAI.Live),
+  Layer.provide(AiHelpers.Live),
   Layer.provide(Github.Live),
 )

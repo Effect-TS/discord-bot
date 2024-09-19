@@ -9,6 +9,7 @@ import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 import { RemindersLive } from "./Reminders.js"
 import { DadJokesLive } from "./DadJokes.js"
 import { NodeRuntime } from "@effect/platform-node"
+import { MentionsLive } from "./Mentions.js"
 
 Dotenv.config()
 
@@ -28,6 +29,7 @@ const MainLive = Layer.mergeAll(
   IssueifierLive,
   RemindersLive,
   Summarizer.Live,
+  MentionsLive,
 ).pipe(Layer.provide(TracingLive), Layer.provide(LogLevelLive))
 
 NodeRuntime.runMain(Layer.launch(MainLive))
