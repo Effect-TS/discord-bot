@@ -71,19 +71,17 @@ const make = Effect.gen(function* () {
     }).pipe(
       Effect.bind("title", () =>
         ai.generateTitle(message.content).pipe(
+          Effect.tapErrorCause(Effect.log),
           Effect.retry({
             schedule: retryPolicy,
-            while: err => {
-              console.log(err)
-              return err._tag === "AiError"
-            },
+            while: err => err._tag === "AiError",
           }),
           Effect.withSpan("AutoThreads.generateTitle"),
           Effect.orElseSucceed(() =>
             pipe(
               Option.fromNullable(message.member?.nick),
               Option.getOrElse(() => message.author.username),
-              _ => `${_}'s thread`,
+              name => `${name}'s thread`,
             ),
           ),
         ),

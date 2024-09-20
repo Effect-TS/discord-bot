@@ -20,9 +20,8 @@ const make = Effect.gen(function* () {
 
   const generateTitle = (prompt: string) =>
     completions.create.pipe(
-      AiInput.provide(`Create a short title summarizing the following text:
-
-${Str.truncateWords(prompt, 150)}`),
+      AiInput.provideSystem("Create a short title summarizing the message."),
+      AiInput.provide(Str.truncateWords(prompt, 500)),
       Effect.provideService(OpenAiCompletions.OpenAiConfig, {
         temperature: 0.25,
         max_tokens: 64,
