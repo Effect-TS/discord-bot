@@ -9,8 +9,8 @@
     "./*": "./dist/*.js"
   },
   "scripts": {
-    "build": "rm -rf dist *.tsbuildinfo && tsc",
-    "dev": "tsx --watch src/main.ts",
+    "build": "tsup",
+    "dev": "tsx --env-file=.env --watch src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "check": "tsc --noEmit"
   },
@@ -21,10 +21,6 @@
     "@effect/language-service": "^0.1.0",
     "@octokit/types": "^13.5.0",
     "@types/node": "^22.6.1",
-    "tsx": "^4.19.1",
-    "typescript": "5.6.2"
-  },
-  "dependencies": {
     "@effect/ai": "https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b",
     "@effect/ai-openai": "https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@31f882b",
     "@effect/experimental": "https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b",
@@ -38,10 +34,13 @@
     "@opentelemetry/sdk-trace-base": "^1.26.0",
     "@opentelemetry/sdk-trace-node": "^1.26.0",
     "dfx": "^0.103.0",
-    "dotenv": "^16.4.5",
     "effect": "^3.8.3",
     "html-entities": "^2.5.2",
     "octokit": "^4.0.2",
-    "prettier": "^3.3.3"
-  }
+    "prettier": "^3.3.3",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.1",
+    "typescript": "5.6.2"
+  },
+  "dependencies": {}
 }

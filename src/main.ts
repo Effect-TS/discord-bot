@@ -4,14 +4,11 @@ import { IssueifierLive } from "bot/Issueifier"
 import { NoEmbedLive } from "bot/NoEmbed"
 import { Summarizer } from "bot/Summarizer"
 import { TracingLive } from "bot/Tracing"
-import * as Dotenv from "dotenv"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 import { RemindersLive } from "./Reminders.js"
 import { DadJokesLive } from "./DadJokes.js"
 import { NodeRuntime } from "@effect/platform-node"
 import { MentionsLive } from "./Mentions.js"
-
-Dotenv.config()
 
 const LogLevelLive = Layer.unwrapEffect(
   Effect.gen(function* () {
