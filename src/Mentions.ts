@@ -1,10 +1,11 @@
+import { AiInput, AiRole, Completions } from "@effect/ai"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
-import { Message, OpenAI } from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import { Effect, Data, Layer, pipe } from "effect"
+import { CompletionsLive } from "./Ai.js"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
@@ -14,11 +15,11 @@ const make = Effect.gen(function* () {
   const rest = yield* DiscordREST
   const gateway = yield* DiscordGateway
   const channels = yield* ChannelsCache
-  const openai = yield* OpenAI
+  const completions = yield* Completions.Completions
 
   const botUser = yield* rest.getCurrentUser().json
 
-  const generateContext = (
+  const generateAiInput = (
     thread: Discord.Channel,
     message: Discord.MessageCreateEvent,
   ) =>
@@ -29,31 +30,46 @@ const make = Effect.gen(function* () {
             .json,
           messages: rest.getChannelMessages(message.channel_id, {
             before: message.id,
-            limit: 4,
+            limit: 10,
           }).json,
         },
         { concurrency: "unbounded" },
       ),
       Effect.map(({ openingMessage, messages }) =>
-        [message, ...messages, openingMessage]
-          .reverse()
-          .filter(
-            msg =>
-              msg.type === Discord.MessageType.DEFAULT ||
-              msg.type === Discord.MessageType.REPLY,
-          )
-          .filter(msg => msg.content.trim().length > 0)
-          .map(
-            (msg): Message => ({
-              content: msg.content,
-              name:
-                msg.author.id === botUser.id
-                  ? undefined
-                  : `<@${msg.author.id}>`,
-              bot: msg.author.id === botUser.id,
-            }),
-          ),
+        AiInput.make(
+          [message, ...messages, openingMessage]
+            .reverse()
+            .filter(
+              msg =>
+                msg.type === Discord.MessageType.DEFAULT ||
+                msg.type === Discord.MessageType.REPLY,
+            )
+            .filter(msg => msg.content.trim().length > 0)
+            .map(
+              (msg): AiInput.Message =>
+                AiInput.Message.fromInput(
+                  msg.content,
+                  msg.author.id === botUser.id
+                    ? AiRole.model
+                    : AiRole.userWithName(msg.author.username),
+                ),
+            ),
+        ),
       ),
+    )
+
+  const generateCompletion = (
+    thread: Discord.Channel,
+    message: Discord.MessageCreateEvent,
+  ) =>
+    completions.create.pipe(
+      AiInput.provideEffect(generateAiInput(thread, message)),
+      AiInput.provideSystem(`You are Effect Bot, a funny, helpful assistant for the Effect Discord community.
+
+Please keep replies under 2000 characters.
+
+The title of this conversation is "${thread.name ?? "A thread"}".`),
+      Effect.map(r => r.text),
     )
 
   const run = gateway.handleDispatch("MESSAGE_CREATE", message =>
@@ -72,14 +88,7 @@ const make = Effect.gen(function* () {
         _ => _.type === Discord.ChannelType.PUBLIC_THREAD,
         () => new NonEligibleMessage({ reason: "not-in-thread" }),
       ),
-      Effect.flatMap(thread =>
-        pipe(
-          generateContext(thread, message),
-          Effect.flatMap(messages =>
-            openai.generateReply(thread.name ?? "A thread", messages),
-          ),
-        ),
-      ),
+      Effect.flatMap(thread => generateCompletion(thread, message)),
       Effect.tap(content =>
         rest.createMessage(message.channel_id, {
           message_reference: {
@@ -90,7 +99,6 @@ const make = Effect.gen(function* () {
       ),
       Effect.catchTags({
         NonEligibleMessage: _ => Effect.void,
-        NoSuchElementException: _ => Effect.void,
       }),
       Effect.catchAllCause(Effect.logError),
     ),
@@ -101,6 +109,6 @@ const make = Effect.gen(function* () {
 
 export const MentionsLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(ChannelsCache.Live),
-  Layer.provide(OpenAI.Live),
   Layer.provide(DiscordLive),
+  Layer.provide(CompletionsLive),
 )

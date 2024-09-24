@@ -8,21 +8,27 @@ importers:
 
   .:
     dependencies:
+      '@effect/ai':
+        specifier: https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b
+        version: https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
+      '@effect/ai-openai':
+        specifier: https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@31f882b
+        version: https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@31f882b(@effect/ai@https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/experimental@https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b(@effect/platform-node@0.61.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(bufferutil@4.0.8)(effect@3.8.3)(utf-8-validate@6.0.4))(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)))(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
       '@effect/experimental':
-        specifier: ^0.26.0
-        version: 0.26.0(@effect/platform-node@0.60.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(bufferutil@4.0.8)(effect@3.8.0)(utf-8-validate@6.0.4))(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+        specifier: https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b
+        version: https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b(@effect/platform-node@0.61.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(bufferutil@4.0.8)(effect@3.8.3)(utf-8-validate@6.0.4))(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@effect/opentelemetry':
-        specifier: ^0.37.0
-        version: 0.37.0(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)(effect@3.8.0)
+        specifier: ^0.37.3
+        version: 0.37.3(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)(effect@3.8.3)
       '@effect/platform':
-        specifier: ^0.65.0
-        version: 0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0)
+        specifier: ^0.66.1
+        version: 0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
       '@effect/platform-node':
-        specifier: ^0.60.0
-        version: 0.60.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(bufferutil@4.0.8)(effect@3.8.0)(utf-8-validate@6.0.4)
+        specifier: ^0.61.1
+        version: 0.61.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(bufferutil@4.0.8)(effect@3.8.3)(utf-8-validate@6.0.4)
       '@effect/schema':
-        specifier: ^0.73.0
-        version: 0.73.0(effect@3.8.0)
+        specifier: ^0.74.0
+        version: 0.74.0(effect@3.8.3)
       '@opentelemetry/exporter-metrics-otlp-http':
         specifier: ^0.53.0
         version: 0.53.0(@opentelemetry/api@1.9.0)
@@ -39,26 +45,20 @@ importers:
         specifier: ^1.26.0
         version: 1.26.0(@opentelemetry/api@1.9.0)
       dfx:
-        specifier: ^0.102.0
-        version: 0.102.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(effect@3.8.0)
+        specifier: ^0.103.0
+        version: 0.103.0(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(effect@3.8.3)
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
       effect:
-        specifier: ^3.8.0
-        version: 3.8.0
-      gpt-tokenizer:
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^3.8.3
+        version: 3.8.3
       html-entities:
         specifier: ^2.5.2
         version: 2.5.2
       octokit:
         specifier: ^4.0.2
         version: 4.0.2
-      openai:
-        specifier: ^4.61.0
-        version: 4.61.0
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -70,8 +70,8 @@ importers:
         specifier: ^13.5.0
         version: 13.5.0
       '@types/node':
-        specifier: ^22.5.5
-        version: 22.5.5
+        specifier: ^22.6.1
+        version: 22.6.1
       tsx:
         specifier: ^4.19.1
         version: 4.19.1
@@ -81,13 +81,32 @@ importers:
 
 packages:
 
-  '@effect/experimental@0.26.0':
-    resolution: {integrity: sha512-kkRmc4aYHelUPLjD7nirsP5PlGuXH6bANypZ5ctHD4mILoQrjkZQTJ1WJaoR/zsFMgqukQO76njaEqDcGJItLw==}
+  '@effect/ai-openai@https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@31f882b':
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@31f882b}
+    version: 0.0.0
     peerDependencies:
-      '@effect/platform': ^0.65.0
-      '@effect/platform-node': ^0.60.0
-      '@effect/schema': ^0.73.0
-      effect: ^3.8.0
+      '@effect/ai': ^0.0.0
+      '@effect/experimental': ^0.27.1
+      '@effect/platform': ^0.66.1
+      '@effect/schema': ^0.74.0
+      effect: ^3.8.3
+
+  '@effect/ai@https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b':
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b}
+    version: 0.0.0
+    peerDependencies:
+      '@effect/platform': ^0.66.1
+      '@effect/schema': ^0.74.0
+      effect: ^3.8.3
+
+  '@effect/experimental@https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b':
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b}
+    version: 0.27.1
+    peerDependencies:
+      '@effect/platform': ^0.66.1
+      '@effect/platform-node': ^0.61.1
+      '@effect/schema': ^0.74.0
+      effect: ^3.8.3
       ioredis: ^5
       lmdb: ^3
       ws: ^8
@@ -104,8 +123,8 @@ packages:
   '@effect/language-service@0.1.0':
     resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
 
-  '@effect/opentelemetry@0.37.0':
-    resolution: {integrity: sha512-349RI+P25/61C9c8dlCNt2aRHLE5rpysIXqlaJKWf2g52PKF2+sh7Htd4KOQkn50AhyOJC+qHir/+vBTTbzOhA==}
+  '@effect/opentelemetry@0.37.3':
+    resolution: {integrity: sha512-L0PQ8M5NS+zutAyxi0z09QcLXWU8QfMEqYRbxkiW9CxffJTH1K6YV05SLKVwdpxPBg6fqJMcjJ1oYtVYjkbfxw==}
     peerDependencies:
       '@opentelemetry/api': ^1.6
       '@opentelemetry/resources': ^1.22
@@ -114,7 +133,7 @@ packages:
       '@opentelemetry/sdk-trace-node': ^1.22
       '@opentelemetry/sdk-trace-web': ^1.22
       '@opentelemetry/semantic-conventions': ^1.24.1
-      effect: ^3.8.0
+      effect: ^3.8.3
     peerDependenciesMeta:
       '@opentelemetry/sdk-metrics':
         optional: true
@@ -125,28 +144,28 @@ packages:
       '@opentelemetry/sdk-trace-web':
         optional: true
 
-  '@effect/platform-node-shared@0.15.0':
-    resolution: {integrity: sha512-6PeGwMAkgqAen9Ji3kHS2f2rruXYHWvluCswlp5BlHEE1LecWkdtQcabrnanLvfswjcNNmoCTRiW0F5m9xhEdQ==}
+  '@effect/platform-node-shared@0.16.1':
+    resolution: {integrity: sha512-DN+/8O8wyJ2VT1d0/C6IvSTUUIR6wHZe3xT0wcFIwMbZVyAQVmC0kqXni0vWmZLLpgc/X25JhqQ3PUQ9422VTw==}
     peerDependencies:
-      '@effect/platform': ^0.65.0
-      effect: ^3.8.0
+      '@effect/platform': ^0.66.1
+      effect: ^3.8.3
 
-  '@effect/platform-node@0.60.0':
-    resolution: {integrity: sha512-TLZbeAbeYdu0nEPgWgn6olZxb/EggDGi/PD/3Qi0+p9R46lzLI9SNphoJeYnr1rb3n5iCWNMZ+jzNXbjI49OJQ==}
+  '@effect/platform-node@0.61.1':
+    resolution: {integrity: sha512-OEILwTP2+taNlcU8QxiXht/tuuc0S9bY5U/Vm0N6mkttgmaXqdNIKWfWeiHkZIvdZnbsblVu5TZHNXTUIhqifA==}
     peerDependencies:
-      '@effect/platform': ^0.65.0
-      effect: ^3.8.0
+      '@effect/platform': ^0.66.1
+      effect: ^3.8.3
 
-  '@effect/platform@0.65.0':
-    resolution: {integrity: sha512-+bvAtJEQQYKjnkzJIfxyXNhwzZsrsQl1n+KfD0Z9ibkKEUyIxBKfg9sAzv6WODBf9xSnVgDouaW53fRc59Durg==}
+  '@effect/platform@0.66.1':
+    resolution: {integrity: sha512-5h3P5r64yr5isbiYdjVS5/7+UKZHki4UDjytfcdzDVt5Uz8AMl6J0LUw5pr1kTDFRQz5Vw50SlncouzY98ytkA==}
     peerDependencies:
-      '@effect/schema': ^0.73.0
-      effect: ^3.8.0
+      '@effect/schema': ^0.74.0
+      effect: ^3.8.3
 
-  '@effect/schema@0.73.0':
-    resolution: {integrity: sha512-y/TSwJcv4N6sAuJIHY5siGS+cNteiwryf4CBJaGib01ypgg+7/CUl3AwXTW1AI3oaYWmccAjww5zurHiVaooBw==}
+  '@effect/schema@0.74.0':
+    resolution: {integrity: sha512-o7rBmUH6JSTyyJTIUyXb79I47DjxRBZZ/QAZgEh9loDlPxX2OPw9Fx10cYrthEY8FBIoXFsJ6JwVo3hwRUeMaQ==}
     peerDependencies:
-      effect: ^3.8.0
+      effect: ^3.8.3
 
   '@esbuild/aix-ppc64@0.23.1':
     resolution: {integrity: sha512-6VhYk1diRqrhBAqpJEdjASR/+WVRtfjpqKuNw11cLiaWpAT/Uu+nokB+UJnevzy/P9C/ty6AOe0dwueMrGh/iQ==}
@@ -646,14 +665,8 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
-  '@types/node-fetch@2.6.11':
-    resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
-
-  '@types/node@18.19.50':
-    resolution: {integrity: sha512-xonK+NRrMBRtkL1hVCc3G+uXtjh1Al4opBLjqVmipe5ZAaBYWW6cNAiBVZ1BvmkBhep698rP3UM3aRAdSALuhg==}
-
-  '@types/node@22.5.5':
-    resolution: {integrity: sha512-Xjs4y5UPO/CLdzpgR6GirZJx36yScjh73+2NlLlkFRSoQN8B0DpfXPdZGnvVmLRLOsqDpOfTNv7D9trgGhmOIA==}
+  '@types/node@22.6.1':
+    resolution: {integrity: sha512-V48tCfcKb/e6cVUigLAaJDAILdMP0fUW6BidkPK4GpGjXcfbnoHasCZDwz3N3yVt5we2RHm4XTQCpv0KJz9zqw==}
 
   '@types/qs@6.9.16':
     resolution: {integrity: sha512-7i+zxXdPD0T4cKDuxCUXJ4wHcsJLwENa6Z3dCu8cfCK743OGy5Nu1RmAGqDPsoTDINVEcdXKRvR/zre+P2Ku1A==}
@@ -667,20 +680,9 @@ packages:
   '@types/serve-static@1.15.7':
     resolution: {integrity: sha512-W8Ym+h8nhuRwaKPaDw34QUkwsGi6Rc4yYqvKFo5rm2FUEhCFbzVWrxXUxuKK8TASjWsysJY0nsmNCGhCOIsrOw==}
 
-  abort-controller@3.0.0:
-    resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
-    engines: {node: '>=6.5'}
-
-  agentkeepalive@4.5.0:
-    resolution: {integrity: sha512-5GG/5IbQQpC9FpkRGsSvZI5QYeSCzlJHdpBQntCsuTOxhKD8lqKhrleg2Yi7yvMIf82Ycmmqln9U8V9qwEiJew==}
-    engines: {node: '>= 8.0.0'}
-
   aggregate-error@5.0.0:
     resolution: {integrity: sha512-gOsf2YwSlleG6IjRYG2A7k0HmBMEo6qVNk9Bp/EaLgAJT5ngH6PXbqa4ItvnEwCm/velL5jAnQgsHsWnjhGmvw==}
     engines: {node: '>=18'}
-
-  asynckit@0.4.0:
-    resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
   before-after-hook@3.0.2:
     resolution: {integrity: sha512-Nik3Sc0ncrMK4UUdXQmAnRtzmNQTAAXmXIopizwZ1W1t8QmfJj+zL4OA2I7XPTPW5z5TDqv4hRo/JzouDJnX3A==}
@@ -696,25 +698,9 @@ packages:
     resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
     engines: {node: '>=6.14.2'}
 
-  call-bind@1.0.7:
-    resolution: {integrity: sha512-GHTSNSYICQ7scH7sZ+M2rFopRoLh8t2bLSW6BbgrtLsahOIB5iyAVJf9GjWK3cYTDaMj4XdBpM1cA6pIS0Kv2w==}
-    engines: {node: '>= 0.4'}
-
   clean-stack@5.2.0:
     resolution: {integrity: sha512-TyUIUJgdFnCISzG5zu3291TAsE77ddchd0bepon1VVQrKLGKFED4iXFEDQ24mIPdPBbyE16PK3F8MYE1CmcBEQ==}
     engines: {node: '>=14.16'}
-
-  combined-stream@1.0.8:
-    resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
-    engines: {node: '>= 0.8'}
-
-  define-data-property@1.1.4:
-    resolution: {integrity: sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==}
-    engines: {node: '>= 0.4'}
-
-  delayed-stream@1.0.0:
-    resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
-    engines: {node: '>=0.4.0'}
 
   detect-libc@1.0.3:
     resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
@@ -725,10 +711,10 @@ packages:
     resolution: {integrity: sha512-bwy0MGW55bG41VqxxypOsdSdGqLwXPI/focwgTYCFMbdUiBAxLg9CFzG08sz2aqzknwiX7Hkl0bQENjg8iLByw==}
     engines: {node: '>=8'}
 
-  dfx@0.102.0:
-    resolution: {integrity: sha512-48g9iofPpmS14G/KyXeRz/mKHbPthObdpZGbKIejP+s6oSxv2X3ULm+VsZ4l4S579pdHi3zSnCwcuwn/o+D0zg==}
+  dfx@0.103.0:
+    resolution: {integrity: sha512-dyK6lx+nK593EST2krI+Tg/9PyxCGcOHICclZztSriefvlAP538afY4tB+x0ubN+45vYQoQLzYooS4fyM1Fo/g==}
     peerDependencies:
-      '@effect/platform': ^0.65
+      '@effect/platform': ^0.66
       effect: ^3.8
 
   discord-verify@1.2.0:
@@ -739,16 +725,8 @@ packages:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
 
-  effect@3.8.0:
-    resolution: {integrity: sha512-9ouAF51iUYMhbWOSQjWayfoyDDMziQCr2Y8VfhnUmRdfi44n+91VplTA5qqV2mWvFNM3ZV4R6bcfW2js9fK7IA==}
-
-  es-define-property@1.0.0:
-    resolution: {integrity: sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==}
-    engines: {node: '>= 0.4'}
-
-  es-errors@1.3.0:
-    resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
-    engines: {node: '>= 0.4'}
+  effect@3.8.3:
+    resolution: {integrity: sha512-ZHTNRik0mJWK+g12/HHwsouOux0OE2v+qRD7zsEJLtZ1RJdrlxvCpSXdJ+KgOqJ4wigIToDSb5e5HG885uKs/w==}
 
   esbuild@0.23.1:
     resolution: {integrity: sha512-VVNz/9Sa0bs5SELtn3f7qhJCDPCF5oMEl5cO9/SSinpE9hbPVvxbd572HH5AKiP7WD8INO53GgfDDhRjkylHEg==}
@@ -758,10 +736,6 @@ packages:
   escape-string-regexp@5.0.0:
     resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
     engines: {node: '>=12'}
-
-  event-target-shim@5.0.1:
-    resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
-    engines: {node: '>=6'}
 
   fast-check@3.22.0:
     resolution: {integrity: sha512-8HKz3qXqnHYp/VCNn2qfjHdAdcI8zcSqOyX64GOMukp7SL2bfzfeDKjSd+UyECtejccaZv3LcvZTm9YDD22iCQ==}
@@ -774,58 +748,19 @@ packages:
   find-my-way-ts@0.1.5:
     resolution: {integrity: sha512-4GOTMrpGQVzsCH2ruUn2vmwzV/02zF4q+ybhCIrw/Rkt3L8KWcycdC6aJMctJzwN4fXD4SD5F/4B9Sksh5rE0A==}
 
-  form-data-encoder@1.7.2:
-    resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
-
-  form-data@4.0.0:
-    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
-    engines: {node: '>= 6'}
-
-  formdata-node@4.4.1:
-    resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
-    engines: {node: '>= 12.20'}
-
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  function-bind@1.1.2:
-    resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
-
-  get-intrinsic@1.2.4:
-    resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
-    engines: {node: '>= 0.4'}
-
   get-tsconfig@4.8.1:
     resolution: {integrity: sha512-k9PN+cFBmaLWtVz29SkUoqU5O0slLuHJXt/2P+tMVFT+phsSGXGkp9t3rQIqdz0e+06EHNGs3oM6ZX1s2zHxRg==}
 
-  gopd@1.0.1:
-    resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
-
-  gpt-tokenizer@2.2.2:
-    resolution: {integrity: sha512-zob3jMtO/z7HJNF73rnknjAX7q4EaI7XnVlIAsFgl0/dvXrHiArnaIgfDzk73t/YRSR2iee70eFn8m3fMafdVw==}
-
-  has-property-descriptors@1.0.2:
-    resolution: {integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==}
-
-  has-proto@1.0.3:
-    resolution: {integrity: sha512-SJ1amZAJUiZS+PhsVLf5tGydlaVB8EdFpaSO4gmiUKUOxk8qzn5AIy4ZeJUmh22znIdk/uMAUT2pl3FxzVUH+Q==}
-    engines: {node: '>= 0.4'}
-
-  has-symbols@1.0.3:
-    resolution: {integrity: sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==}
-    engines: {node: '>= 0.4'}
-
-  hasown@2.0.2:
-    resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
-    engines: {node: '>= 0.4'}
+  gpt-tokenizer@2.4.0:
+    resolution: {integrity: sha512-UmipHgPmzOVSj1Nu0bajJt7eZYnIttoaUSfgsXs77jFlpKGFBodM0fpa7989rl/pUEONKjye9WqAhlerHKux9Q==}
 
   html-entities@2.5.2:
     resolution: {integrity: sha512-K//PSRMQk4FZ78Kyau+mZurHn3FH0Vwr+H36eE0rPbeYkRRi9YxceYPhuN60UwWorxyKHhqoAJl2OFKa4BVtaA==}
-
-  humanize-ms@1.2.1:
-    resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
 
   indent-string@5.0.0:
     resolution: {integrity: sha512-m6FAo/spmsW2Ab2fU35JTYwtOKa2yAwXSwgjSv1TJzh4Mh7mC3lzAOVLBprb72XsTrgkEIsl7YrFNAiDiRhIGg==}
@@ -854,21 +789,10 @@ packages:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
 
-  mime-db@1.52.0:
-    resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
-    engines: {node: '>= 0.6'}
-
-  mime-types@2.1.35:
-    resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
-    engines: {node: '>= 0.6'}
-
   mime@3.0.0:
     resolution: {integrity: sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==}
     engines: {node: '>=10.0.0'}
     hasBin: true
-
-  ms@2.1.3:
-    resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
   msgpackr-extract@3.0.3:
     resolution: {integrity: sha512-P0efT1C9jIdVRefqjzOQ9Xml57zpOXnIuS+csaB4MdZbTdmGDLo8XhzBG1N7aO11gKDDkJvBLULeFTo46wwreA==}
@@ -883,19 +807,6 @@ packages:
   node-addon-api@7.1.1:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
-  node-domexception@1.0.0:
-    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
-    engines: {node: '>=10.5.0'}
-
-  node-fetch@2.7.0:
-    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
-
   node-gyp-build-optional-packages@5.2.2:
     resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
     hasBin: true
@@ -904,22 +815,9 @@ packages:
     resolution: {integrity: sha512-IRUxE4BVsHWXkV/SFOut4qTlagw2aM8T5/vnTsmrHJvVoKueJHRc/JaFND7QDDc61kLYUJ6qlZM3sqTSyx2dTw==}
     hasBin: true
 
-  object-inspect@1.13.2:
-    resolution: {integrity: sha512-IRZSRuzJiynemAXPYtPe5BoI/RESNYR7TYm50MC5Mqbd3Jmw5y790sErYw3V6SryFJD64b74qQQs9wn5Bg/k3g==}
-    engines: {node: '>= 0.4'}
-
   octokit@4.0.2:
     resolution: {integrity: sha512-wbqF4uc1YbcldtiBFfkSnquHtECEIpYD78YUXI6ri1Im5OO2NLo6ZVpRdbJpdnpZ05zMrVPssNiEo6JQtea+Qg==}
     engines: {node: '>= 18'}
-
-  openai@4.61.0:
-    resolution: {integrity: sha512-xkygRBRLIUumxzKGb1ug05pWmJROQsHkGuj/N6Jiw2dj0dI19JvbFpErSZKmJ/DA+0IvpcugZqCAyk8iLpyM6Q==}
-    hasBin: true
-    peerDependencies:
-      zod: ^3.23.8
-    peerDependenciesMeta:
-      zod:
-        optional: true
 
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -937,35 +835,17 @@ packages:
   pure-rand@6.1.0:
     resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
 
-  qs@6.13.0:
-    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
-    engines: {node: '>=0.6'}
-
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
-
-  rfc4648@1.5.3:
-    resolution: {integrity: sha512-MjOWxM065+WswwnmNONOT+bD1nXzY9Km6u3kzvnx8F8/HXGZdz3T6e6vZJ8Q/RIMUSp/nxqjH3GwvJDy8ijeQQ==}
 
   semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
     hasBin: true
 
-  set-function-length@1.2.2:
-    resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
-    engines: {node: '>= 0.4'}
-
-  side-channel@1.0.6:
-    resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
-    engines: {node: '>= 0.4'}
-
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
-
-  tr46@0.0.3:
-    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
   tsx@4.19.1:
     resolution: {integrity: sha512-0flMz1lh74BR4wOvBjuh9olbnwqCPc35OOlfyzHba0Dc+QNUeWX/Gq2YTbnwcWPO3BMd8fkzRVrHcsR+a7z7rA==}
@@ -976,9 +856,6 @@ packages:
     resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
     engines: {node: '>=14.17'}
     hasBin: true
-
-  undici-types@5.26.5:
-    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
@@ -997,16 +874,6 @@ packages:
     resolution: {integrity: sha512-xu9GQDeFp+eZ6LnCywXN/zBancWvOpUMzgjLPSjy4BRHSmTelvn2E0DG0o1sTiw5hkCKBHo8rwSKncfRfv2EEQ==}
     engines: {node: '>=6.14.2'}
 
-  web-streams-polyfill@4.0.0-beta.3:
-    resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
-    engines: {node: '>= 14'}
-
-  webidl-conversions@3.0.1:
-    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
-
-  whatwg-url@5.0.0:
-    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
-
   ws@8.18.0:
     resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
     engines: {node: '>=10.0.0'}
@@ -1021,41 +888,56 @@ packages:
 
 snapshots:
 
-  '@effect/experimental@0.26.0(@effect/platform-node@0.60.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(bufferutil@4.0.8)(effect@3.8.0)(utf-8-validate@6.0.4))(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@effect/ai-openai@https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@31f882b(@effect/ai@https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/experimental@https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b(@effect/platform-node@0.61.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(bufferutil@4.0.8)(effect@3.8.3)(utf-8-validate@6.0.4))(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)))(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)':
     dependencies:
-      '@effect/platform': 0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0)
-      '@effect/schema': 0.73.0(effect@3.8.0)
-      effect: 3.8.0
+      '@effect/ai': https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
+      '@effect/experimental': https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b(@effect/platform-node@0.61.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(bufferutil@4.0.8)(effect@3.8.3)(utf-8-validate@6.0.4))(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@effect/platform': 0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
+      '@effect/schema': 0.74.0(effect@3.8.3)
+      effect: 3.8.3
+      gpt-tokenizer: 2.4.0
+
+  '@effect/ai@https://pkg.pr.new/Effect-TS/effect/@effect/ai@31f882b(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)':
+    dependencies:
+      '@effect/platform': 0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
+      '@effect/schema': 0.74.0(effect@3.8.3)
+      effect: 3.8.3
+
+  '@effect/experimental@https://pkg.pr.new/Effect-TS/effect/@effect/experimental@31f882b(@effect/platform-node@0.61.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(bufferutil@4.0.8)(effect@3.8.3)(utf-8-validate@6.0.4))(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+    dependencies:
+      '@effect/platform': 0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
+      '@effect/schema': 0.74.0(effect@3.8.3)
+      effect: 3.8.3
       msgpackr: 1.11.0
     optionalDependencies:
-      '@effect/platform-node': 0.60.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(bufferutil@4.0.8)(effect@3.8.0)(utf-8-validate@6.0.4)
+      '@effect/platform-node': 0.61.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(bufferutil@4.0.8)(effect@3.8.3)(utf-8-validate@6.0.4)
       ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
   '@effect/language-service@0.1.0': {}
 
-  '@effect/opentelemetry@0.37.0(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)(effect@3.8.0)':
+  '@effect/opentelemetry@0.37.3(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)(effect@3.8.3)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/resources': 1.26.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.27.0
-      effect: 3.8.0
+      effect: 3.8.3
     optionalDependencies:
       '@opentelemetry/sdk-metrics': 1.26.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.26.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-node': 1.26.0(@opentelemetry/api@1.9.0)
 
-  '@effect/platform-node-shared@0.15.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(effect@3.8.0)':
+  '@effect/platform-node-shared@0.16.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(effect@3.8.3)':
     dependencies:
-      '@effect/platform': 0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0)
+      '@effect/platform': 0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
       '@parcel/watcher': 2.4.1
-      effect: 3.8.0
+      effect: 3.8.3
       multipasta: 0.2.5
 
-  '@effect/platform-node@0.60.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(bufferutil@4.0.8)(effect@3.8.0)(utf-8-validate@6.0.4)':
+  '@effect/platform-node@0.61.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(bufferutil@4.0.8)(effect@3.8.3)(utf-8-validate@6.0.4)':
     dependencies:
-      '@effect/platform': 0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0)
-      '@effect/platform-node-shared': 0.15.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(effect@3.8.0)
-      effect: 3.8.0
+      '@effect/platform': 0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
+      '@effect/platform-node-shared': 0.16.1(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(effect@3.8.3)
+      effect: 3.8.3
       mime: 3.0.0
       undici: 6.19.8
       ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
@@ -1063,16 +945,16 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0)':
+  '@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)':
     dependencies:
-      '@effect/schema': 0.73.0(effect@3.8.0)
-      effect: 3.8.0
+      '@effect/schema': 0.74.0(effect@3.8.3)
+      effect: 3.8.3
       find-my-way-ts: 0.1.5
       multipasta: 0.2.5
 
-  '@effect/schema@0.73.0(effect@3.8.0)':
+  '@effect/schema@0.74.0(effect@3.8.3)':
     dependencies:
-      effect: 3.8.0
+      effect: 3.8.3
       fast-check: 3.22.0
 
   '@esbuild/aix-ppc64@0.23.1':
@@ -1494,17 +1376,17 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
     optional: true
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
     optional: true
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
       '@types/qs': 6.9.16
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -1524,20 +1406,12 @@ snapshots:
   '@types/mime@1.3.5':
     optional: true
 
-  '@types/node-fetch@2.6.11':
-    dependencies:
-      '@types/node': 22.5.5
-      form-data: 4.0.0
-
-  '@types/node@18.19.50':
-    dependencies:
-      undici-types: 5.26.5
-
-  '@types/node@22.5.5':
+  '@types/node@22.6.1':
     dependencies:
       undici-types: 6.19.8
 
-  '@types/qs@6.9.16': {}
+  '@types/qs@6.9.16':
+    optional: true
 
   '@types/range-parser@1.2.7':
     optional: true
@@ -1545,30 +1419,20 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
     optional: true
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
       '@types/send': 0.17.4
     optional: true
-
-  abort-controller@3.0.0:
-    dependencies:
-      event-target-shim: 5.0.1
-
-  agentkeepalive@4.5.0:
-    dependencies:
-      humanize-ms: 1.2.1
 
   aggregate-error@5.0.0:
     dependencies:
       clean-stack: 5.2.0
       indent-string: 5.0.0
-
-  asynckit@0.4.0: {}
 
   before-after-hook@3.0.2: {}
 
@@ -1583,39 +1447,19 @@ snapshots:
       node-gyp-build: 4.8.2
     optional: true
 
-  call-bind@1.0.7:
-    dependencies:
-      es-define-property: 1.0.0
-      es-errors: 1.3.0
-      function-bind: 1.1.2
-      get-intrinsic: 1.2.4
-      set-function-length: 1.2.2
-
   clean-stack@5.2.0:
     dependencies:
       escape-string-regexp: 5.0.0
-
-  combined-stream@1.0.8:
-    dependencies:
-      delayed-stream: 1.0.0
-
-  define-data-property@1.1.4:
-    dependencies:
-      es-define-property: 1.0.0
-      es-errors: 1.3.0
-      gopd: 1.0.1
-
-  delayed-stream@1.0.0: {}
 
   detect-libc@1.0.3: {}
 
   detect-libc@2.0.3:
     optional: true
 
-  dfx@0.102.0(@effect/platform@0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0))(effect@3.8.0):
+  dfx@0.103.0(@effect/platform@0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3))(effect@3.8.3):
     dependencies:
-      '@effect/platform': 0.65.0(@effect/schema@0.73.0(effect@3.8.0))(effect@3.8.0)
-      effect: 3.8.0
+      '@effect/platform': 0.66.1(@effect/schema@0.74.0(effect@3.8.3))(effect@3.8.3)
+      effect: 3.8.3
     optionalDependencies:
       discord-verify: 1.2.0
 
@@ -1626,13 +1470,7 @@ snapshots:
 
   dotenv@16.4.5: {}
 
-  effect@3.8.0: {}
-
-  es-define-property@1.0.0:
-    dependencies:
-      get-intrinsic: 1.2.4
-
-  es-errors@1.3.0: {}
+  effect@3.8.3: {}
 
   esbuild@0.23.1:
     optionalDependencies:
@@ -1663,8 +1501,6 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  event-target-shim@5.0.1: {}
-
   fast-check@3.22.0:
     dependencies:
       pure-rand: 6.1.0
@@ -1675,61 +1511,16 @@ snapshots:
 
   find-my-way-ts@0.1.5: {}
 
-  form-data-encoder@1.7.2: {}
-
-  form-data@4.0.0:
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      mime-types: 2.1.35
-
-  formdata-node@4.4.1:
-    dependencies:
-      node-domexception: 1.0.0
-      web-streams-polyfill: 4.0.0-beta.3
-
   fsevents@2.3.3:
     optional: true
-
-  function-bind@1.1.2: {}
-
-  get-intrinsic@1.2.4:
-    dependencies:
-      es-errors: 1.3.0
-      function-bind: 1.1.2
-      has-proto: 1.0.3
-      has-symbols: 1.0.3
-      hasown: 2.0.2
 
   get-tsconfig@4.8.1:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  gopd@1.0.1:
-    dependencies:
-      get-intrinsic: 1.2.4
-
-  gpt-tokenizer@2.2.2:
-    dependencies:
-      rfc4648: 1.5.3
-
-  has-property-descriptors@1.0.2:
-    dependencies:
-      es-define-property: 1.0.0
-
-  has-proto@1.0.3: {}
-
-  has-symbols@1.0.3: {}
-
-  hasown@2.0.2:
-    dependencies:
-      function-bind: 1.1.2
+  gpt-tokenizer@2.4.0: {}
 
   html-entities@2.5.2: {}
-
-  humanize-ms@1.2.1:
-    dependencies:
-      ms: 2.1.3
 
   indent-string@5.0.0: {}
 
@@ -1750,15 +1541,7 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.1
 
-  mime-db@1.52.0: {}
-
-  mime-types@2.1.35:
-    dependencies:
-      mime-db: 1.52.0
-
   mime@3.0.0: {}
-
-  ms@2.1.3: {}
 
   msgpackr-extract@3.0.3:
     dependencies:
@@ -1780,12 +1563,6 @@ snapshots:
 
   node-addon-api@7.1.1: {}
 
-  node-domexception@1.0.0: {}
-
-  node-fetch@2.7.0:
-    dependencies:
-      whatwg-url: 5.0.0
-
   node-gyp-build-optional-packages@5.2.2:
     dependencies:
       detect-libc: 2.0.3
@@ -1793,8 +1570,6 @@ snapshots:
 
   node-gyp-build@4.8.2:
     optional: true
-
-  object-inspect@1.13.2: {}
 
   octokit@4.0.2:
     dependencies:
@@ -1808,20 +1583,6 @@ snapshots:
       '@octokit/plugin-throttling': 9.3.0(@octokit/core@6.1.2)
       '@octokit/request-error': 6.1.1
       '@octokit/types': 13.5.0
-
-  openai@4.61.0:
-    dependencies:
-      '@types/node': 18.19.50
-      '@types/node-fetch': 2.6.11
-      '@types/qs': 6.9.16
-      abort-controller: 3.0.0
-      agentkeepalive: 4.5.0
-      form-data-encoder: 1.7.2
-      formdata-node: 4.4.1
-      node-fetch: 2.7.0
-      qs: 6.13.0
-    transitivePeerDependencies:
-      - encoding
 
   picomatch@2.3.1: {}
 
@@ -1839,42 +1600,18 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.5.5
+      '@types/node': 22.6.1
       long: 5.2.3
 
   pure-rand@6.1.0: {}
 
-  qs@6.13.0:
-    dependencies:
-      side-channel: 1.0.6
-
   resolve-pkg-maps@1.0.0: {}
 
-  rfc4648@1.5.3: {}
-
   semver@7.6.3: {}
-
-  set-function-length@1.2.2:
-    dependencies:
-      define-data-property: 1.1.4
-      es-errors: 1.3.0
-      function-bind: 1.1.2
-      get-intrinsic: 1.2.4
-      gopd: 1.0.1
-      has-property-descriptors: 1.0.2
-
-  side-channel@1.0.6:
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      get-intrinsic: 1.2.4
-      object-inspect: 1.13.2
 
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
-
-  tr46@0.0.3: {}
 
   tsx@4.19.1:
     dependencies:
@@ -1884,8 +1621,6 @@ snapshots:
       fsevents: 2.3.3
 
   typescript@5.6.2: {}
-
-  undici-types@5.26.5: {}
 
   undici-types@6.19.8: {}
 
@@ -1899,15 +1634,6 @@ snapshots:
     dependencies:
       node-gyp-build: 4.8.2
     optional: true
-
-  web-streams-polyfill@4.0.0-beta.3: {}
-
-  webidl-conversions@3.0.1: {}
-
-  whatwg-url@5.0.0:
-    dependencies:
-      tr46: 0.0.3
-      webidl-conversions: 3.0.1
 
   ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4):
     optionalDependencies:

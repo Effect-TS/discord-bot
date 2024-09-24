@@ -1,7 +1,6 @@
 import { Schema } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
-import { OpenAI } from "bot/OpenAI"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
 import { DiscordGateway, InteractionsRegistry } from "dfx/gateway"
@@ -16,6 +15,7 @@ import {
   Schedule,
   pipe,
 } from "effect"
+import { AiHelpers } from "./Ai.js"
 
 const retryPolicy = pipe(
   Schedule.fixed(Duration.millis(500)),
@@ -37,7 +37,7 @@ const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.string("keyword").pipe(
     Config.withDefault("[threads]"),
   )
-  const openai = yield* OpenAI
+  const ai = yield* AiHelpers
   const gateway = yield* DiscordGateway
   const rest = yield* DiscordREST
   const channels = yield* ChannelsCache
@@ -70,17 +70,18 @@ const make = Effect.gen(function* () {
         .pipe(Effect.flatMap(EligibleChannel)),
     }).pipe(
       Effect.bind("title", () =>
-        openai.generateTitle(message.content).pipe(
+        ai.generateTitle(message.content).pipe(
+          Effect.tapErrorCause(Effect.log),
           Effect.retry({
             schedule: retryPolicy,
-            while: err => err._tag === "OpenAIError",
+            while: err => err._tag === "AiError",
           }),
           Effect.withSpan("AutoThreads.generateTitle"),
           Effect.orElseSucceed(() =>
             pipe(
               Option.fromNullable(message.member?.nick),
               Option.getOrElse(() => message.author.username),
-              _ => `${_}'s thread`,
+              name => `${name}'s thread`,
             ),
           ),
         ),
@@ -231,6 +232,6 @@ const make = Effect.gen(function* () {
 
 export const AutoThreadsLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(ChannelsCache.Live),
-  Layer.provide(OpenAI.Live),
+  Layer.provide(AiHelpers.Live),
   Layer.provide(DiscordLive),
 )
