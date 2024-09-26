@@ -20,7 +20,9 @@ const make = Effect.gen(function* () {
 
   const generateTitle = (prompt: string) =>
     completions.create.pipe(
-      AiInput.provideSystem("Create a short title summarizing the message."),
+      AiInput.provideSystem(
+        "Create a short title summarizing the message. Do not include markdown in the title.",
+      ),
       AiInput.provide(Str.truncateWords(prompt, 500)),
       Effect.provideService(OpenAiCompletions.OpenAiConfig, {
         temperature: 0.25,
