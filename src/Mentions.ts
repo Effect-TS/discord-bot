@@ -4,7 +4,7 @@ import { DiscordLive } from "bot/Discord"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
-import { Effect, Data, Layer, pipe } from "effect"
+import { Data, Effect, Layer, pipe } from "effect"
 import { CompletionsLive } from "./Ai.js"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
@@ -108,7 +108,7 @@ The title of this conversation is "${thread.name ?? "A thread"}".`),
 })
 
 export const MentionsLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(ChannelsCache.Live),
+  Layer.provide(ChannelsCache.Default),
   Layer.provide(DiscordLive),
   Layer.provide(CompletionsLive),
 )

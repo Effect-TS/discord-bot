@@ -1,20 +1,17 @@
-import { DiscordLive } from "bot/Discord"
 import { Cache } from "dfx"
 import { CachePrelude } from "dfx/gateway"
-import { Context, Duration, Effect, Layer } from "effect"
+import { Duration, Effect } from "effect"
+import { DiscordLive } from "./Discord.js"
 
-const makeChannelsCache = CachePrelude.channels(
-  Cache.memoryTTLParentDriver({
-    ttl: Duration.minutes(30),
-    strategy: "activity",
-  }),
-)
-
-export class ChannelsCache extends Context.Tag("app/ChannelsCache")<
-  ChannelsCache,
-  Effect.Effect.Success<typeof makeChannelsCache>
->() {
-  static Live = Layer.scoped(this, makeChannelsCache).pipe(
-    Layer.provide(DiscordLive),
-  )
-}
+export class ChannelsCache extends Effect.Service<ChannelsCache>()(
+  "app/ChannelsCache",
+  {
+    scoped: CachePrelude.channels(
+      Cache.memoryTTLParentDriver({
+        ttl: Duration.minutes(30),
+        strategy: "activity",
+      }),
+    ),
+    dependencies: [DiscordLive],
+  },
+) {}

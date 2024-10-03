@@ -231,7 +231,7 @@ const make = Effect.gen(function* () {
 )
 
 export const AutoThreadsLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(ChannelsCache.Live),
-  Layer.provide(AiHelpers.Live),
+  Layer.provide(ChannelsCache.Default),
+  Layer.provide(AiHelpers.Default),
   Layer.provide(DiscordLive),
 )

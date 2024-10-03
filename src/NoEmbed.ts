@@ -102,6 +102,6 @@ const make = Effect.gen(function* () {
 )
 
 export const NoEmbedLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(ChannelsCache.Live),
+  Layer.provide(ChannelsCache.Default),
   Layer.provide(DiscordLive),
 )
