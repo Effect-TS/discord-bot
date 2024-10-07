@@ -1,3 +1,4 @@
+import { NodeRuntime } from "@effect/platform-node"
 import { AutoThreadsLive } from "bot/AutoThreads"
 import { DocsLookupLive } from "bot/DocsLookup"
 import { IssueifierLive } from "bot/Issueifier"
@@ -5,9 +6,8 @@ import { NoEmbedLive } from "bot/NoEmbed"
 import { Summarizer } from "bot/Summarizer"
 import { TracingLive } from "bot/Tracing"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
-import { RemindersLive } from "./Reminders.js"
 import { DadJokesLive } from "./DadJokes.js"
-import { NodeRuntime } from "@effect/platform-node"
+import { RemindersLive } from "./Reminders.js"
 
 const LogLevelLive = Layer.unwrapEffect(
   Effect.gen(function* () {
@@ -24,7 +24,7 @@ const MainLive = Layer.mergeAll(
   DocsLookupLive,
   IssueifierLive,
   RemindersLive,
-  Summarizer.Live,
+  Summarizer.Default,
 ).pipe(Layer.provide(TracingLive), Layer.provide(LogLevelLive))
 
 NodeRuntime.runMain(Layer.launch(MainLive))

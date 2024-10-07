@@ -4,8 +4,8 @@ import {
   HttpClientResponse,
 } from "@effect/platform"
 import { Schema } from "@effect/schema"
-import { InteractionsRegistry } from "dfx/gateway"
 import { Ix } from "dfx"
+import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, flow, Layer, Schedule } from "effect"
 import { DiscordLive } from "./Discord.js"
 

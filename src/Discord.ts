@@ -1,6 +1,6 @@
 import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
-import { DiscordIxLive } from "dfx/gateway"
 import { DiscordConfig, Intents } from "dfx"
+import { DiscordIxLive } from "dfx/gateway"
 import { Config, Layer } from "effect"
 
 export const DiscordLive = DiscordIxLive.pipe(

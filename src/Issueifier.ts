@@ -1,3 +1,4 @@
+import { AiInput, AiRole } from "@effect/ai"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import { Github } from "bot/Github"
@@ -16,7 +17,6 @@ import {
   pipe,
 } from "effect"
 import { AiHelpers } from "./Ai.js"
-import { AiInput, AiRole } from "@effect/ai"
 
 export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError",
@@ -173,8 +173,8 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(DiscordLive),
-  Layer.provide(ChannelsCache.Live),
-  Layer.provide(Messages.Live),
-  Layer.provide(AiHelpers.Live),
-  Layer.provide(Github.Live),
+  Layer.provide(ChannelsCache.Default),
+  Layer.provide(Messages.Default),
+  Layer.provide(AiHelpers.Default),
+  Layer.provide(Github.Default),
 )
