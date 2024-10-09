@@ -15,15 +15,16 @@ const make = Effect.gen(function* () {
   const docsClient = (yield* HttpClient.HttpClient).pipe(
     HttpClient.filterStatusOk,
     HttpClient.retry(retryPolicy),
-    HttpClient.mapEffect(_ => _.json),
-    HttpClient.scoped,
-    HttpClient.map(_ => Object.values(_ as object)),
-    HttpClient.mapEffect(DocEntry.decodeArray),
-    HttpClient.map(entries => entries.filter(_ => _.isSignature)),
   )
 
   const loadDocs = (baseUrl: string) =>
-    docsClient.get(`${baseUrl}/assets/js/search-data.json`)
+    docsClient.get(`${baseUrl}/assets/js/search-data.json`).pipe(
+      Effect.flatMap(r => r.json),
+      Effect.scoped,
+      Effect.map(_ => Object.values(_ as object)),
+      Effect.flatMap(DocEntry.decodeArray),
+      Effect.map(entries => entries.filter(_ => _.isSignature)),
+    )
 
   const allDocs = yield* Effect.forEach(docUrls, loadDocs, {
     concurrency: "unbounded",
@@ -272,7 +273,7 @@ class QueryTooShort extends Data.TaggedError("QueryTooShort")<{
   readonly min: number
 }> {}
 
-const retryPolicy = Schedule.fixed(Duration.seconds(3))
+const retryPolicy = Schedule.spaced(Duration.seconds(3))
 
 // helpers
 
