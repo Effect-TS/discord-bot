@@ -62,8 +62,8 @@ const make = Effect.gen(function* () {
     thread: Discord.Channel,
     message: Discord.MessageCreateEvent,
   ) =>
-    completions.create.pipe(
-      AiInput.provideEffect(generateAiInput(thread, message)),
+    generateAiInput(thread, message).pipe(
+      Effect.flatMap(completions.create),
       AiInput.provideSystem(`You are Effect Bot, a funny, helpful assistant for the Effect Discord community.
 
 Please keep replies under 2000 characters.
