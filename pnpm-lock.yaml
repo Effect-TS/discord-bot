@@ -9,14 +9,14 @@ importers:
   .:
     devDependencies:
       '@effect/ai':
-        specifier: https://pkg.pr.new/Effect-TS/effect/@effect/ai@8b555a6
-        version: https://pkg.pr.new/Effect-TS/effect/@effect/ai@8b555a6(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
+        specifier: ^0.1.0
+        version: 0.1.0(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
       '@effect/ai-openai':
-        specifier: https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@8b555a6
-        version: https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@8b555a6(@effect/ai@https://pkg.pr.new/Effect-TS/effect/@effect/ai@8b555a6(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/experimental@https://pkg.pr.new/Effect-TS/effect/@effect/experimental@8b555a6(@effect/platform-node@0.63.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)))(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
+        specifier: ^0.1.0
+        version: 0.1.0(@effect/ai@0.1.0(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/experimental@0.29.2(@effect/platform-node@0.63.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)))(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
       '@effect/experimental':
-        specifier: https://pkg.pr.new/Effect-TS/effect/@effect/experimental@8b555a6
-        version: https://pkg.pr.new/Effect-TS/effect/@effect/experimental@8b555a6(@effect/platform-node@0.63.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+        specifier: ^0.29.2
+        version: 0.29.2(@effect/platform-node@0.63.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@effect/language-service':
         specifier: ^0.1.0
         version: 0.1.0
@@ -24,14 +24,14 @@ importers:
         specifier: ^0.38.1
         version: 0.38.1(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)(effect@3.9.1)
       '@effect/platform':
-        specifier: ^0.68.0
-        version: 0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
+        specifier: ^0.68.2
+        version: 0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
       '@effect/platform-node':
-        specifier: ^0.63.0
-        version: 0.63.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4)
+        specifier: ^0.63.2
+        version: 0.63.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4)
       '@effect/schema':
-        specifier: ^0.75.2
-        version: 0.75.2(effect@3.9.1)
+        specifier: ^0.75.3
+        version: 0.75.3(effect@3.9.1)
       '@octokit/types':
         specifier: ^13.6.1
         version: 13.6.1
@@ -55,7 +55,7 @@ importers:
         version: 22.7.5
       dfx:
         specifier: ^0.105.0
-        version: 0.105.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(effect@3.9.1)
+        version: 0.105.0(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(effect@3.9.1)
       effect:
         specifier: ^3.9.1
         version: 3.9.1
@@ -80,31 +80,28 @@ importers:
 
 packages:
 
-  '@effect/ai-openai@https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@8b555a6':
-    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@8b555a6}
-    version: 0.0.0
+  '@effect/ai-openai@0.1.0':
+    resolution: {integrity: sha512-0ahSLvWVRtjiUkmhKl4uln4QBTP3//uBanyDd3jOKsMIHODo2H1GGyz3haB/VGi0uwUi3HA6lWpmdY0mx0GaNg==}
     peerDependencies:
-      '@effect/ai': ^0.0.0
-      '@effect/experimental': ^0.29.0
-      '@effect/platform': ^0.68.0
-      '@effect/schema': ^0.75.2
+      '@effect/ai': ^0.1.0
+      '@effect/experimental': ^0.29.2
+      '@effect/platform': ^0.68.2
+      '@effect/schema': ^0.75.3
       effect: ^3.9.1
 
-  '@effect/ai@https://pkg.pr.new/Effect-TS/effect/@effect/ai@8b555a6':
-    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect/@effect/ai@8b555a6}
-    version: 0.0.0
+  '@effect/ai@0.1.0':
+    resolution: {integrity: sha512-BUPoK+xxDRbGZ3KbTXlzL07Y0KhJAfNwjl9fTxInJaV1rzA8mE4QsqWsYoN/oGcDj6jeX4Tq5r1AnAU1UWJ57Q==}
     peerDependencies:
-      '@effect/platform': ^0.68.0
-      '@effect/schema': ^0.75.2
+      '@effect/platform': ^0.68.2
+      '@effect/schema': ^0.75.3
       effect: ^3.9.1
 
-  '@effect/experimental@https://pkg.pr.new/Effect-TS/effect/@effect/experimental@8b555a6':
-    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect/@effect/experimental@8b555a6}
-    version: 0.29.0
+  '@effect/experimental@0.29.2':
+    resolution: {integrity: sha512-y/JRHkn3zX83+6kGQy3rVJ+GQyMgisZZew4JA+K2ttKVhAjQxgjczSacymTFt3a5pFLsiHu/C8Glec+SPPTmmg==}
     peerDependencies:
-      '@effect/platform': ^0.68.0
-      '@effect/platform-node': ^0.63.0
-      '@effect/schema': ^0.75.2
+      '@effect/platform': ^0.68.2
+      '@effect/platform-node': ^0.63.2
+      '@effect/schema': ^0.75.3
       effect: ^3.9.1
       ioredis: ^5
       lmdb: ^3
@@ -143,26 +140,26 @@ packages:
       '@opentelemetry/sdk-trace-web':
         optional: true
 
-  '@effect/platform-node-shared@0.18.0':
-    resolution: {integrity: sha512-Bz0qg/Xpu2yPBC8EHB/9yKnvSXiJMkwmQp6i/ElmHW21cjLKMl/Q8LFoNweuSdMcCe6BH1t4VhY7dKA2+p4IDw==}
+  '@effect/platform-node-shared@0.18.2':
+    resolution: {integrity: sha512-bk0RwJsBcXM+G1NsaPYOszt9sNMq4xXsKkp87zL7cpr7beKvIkwgGKgoAD/TyeZJrGgfwnU5TWKnv7iOyeSg0Q==}
     peerDependencies:
-      '@effect/platform': ^0.68.0
+      '@effect/platform': ^0.68.2
       effect: ^3.9.1
 
-  '@effect/platform-node@0.63.0':
-    resolution: {integrity: sha512-j1/YmLarrxtaPn+f1rZmeEsgaHVFPWmDEGqzChi18IW3DVachXNWq66O4B1Gq6AnUGuDWY+phY04pOUch/6irg==}
+  '@effect/platform-node@0.63.2':
+    resolution: {integrity: sha512-XMeMpp5UNIzyflBPVcdnR8BXW9oNB1nAJa+0/4mUfhgKGm/0I36SIWVkLrDTlB4x9inLzqnBvrngMduDroW7jA==}
     peerDependencies:
-      '@effect/platform': ^0.68.0
+      '@effect/platform': ^0.68.2
       effect: ^3.9.1
 
-  '@effect/platform@0.68.0':
-    resolution: {integrity: sha512-idK/xf5UwOkW3l4MqD+fkUxVgUiEn/0+cOhtns0XsnaJLtQq8eCyArMjp8pXcvRxjth4K06wdlbBcLsiIRuq0Q==}
+  '@effect/platform@0.68.2':
+    resolution: {integrity: sha512-uKjXUOlmipQggEYBUXrlhJ9JEzq+Xaw3KUWEER3WtindlLuUp2IuMkNCwASSt3LBZZvi9Ir8QgGrAxa0n6T5hg==}
     peerDependencies:
-      '@effect/schema': ^0.75.2
+      '@effect/schema': ^0.75.3
       effect: ^3.9.1
 
-  '@effect/schema@0.75.2':
-    resolution: {integrity: sha512-kU93nBeWXP2CwxspZsSHVQx5xbgZ3OV7UYwhqst7iv01cd2Dk00kIP33PhIWEJVJi30uwbTu8nKVjsHANtgpig==}
+  '@effect/schema@0.75.3':
+    resolution: {integrity: sha512-U+ZKRh8VLuzkYpvbn1APNRAtlNyxhqTr91NA2dR8LJ31duziAmPOnts8IF4HsbBrUCQ1LbP1IrRPW5Isw5Hj4w==}
     peerDependencies:
       effect: ^3.9.1
 
@@ -972,8 +969,8 @@ packages:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
     hasBin: true
 
-  gpt-tokenizer@2.4.1:
-    resolution: {integrity: sha512-toR/iMboG04xErwQGdtf4KuW4dPsiRqIh8qQ5i+Us8PW0iThUf+FqY0rNUMA8hRauf3kJttR7uVae7MNgx4OXA==}
+  gpt-tokenizer@2.5.0:
+    resolution: {integrity: sha512-O/hZmEqmDNjhj2LsO5Ly8Y8927vyI5J1FLbutkFkRo/S1AredRU/Mt2RFy3O71B3Bm6REz0a+3ezBVeYQaCS8Q==}
 
   html-entities@2.5.2:
     resolution: {integrity: sha512-K//PSRMQk4FZ78Kyau+mZurHn3FH0Vwr+H36eE0rPbeYkRRi9YxceYPhuN60UwWorxyKHhqoAJl2OFKa4BVtaA==}
@@ -1294,8 +1291,8 @@ packages:
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
-  undici@6.19.8:
-    resolution: {integrity: sha512-U8uCCl2x9TK3WANvmBavymRzxbfFYG+tAu+fgx3zxQy3qdagQqBLwJVrdyO1TBfUXvfKveMKJZhpvUYoOjM+4g==}
+  undici@6.20.0:
+    resolution: {integrity: sha512-AITZfPuxubm31Sx0vr8bteSalEbs9wQb/BOBi9FPlD9Qpd6HxZ4Q0+hI742jBhkPb4RT2v5MQzaW5VhRVyj+9A==}
     engines: {node: '>=18.17'}
 
   universal-github-app-jwt@2.2.0:
@@ -1341,29 +1338,29 @@ packages:
 
 snapshots:
 
-  '@effect/ai-openai@https://pkg.pr.new/Effect-TS/effect/@effect/ai-openai@8b555a6(@effect/ai@https://pkg.pr.new/Effect-TS/effect/@effect/ai@8b555a6(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/experimental@https://pkg.pr.new/Effect-TS/effect/@effect/experimental@8b555a6(@effect/platform-node@0.63.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)))(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)':
+  '@effect/ai-openai@0.1.0(@effect/ai@0.1.0(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/experimental@0.29.2(@effect/platform-node@0.63.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)))(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)':
     dependencies:
-      '@effect/ai': https://pkg.pr.new/Effect-TS/effect/@effect/ai@8b555a6(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
-      '@effect/experimental': https://pkg.pr.new/Effect-TS/effect/@effect/experimental@8b555a6(@effect/platform-node@0.63.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@effect/platform': 0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
-      '@effect/schema': 0.75.2(effect@3.9.1)
+      '@effect/ai': 0.1.0(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
+      '@effect/experimental': 0.29.2(@effect/platform-node@0.63.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@effect/platform': 0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
+      '@effect/schema': 0.75.3(effect@3.9.1)
       effect: 3.9.1
-      gpt-tokenizer: 2.4.1
+      gpt-tokenizer: 2.5.0
 
-  '@effect/ai@https://pkg.pr.new/Effect-TS/effect/@effect/ai@8b555a6(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)':
+  '@effect/ai@0.1.0(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)':
     dependencies:
-      '@effect/platform': 0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
-      '@effect/schema': 0.75.2(effect@3.9.1)
+      '@effect/platform': 0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
+      '@effect/schema': 0.75.3(effect@3.9.1)
       effect: 3.9.1
 
-  '@effect/experimental@https://pkg.pr.new/Effect-TS/effect/@effect/experimental@8b555a6(@effect/platform-node@0.63.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@effect/experimental@0.29.2(@effect/platform-node@0.63.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4))(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)(ws@8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      '@effect/platform': 0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
-      '@effect/schema': 0.75.2(effect@3.9.1)
+      '@effect/platform': 0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
+      '@effect/schema': 0.75.3(effect@3.9.1)
       effect: 3.9.1
       msgpackr: 1.11.0
     optionalDependencies:
-      '@effect/platform-node': 0.63.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4)
+      '@effect/platform-node': 0.63.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4)
       ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
   '@effect/language-service@0.1.0': {}
@@ -1379,33 +1376,33 @@ snapshots:
       '@opentelemetry/sdk-trace-base': 1.26.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-node': 1.26.0(@opentelemetry/api@1.9.0)
 
-  '@effect/platform-node-shared@0.18.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(effect@3.9.1)':
+  '@effect/platform-node-shared@0.18.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(effect@3.9.1)':
     dependencies:
-      '@effect/platform': 0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
+      '@effect/platform': 0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
       '@parcel/watcher': 2.4.1
       effect: 3.9.1
       multipasta: 0.2.5
 
-  '@effect/platform-node@0.63.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4)':
+  '@effect/platform-node@0.63.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(bufferutil@4.0.8)(effect@3.9.1)(utf-8-validate@6.0.4)':
     dependencies:
-      '@effect/platform': 0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
-      '@effect/platform-node-shared': 0.18.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(effect@3.9.1)
+      '@effect/platform': 0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
+      '@effect/platform-node-shared': 0.18.2(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(effect@3.9.1)
       effect: 3.9.1
       mime: 3.0.0
-      undici: 6.19.8
+      undici: 6.20.0
       ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)':
+  '@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)':
     dependencies:
-      '@effect/schema': 0.75.2(effect@3.9.1)
+      '@effect/schema': 0.75.3(effect@3.9.1)
       effect: 3.9.1
       find-my-way-ts: 0.1.5
       multipasta: 0.2.5
 
-  '@effect/schema@0.75.2(effect@3.9.1)':
+  '@effect/schema@0.75.3(effect@3.9.1)':
     dependencies:
       effect: 3.9.1
       fast-check: 3.22.0
@@ -2052,9 +2049,9 @@ snapshots:
   detect-libc@2.0.3:
     optional: true
 
-  dfx@0.105.0(@effect/platform@0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1))(effect@3.9.1):
+  dfx@0.105.0(@effect/platform@0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1))(effect@3.9.1):
     dependencies:
-      '@effect/platform': 0.68.0(@effect/schema@0.75.2(effect@3.9.1))(effect@3.9.1)
+      '@effect/platform': 0.68.2(@effect/schema@0.75.3(effect@3.9.1))(effect@3.9.1)
       effect: 3.9.1
     optionalDependencies:
       discord-verify: 1.2.0
@@ -2154,7 +2151,7 @@ snapshots:
       package-json-from-dist: 1.0.0
       path-scurry: 1.11.1
 
-  gpt-tokenizer@2.4.1: {}
+  gpt-tokenizer@2.5.0: {}
 
   html-entities@2.5.2: {}
 
@@ -2462,7 +2459,7 @@ snapshots:
 
   undici-types@6.19.8: {}
 
-  undici@6.19.8: {}
+  undici@6.20.0: {}
 
   universal-github-app-jwt@2.2.0: {}
 

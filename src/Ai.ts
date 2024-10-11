@@ -1,8 +1,13 @@
 import { AiInput, Completions } from "@effect/ai"
-import { OpenAiClient, OpenAiCompletions } from "@effect/ai-openai"
+import {
+  OpenAiClient,
+  OpenAiCompletions,
+  OpenAiConfig,
+} from "@effect/ai-openai"
 import { NodeHttpClient } from "@effect/platform-node"
 import { Chunk, Config, Effect, Layer, pipe } from "effect"
 import * as Str from "./utils/String.js"
+import { Tokenizer } from "@effect/ai/Tokenizer"
 
 export const OpenAiLive = OpenAiClient.layerConfig({
   apiKey: Config.redacted("OPENAI_API_KEY"),
@@ -18,14 +23,14 @@ export const CompletionsLive = OpenAiCompletions.layer({
 export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
   effect: Effect.gen(function* () {
     const completions = yield* Completions.Completions
+    const tokenizer = yield* Tokenizer
 
     const generateTitle = (prompt: string) =>
-      completions.create.pipe(
+      completions.create(Str.truncateWords(prompt, 500)).pipe(
         AiInput.provideSystem(
           "Create a short title summarizing the message. Do not include markdown in the title.",
         ),
-        AiInput.provide(Str.truncateWords(prompt, 500)),
-        Effect.provideService(OpenAiCompletions.OpenAiConfig, {
+        Effect.provideService(OpenAiConfig.OpenAiConfig, {
           temperature: 0.25,
           max_tokens: 64,
         }),
@@ -35,26 +40,24 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
 
     const generateDocs = (
       title: string,
-      messages: AiInput.AiInput.Type,
+      messages: AiInput.AiInput,
       instruction = "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate.",
     ) =>
-      completions.create.pipe(
-        Effect.provideService(
-          AiInput.SystemInstruction,
+      pipe(
+        tokenizer.truncate(
+          Chunk.appendAll(messages, AiInput.make(instruction)),
+          30_000,
+        ),
+        Effect.flatMap(completions.create),
+        AiInput.provideSystem(
           `You are a helpful assistant for the Effect-TS ecosystem.
 
 The title of this chat is "${title}".`,
         ),
-        AiInput.provideEffect(
-          Chunk.appendAll(messages, AiInput.make(instruction)).pipe(
-            AiInput.truncate(30_000),
-            Effect.provideService(Completions.Completions, completions),
-          ),
-        ),
         Effect.map(_ => _.text),
       )
 
-    const generateSummary = (title: string, messages: AiInput.AiInput.Type) =>
+    const generateSummary = (title: string, messages: AiInput.AiInput) =>
       generateDocs(
         title,
         messages,
