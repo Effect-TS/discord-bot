@@ -1,9 +1,17 @@
 import { HttpClient } from "@effect/platform"
-import { Schema } from "@effect/schema"
 import { DiscordLive } from "bot/Discord"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Data, Duration, Effect, Layer, Schedule, identity, pipe } from "effect"
+import {
+  Data,
+  Duration,
+  Effect,
+  Layer,
+  Schedule,
+  Schema,
+  identity,
+  pipe,
+} from "effect"
 import * as HtmlEnt from "html-entities"
 import * as Prettier from "prettier"
 

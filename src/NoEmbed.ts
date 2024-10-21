@@ -1,9 +1,8 @@
-import { Schema } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
-import { Config, Effect, Layer, Schedule, pipe } from "effect"
+import { Config, Effect, Layer, Schedule, Schema, pipe } from "effect"
 import { nestedConfigProvider } from "./utils/Config.js"
 
 const make = Effect.gen(function* () {
