@@ -1,4 +1,3 @@
-import { Schema } from "@effect/schema"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import * as Str from "bot/utils/String"
@@ -13,6 +12,7 @@ import {
   Layer,
   Option,
   Schedule,
+  Schema,
   pipe,
 } from "effect"
 import { AiHelpers } from "./Ai.js"

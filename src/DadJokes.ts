@@ -3,10 +3,9 @@ import {
   HttpClientRequest,
   HttpClientResponse,
 } from "@effect/platform"
-import { Schema } from "@effect/schema"
 import { Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Effect, flow, Layer, Schedule } from "effect"
+import { Effect, flow, Layer, Schedule, Schema } from "effect"
 import { DiscordLive } from "./Discord.js"
 
 const make = Effect.gen(function* () {
