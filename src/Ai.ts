@@ -26,9 +26,11 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
     const tokenizer = yield* Tokenizer
 
     const generateTitle = (prompt: string) =>
-      completions.create(Str.truncateWords(prompt, 500)).pipe(
+      completions.create(prompt).pipe(
         AiInput.provideSystem(
-          "Create a short title summarizing the message. Do not include markdown in the title.",
+          `You are a helpful assistant for the Effect Typescript library Discord community.
+
+Create a short title summarizing the message. Do not include markdown in the title.`,
         ),
         Effect.provideService(OpenAiConfig.OpenAiConfig, {
           temperature: 0.25,
@@ -50,7 +52,7 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
         ),
         Effect.flatMap(completions.create),
         AiInput.provideSystem(
-          `You are a helpful assistant for the Effect-TS ecosystem.
+          `You are a helpful assistant for the Effect Typescript library Discord community.
 
 The title of this chat is "${title}".`,
         ),
