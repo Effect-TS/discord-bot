@@ -5,7 +5,7 @@ import {
   OpenAiConfig,
 } from "@effect/ai-openai"
 import { NodeHttpClient } from "@effect/platform-node"
-import { Chunk, Config, Effect, Layer, pipe } from "effect"
+import { Chunk, Config, Effect, Layer, String, pipe } from "effect"
 import * as Str from "./utils/String.js"
 import { Tokenizer } from "@effect/ai/Tokenizer"
 
@@ -21,7 +21,7 @@ export const CompletionsLive = OpenAiCompletions.layer({
 }).pipe(Layer.provide(OpenAiLive))
 
 export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
-  effect: Effect.gen(function* () {
+  effect: Effect.gen(function*() {
     const completions = yield* Completions.Completions
     const tokenizer = yield* Tokenizer
 
@@ -66,14 +66,34 @@ The title of this chat is "${title}".`,
         "Summarize the above messages. Also include some key takeaways.",
       )
 
+    const generateReproRequest = (messages: AiInput.AiInput) => {
+      const instruction = String.stripMargin(
+        `|Write a comedic message to the user indicating that a 
+         |reproduction is required to further investigate the issue described 
+         |in the following messages. Your message should in no way be offensive
+         |to the user.`
+      )
+      return tokenizer.truncate(
+        Chunk.appendAll(messages, AiInput.make(instruction)),
+        30_000
+      ).pipe(
+        Effect.flatMap(completions.create),
+        AiInput.provideSystem(
+          `You are a helpful assistant for the Effect Typescript library Discord community.`
+        ),
+        Effect.map(_ => _.text)
+      )
+    }
+
     return {
       generateTitle,
       generateDocs,
       generateSummary,
+      generateReproRequest
     } as const
   }),
   dependencies: [CompletionsLive],
-}) {}
+}) { }
 
 const cleanTitle = (_: string) =>
   pipe(Str.firstParagraph(_), Str.removeQuotes, Str.removePeriod)
