@@ -1,34 +1,19 @@
-import { Chunk, Effect, Layer, Stream } from "effect"
-import { AiInput, AiRole } from "@effect/ai"
+import { Effect, Layer, String } from "effect"
+import { AiInput, Completions, Tokenizer } from "@effect/ai"
 import { Discord, Ix } from "dfx"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { NotInThreadError } from "bot/Summarizer"
 import { Messages } from "./Messages.js"
 import { InteractionsRegistry } from "dfx/gateway"
-import { AiHelpers } from "bot/Ai"
+import { AiHelpers, CompletionsLive } from "bot/Ai"
 import { DiscordLive } from "bot/Discord"
 
 const make = Effect.gen(function*() {
   const ai = yield* AiHelpers
   const channels = yield* ChannelsCache
-  const messages = yield* Messages
+  const completions = yield* Completions.Completions
   const registry = yield* InteractionsRegistry
-
-  const createReproRequest = (channel: Discord.Channel) =>
-    messages.cleanForChannel(channel).pipe(
-      Stream.runCollect,
-      Effect.map(chunk =>
-        Chunk.map(
-          Chunk.reverse(chunk),
-          (msg): AiInput.Message =>
-            AiInput.Message.fromInput(
-              msg.content,
-              AiRole.userWithName(msg.author.username),
-            ),
-        ),
-      ),
-      Effect.flatMap((messages) => ai.generateReproRequest(messages))
-    )
+  const tokenizer = yield* Tokenizer.Tokenizer
 
   const command = Ix.global(
     {
@@ -44,14 +29,24 @@ const make = Effect.gen(function*() {
       if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
         return yield* new NotInThreadError()
       }
-      const message = yield* createReproRequest(channel).pipe(
+      const input = yield* ai.generateAiInput(channel, context.message!)
+      const content = yield* tokenizer.truncate(input, 30_000).pipe(
+        Effect.flatMap(completions.create),
+        Effect.map(response => response.text),
+        AiInput.provideSystem(String.stripMargin(
+          `|You are Effect Bot, a funny, helpful assistant for the Effect Discord community.
+           |
+           |Please keep replies under 2000 characters.
+           |
+           |The title of this conversation is "${context.message?.thread?.name ?? "A thread"}".`
+        )),
         Effect.annotateLogs({
           thread: channel.id
-        }),
+        })
       )
       return Ix.response({
         type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: { content: message }
+        data: { content }
       })
     }).pipe(
       Effect.annotateLogs("command", "repro"),
@@ -78,8 +73,8 @@ const make = Effect.gen(function*() {
 })
 
 export const ReproRequesterLive = Layer.effectDiscard(make).pipe(
-  Layer.provide(DiscordLive),
-  Layer.provide(ChannelsCache.Default),
-  Layer.provide(Messages.Default),
   Layer.provide(AiHelpers.Default),
+  Layer.provide(ChannelsCache.Default),
+  Layer.provide(CompletionsLive),
+  Layer.provide(DiscordLive)
 )

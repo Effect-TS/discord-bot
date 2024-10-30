@@ -20,7 +20,7 @@ import { AiHelpers } from "./Ai.js"
 
 export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError",
-)<{}> {}
+)<{}> { }
 
 const githubRepos = [
   { label: "/effect", owner: "effect-ts", repo: "effect" },
@@ -28,7 +28,7 @@ const githubRepos = [
 ]
 type GithubRepo = (typeof githubRepos)[number]
 
-const make = Effect.gen(function* () {
+const make = Effect.gen(function*() {
   const rest = yield* DiscordREST
   const channels = yield* ChannelsCache
   const ai = yield* AiHelpers
@@ -126,7 +126,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       ],
     },
     ix =>
-      Effect.gen(function* () {
+      Effect.gen(function*() {
         const context = yield* Ix.Interaction
         const repoIndex = yield* ix.optionValue("repository")
         const repo = githubRepos[repoIndex]
@@ -172,9 +172,9 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 })
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(DiscordLive),
-  Layer.provide(ChannelsCache.Default),
-  Layer.provide(Messages.Default),
   Layer.provide(AiHelpers.Default),
-  Layer.provide(Github.Default),
+  Layer.provide(ChannelsCache.Default),
+  Layer.provide(DiscordLive),
+  Layer.provide(Messages.Default),
+  Layer.provide(Github.Default)
 )

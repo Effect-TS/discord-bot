@@ -1,17 +1,18 @@
 import { AiInput, AiRole, Completions } from "@effect/ai"
+import { AiHelpers, CompletionsLive } from "bot/Ai"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import { Data, Effect, Layer, pipe } from "effect"
-import { CompletionsLive } from "./Ai.js"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
-}> {}
+}> { }
 
-const make = Effect.gen(function* () {
+const make = Effect.gen(function*() {
+  const ai = yield* AiHelpers
   const rest = yield* DiscordREST
   const gateway = yield* DiscordGateway
   const channels = yield* ChannelsCache
@@ -19,50 +20,11 @@ const make = Effect.gen(function* () {
 
   const botUser = yield* rest.getCurrentUser().json
 
-  const generateAiInput = (
-    thread: Discord.Channel,
-    message: Discord.MessageCreateEvent,
-  ) =>
-    pipe(
-      Effect.all(
-        {
-          openingMessage: rest.getChannelMessage(thread.parent_id!, thread.id)
-            .json,
-          messages: rest.getChannelMessages(message.channel_id, {
-            before: message.id,
-            limit: 10,
-          }).json,
-        },
-        { concurrency: "unbounded" },
-      ),
-      Effect.map(({ openingMessage, messages }) =>
-        AiInput.make(
-          [message, ...messages, openingMessage]
-            .reverse()
-            .filter(
-              msg =>
-                msg.type === Discord.MessageType.DEFAULT ||
-                msg.type === Discord.MessageType.REPLY,
-            )
-            .filter(msg => msg.content.trim().length > 0)
-            .map(
-              (msg): AiInput.Message =>
-                AiInput.Message.fromInput(
-                  msg.content,
-                  msg.author.id === botUser.id
-                    ? AiRole.model
-                    : AiRole.userWithName(msg.author.username),
-                ),
-            ),
-        ),
-      ),
-    )
-
   const generateCompletion = (
     thread: Discord.Channel,
     message: Discord.MessageCreateEvent,
   ) =>
-    generateAiInput(thread, message).pipe(
+    ai.generateAiInput(thread, message).pipe(
       Effect.flatMap(completions.create),
       AiInput.provideSystem(`You are Effect Bot, a funny, helpful assistant for the Effect Discord community.
 
@@ -108,6 +70,7 @@ The title of this conversation is "${thread.name ?? "A thread"}".`),
 })
 
 export const MentionsLive = Layer.scopedDiscard(make).pipe(
+  Layer.provide(AiHelpers.Default),
   Layer.provide(ChannelsCache.Default),
   Layer.provide(DiscordLive),
   Layer.provide(CompletionsLive),

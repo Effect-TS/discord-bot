@@ -1,4 +1,4 @@
-import { AiInput, Completions } from "@effect/ai"
+import { AiInput, AiRole, Completions } from "@effect/ai"
 import {
   OpenAiClient,
   OpenAiCompletions,
@@ -8,6 +8,7 @@ import { NodeHttpClient } from "@effect/platform-node"
 import { Chunk, Config, Effect, Layer, String, pipe } from "effect"
 import * as Str from "./utils/String.js"
 import { Tokenizer } from "@effect/ai/Tokenizer"
+import { Discord, DiscordREST } from "dfx"
 
 export const OpenAiLive = OpenAiClient.layerConfig({
   apiKey: Config.redacted("OPENAI_API_KEY"),
@@ -22,8 +23,50 @@ export const CompletionsLive = OpenAiCompletions.layer({
 
 export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
   effect: Effect.gen(function*() {
+    const rest = yield* DiscordREST
     const completions = yield* Completions.Completions
     const tokenizer = yield* Tokenizer
+
+    const botUser = yield* rest.getCurrentUser().json
+
+    const generateAiInput = (
+      thread: Discord.Channel,
+      message: Discord.MessageCreateEvent,
+    ) =>
+      pipe(
+        Effect.all(
+          {
+            openingMessage: rest.getChannelMessage(thread.parent_id!, thread.id)
+              .json,
+            messages: rest.getChannelMessages(message.channel_id, {
+              before: message.id,
+              limit: 10,
+            }).json,
+          },
+          { concurrency: "unbounded" },
+        ),
+        Effect.map(({ openingMessage, messages }) =>
+          AiInput.make(
+            [message, ...messages, openingMessage]
+              .reverse()
+              .filter(
+                msg =>
+                  msg.type === Discord.MessageType.DEFAULT ||
+                  msg.type === Discord.MessageType.REPLY,
+              )
+              .filter(msg => msg.content.trim().length > 0)
+              .map(
+                (msg): AiInput.Message =>
+                  AiInput.Message.fromInput(
+                    msg.content,
+                    msg.author.id === botUser.id
+                      ? AiRole.model
+                      : AiRole.userWithName(msg.author.username),
+                  ),
+              ),
+          ),
+        ),
+      )
 
     const generateTitle = (prompt: string) =>
       completions.create(prompt).pipe(
@@ -66,30 +109,11 @@ The title of this chat is "${title}".`,
         "Summarize the above messages. Also include some key takeaways.",
       )
 
-    const generateReproRequest = (messages: AiInput.AiInput) => {
-      const instruction = String.stripMargin(
-        `|Write a comedic message to the user indicating that a 
-         |reproduction is required to further investigate the issue described 
-         |in the following messages. Your message should in no way be offensive
-         |to the user.`
-      )
-      return tokenizer.truncate(
-        Chunk.appendAll(messages, AiInput.make(instruction)),
-        30_000
-      ).pipe(
-        Effect.flatMap(completions.create),
-        AiInput.provideSystem(
-          `You are a helpful assistant for the Effect Typescript library Discord community.`
-        ),
-        Effect.map(_ => _.text)
-      )
-    }
-
     return {
       generateTitle,
       generateDocs,
       generateSummary,
-      generateReproRequest
+      generateAiInput
     } as const
   }),
   dependencies: [CompletionsLive],
