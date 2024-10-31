@@ -1,7 +1,7 @@
 import { AiInput, AiRole, Completions } from "@effect/ai"
 import { AiHelpers, CompletionsLive } from "bot/Ai"
 import { ChannelsCache } from "bot/ChannelsCache"
-import { DiscordLive } from "bot/Discord"
+import { DiscordApplication, DiscordLive } from "bot/Discord"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
@@ -9,16 +9,17 @@ import { Data, Effect, Layer, pipe } from "effect"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
-}> { }
+}> {}
 
-const make = Effect.gen(function*() {
+const make = Effect.gen(function* () {
   const ai = yield* AiHelpers
   const rest = yield* DiscordREST
   const gateway = yield* DiscordGateway
   const channels = yield* ChannelsCache
   const completions = yield* Completions.Completions
 
-  const botUser = yield* rest.getCurrentUser().json
+  const application = yield* DiscordApplication
+  const botUser = application.bot!
 
   const generateCompletion = (
     thread: Discord.Channel,

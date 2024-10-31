@@ -1,6 +1,6 @@
 import { HttpBody } from "@effect/platform"
 import { ChannelsCache } from "bot/ChannelsCache"
-import { DiscordLive } from "bot/Discord"
+import { DiscordApplication, DiscordLive } from "bot/Discord"
 import { MemberCache } from "bot/MemberCache"
 import { Messages } from "bot/Messages"
 import { Discord, DiscordREST, Ix } from "dfx"
@@ -19,7 +19,7 @@ export class Summarizer extends Effect.Service<Summarizer>()("app/Summarizer", {
     const members = yield* MemberCache
     const messages = yield* Messages
     const scope = yield* Effect.scope
-    const application = yield* rest.getCurrentBotApplicationInformation().json
+    const application = yield* DiscordApplication
 
     const summarizeThread = (channel: Discord.Channel, small = true) =>
       pipe(

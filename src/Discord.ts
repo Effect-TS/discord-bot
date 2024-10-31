@@ -1,9 +1,9 @@
 import { NodeHttpClient, NodeSocket } from "@effect/platform-node"
-import { DiscordConfig, Intents } from "dfx"
+import { DiscordConfig, DiscordREST, Intents } from "dfx"
 import { DiscordIxLive } from "dfx/gateway"
-import { Config, Layer } from "effect"
+import { Config, Effect, Layer } from "effect"
 
-export const DiscordLive = DiscordIxLive.pipe(
+const DiscordLayer = DiscordIxLive.pipe(
   Layer.provideMerge(NodeHttpClient.layerUndici),
   Layer.provide(NodeSocket.layerWebSocketConstructor),
   Layer.provide(
@@ -17,3 +17,15 @@ export const DiscordLive = DiscordIxLive.pipe(
     }),
   ),
 )
+
+export class DiscordApplication extends Effect.Service<DiscordApplication>()(
+  "app/DiscordApplication",
+  {
+    effect: DiscordREST.pipe(
+      Effect.flatMap(_ => _.getCurrentBotApplicationInformation().json),
+    ),
+    dependencies: [DiscordLayer],
+  },
+) {}
+
+export const DiscordLive = Layer.merge(DiscordLayer, DiscordApplication.Default)

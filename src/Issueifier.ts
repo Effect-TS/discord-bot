@@ -1,6 +1,6 @@
 import { AiInput, AiRole } from "@effect/ai"
 import { ChannelsCache } from "bot/ChannelsCache"
-import { DiscordLive } from "bot/Discord"
+import { DiscordApplication, DiscordLive } from "bot/Discord"
 import { Github } from "bot/Github"
 import { Messages } from "bot/Messages"
 import { Discord, DiscordREST, Ix } from "dfx"
@@ -20,7 +20,7 @@ import { AiHelpers } from "./Ai.js"
 
 export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError",
-)<{}> { }
+)<{}> {}
 
 const githubRepos = [
   { label: "/effect", owner: "effect-ts", repo: "effect" },
@@ -28,7 +28,7 @@ const githubRepos = [
 ]
 type GithubRepo = (typeof githubRepos)[number]
 
-const make = Effect.gen(function*() {
+const make = Effect.gen(function* () {
   const rest = yield* DiscordREST
   const channels = yield* ChannelsCache
   const ai = yield* AiHelpers
@@ -39,7 +39,7 @@ const make = Effect.gen(function*() {
 
   const createGithubIssue = github.wrap(_ => _.issues.create)
 
-  const application = yield* rest.getCurrentBotApplicationInformation().json
+  const application = yield* DiscordApplication
 
   const createIssue = (channel: Discord.Channel, repo: GithubRepo) =>
     pipe(
@@ -126,7 +126,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       ],
     },
     ix =>
-      Effect.gen(function*() {
+      Effect.gen(function* () {
         const context = yield* Ix.Interaction
         const repoIndex = yield* ix.optionValue("repository")
         const repo = githubRepos[repoIndex]
@@ -176,5 +176,5 @@ export const IssueifierLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(ChannelsCache.Default),
   Layer.provide(DiscordLive),
   Layer.provide(Messages.Default),
-  Layer.provide(Github.Default)
+  Layer.provide(Github.Default),
 )

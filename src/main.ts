@@ -11,7 +11,7 @@ import { TracingLive } from "bot/Tracing"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 
 const LogLevelLive = Layer.unwrapEffect(
-  Effect.gen(function*() {
+  Effect.gen(function* () {
     const debug = yield* Config.withDefault(Config.boolean("DEBUG"), false)
     const level = debug ? LogLevel.All : LogLevel.Info
     return Logger.minimumLogLevel(level)

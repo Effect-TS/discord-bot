@@ -1,26 +1,35 @@
-import { Effect, Layer, String } from "effect"
 import { AiInput, Completions, Tokenizer } from "@effect/ai"
-import { Discord, Ix } from "dfx"
-import { ChannelsCache } from "bot/ChannelsCache"
-import { NotInThreadError } from "bot/Summarizer"
-import { Messages } from "./Messages.js"
-import { InteractionsRegistry } from "dfx/gateway"
 import { AiHelpers, CompletionsLive } from "bot/Ai"
-import { DiscordLive } from "bot/Discord"
+import { ChannelsCache } from "bot/ChannelsCache"
+import { DiscordApplication, DiscordLive } from "bot/Discord"
+import { NotInThreadError } from "bot/Summarizer"
+import { Discord, DiscordREST, Ix } from "dfx"
+import { InteractionsRegistry } from "dfx/gateway"
+import { Effect, Layer } from "effect"
 
-const make = Effect.gen(function*() {
+const systemInstruction = `You are Effect Bot, a helpful assistant for the Effect Discord community.
+
+Generate a light-hearted, comedic message to the user based on the included conversation indicating that, without a minimal reproduction of the described issue, the Effect team will not be able to further investigate.
+
+Your message should in no way be offensive to the user.`
+
+const make = Effect.gen(function* () {
   const ai = yield* AiHelpers
   const channels = yield* ChannelsCache
   const completions = yield* Completions.Completions
   const registry = yield* InteractionsRegistry
   const tokenizer = yield* Tokenizer.Tokenizer
+  const discord = yield* DiscordREST
+  const application = yield* DiscordApplication
+  const scope = yield* Effect.scope
 
   const command = Ix.global(
     {
       name: "repro",
-      description: "Generate a message indicating that reproduction is required"
+      description:
+        "Generate a message indicating that reproduction is required",
     },
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const context = yield* Ix.Interaction
       const channel = yield* channels.get(
         context.guild_id!,
@@ -29,38 +38,38 @@ const make = Effect.gen(function*() {
       if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
         return yield* new NotInThreadError()
       }
-      const input = yield* ai.generateAiInput(channel, context.message!)
-      const content = yield* tokenizer.truncate(input, 30_000).pipe(
-        Effect.flatMap(completions.create),
-        Effect.map(response => response.text),
-        AiInput.provideSystem(String.stripMargin(
-          `|You are Effect Bot, a funny, helpful assistant for the Effect 
-           |Discord community.
-           |
-           |Generate a light-hearted, comedic message to the user based on the 
-           |included conversation indicating that, without a minimal reproduction 
-           |of the described issue, the Effect team will not be able to further 
-           |investigate.
-           |
-           |Your message should in no way be offensive to the user.
-           |
-           |Please keep replies under 2000 characters.
-           |
-           |The title of this conversation is "${context.message?.thread?.name ?? "A thread"}".`
-        )),
-        Effect.annotateLogs({
-          thread: channel.id
-        })
-      )
+      yield* respond(channel, context).pipe(Effect.forkIn(scope))
       return Ix.response({
-        type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: { content }
+        type: Discord.InteractionCallbackType
+          .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
       })
     }).pipe(
       Effect.annotateLogs("command", "repro"),
       Effect.withSpan("ReproRequester.command"),
     ),
   )
+
+  const respond = (channel: Discord.Channel, context: Discord.Interaction) =>
+    Effect.gen(function* () {
+      const input = yield* ai.generateAiInput(channel)
+      const content = yield* tokenizer.truncate(input, 30_000).pipe(
+        Effect.flatMap(completions.create),
+        Effect.map(response => response.text),
+        AiInput.provideSystem(systemInstruction),
+        Effect.annotateLogs({
+          thread: channel.id,
+        }),
+      )
+      yield* discord.editOriginalInteractionResponse(
+        application.id,
+        context.token,
+        { content },
+      )
+    }).pipe(
+      Effect.withSpan("ReproRequester.respond", {
+        attributes: { channel: channel.id },
+      }),
+    )
 
   const ix = Ix.builder
     .add(command)
@@ -80,9 +89,9 @@ const make = Effect.gen(function*() {
   yield* registry.register(ix)
 })
 
-export const ReproRequesterLive = Layer.effectDiscard(make).pipe(
+export const ReproRequesterLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(AiHelpers.Default),
   Layer.provide(ChannelsCache.Default),
   Layer.provide(CompletionsLive),
-  Layer.provide(DiscordLive)
+  Layer.provide(DiscordLive),
 )

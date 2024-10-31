@@ -5,10 +5,11 @@ import {
   OpenAiConfig,
 } from "@effect/ai-openai"
 import { NodeHttpClient } from "@effect/platform-node"
-import { Chunk, Config, Effect, Layer, String, pipe } from "effect"
+import { Chunk, Config, Effect, Layer, pipe } from "effect"
 import * as Str from "./utils/String.js"
 import { Tokenizer } from "@effect/ai/Tokenizer"
 import { Discord, DiscordREST } from "dfx"
+import { DiscordApplication } from "./Discord.js"
 
 export const OpenAiLive = OpenAiClient.layerConfig({
   apiKey: Config.redacted("OPENAI_API_KEY"),
@@ -22,24 +23,25 @@ export const CompletionsLive = OpenAiCompletions.layer({
 }).pipe(Layer.provide(OpenAiLive))
 
 export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
-  effect: Effect.gen(function*() {
+  effect: Effect.gen(function* () {
     const rest = yield* DiscordREST
     const completions = yield* Completions.Completions
     const tokenizer = yield* Tokenizer
 
-    const botUser = yield* rest.getCurrentUser().json
+    const application = yield* DiscordApplication
+    const botUser = application.bot!
 
     const generateAiInput = (
       thread: Discord.Channel,
-      message: Discord.MessageCreateEvent,
+      message?: Discord.MessageCreateEvent,
     ) =>
       pipe(
         Effect.all(
           {
             openingMessage: rest.getChannelMessage(thread.parent_id!, thread.id)
               .json,
-            messages: rest.getChannelMessages(message.channel_id, {
-              before: message.id,
+            messages: rest.getChannelMessages(thread.id, {
+              before: message?.id,
               limit: 10,
             }).json,
           },
@@ -47,7 +49,7 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
         ),
         Effect.map(({ openingMessage, messages }) =>
           AiInput.make(
-            [message, ...messages, openingMessage]
+            [...(message ? [message] : []), ...messages, openingMessage]
               .reverse()
               .filter(
                 msg =>
@@ -113,11 +115,11 @@ The title of this chat is "${title}".`,
       generateTitle,
       generateDocs,
       generateSummary,
-      generateAiInput
+      generateAiInput,
     } as const
   }),
   dependencies: [CompletionsLive],
-}) { }
+}) {}
 
 const cleanTitle = (_: string) =>
   pipe(Str.firstParagraph(_), Str.removeQuotes, Str.removePeriod)
