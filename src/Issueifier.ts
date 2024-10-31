@@ -1,6 +1,6 @@
 import { AiInput, AiRole } from "@effect/ai"
 import { ChannelsCache } from "bot/ChannelsCache"
-import { DiscordLive } from "bot/Discord"
+import { DiscordApplication, DiscordLive } from "bot/Discord"
 import { Github } from "bot/Github"
 import { Messages } from "bot/Messages"
 import { Discord, DiscordREST, Ix } from "dfx"
@@ -39,7 +39,7 @@ const make = Effect.gen(function* () {
 
   const createGithubIssue = github.wrap(_ => _.issues.create)
 
-  const application = yield* rest.getCurrentBotApplicationInformation().json
+  const application = yield* DiscordApplication
 
   const createIssue = (channel: Discord.Channel, repo: GithubRepo) =>
     pipe(
@@ -172,9 +172,9 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 })
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(DiscordLive),
-  Layer.provide(ChannelsCache.Default),
-  Layer.provide(Messages.Default),
   Layer.provide(AiHelpers.Default),
+  Layer.provide(ChannelsCache.Default),
+  Layer.provide(DiscordLive),
+  Layer.provide(Messages.Default),
   Layer.provide(Github.Default),
 )
