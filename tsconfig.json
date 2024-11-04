@@ -19,7 +19,7 @@
       "bot/*": ["./src/*.js"]
     },
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
-    "plugins": [{ "name": "@effect/langauge-service" }]
+    "plugins": [{ "name": "@effect/language-service" }]
   },
   "include": ["src/**/*"]
 }
