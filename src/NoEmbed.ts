@@ -79,7 +79,7 @@ const make = Effect.gen(function* () {
       })
     }).pipe(
       Effect.withSpan("NoEmbed.handleMessage"),
-      Effect.catchAllCause(Effect.logError),
+      Effect.catchAllCause(Effect.logDebug),
     )
 
   yield* gateway
