@@ -62,56 +62,55 @@ const make = Effect.gen(function* () {
     .annotations({ identifier: "EligibleMessage" })
     .pipe(Schema.decodeUnknown)
 
-  const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", message =>
-    Effect.all({
-      message: EligibleMessage(message),
-      channel: channels
-        .get(message.guild_id!, message.channel_id)
-        .pipe(Effect.flatMap(EligibleChannel)),
-    }).pipe(
-      Effect.bind("title", () =>
-        ai.generateTitle(message.content).pipe(
-          Effect.tapErrorCause(Effect.log),
-          Effect.retry({
-            schedule: retryPolicy,
-            while: err => err._tag === "AiError",
-          }),
-          Effect.withSpan("AutoThreads.generateTitle"),
-          Effect.orElseSucceed(() =>
-            pipe(
-              Option.fromNullable(message.member?.nick),
-              Option.getOrElse(() => message.author.username),
-              name => `${name}'s thread`,
-            ),
+  const handleMessages = gateway.handleDispatch("MESSAGE_CREATE", event =>
+    Effect.gen(function* () {
+      const message = yield* EligibleMessage(event)
+      const channel = yield* channels
+        .get(event.guild_id!, event.channel_id)
+        .pipe(Effect.flatMap(EligibleChannel))
+      const title = yield* ai.generateTitle(event.content).pipe(
+        Effect.tapErrorCause(Effect.log),
+        Effect.retry({
+          schedule: retryPolicy,
+          while: err => err._tag === "AiError",
+        }),
+        Effect.withSpan("AutoThreads.generateTitle"),
+        Effect.orElseSucceed(() =>
+          pipe(
+            Option.fromNullable(event.member?.nick),
+            Option.getOrElse(() => event.author.username),
+            name => `${name}'s thread`,
           ),
         ),
-      ),
-      Effect.tap(({ title }) => Effect.annotateCurrentSpan({ title })),
-      Effect.bind(
-        "thread",
-        ({ channel, title }) =>
-          rest.startThreadFromMessage(channel.id, message.id, {
-            name: Str.truncate(title, 100),
-            auto_archive_duration: 1440,
-          }).json,
-      ),
-      Effect.tap(({ thread }) =>
-        rest.createMessage(thread.id, {
-          components: UI.grid([
-            [
-              UI.button({
-                custom_id: `edit_${message.author.id}`,
-                label: "Edit title",
-              }),
-              UI.button({
-                custom_id: `archive_${message.author.id}`,
-                label: "Archive",
-                style: Discord.ButtonStyle.SECONDARY,
-              }),
-            ],
-          ]),
-        }),
-      ),
+      )
+
+      yield* Effect.annotateCurrentSpan({ title })
+
+      const thread = yield* rest.startThreadFromMessage(
+        channel.id,
+        message.id,
+        {
+          name: Str.truncate(title, 100),
+          auto_archive_duration: 1440,
+        },
+      ).json
+
+      yield* rest.createMessage(thread.id, {
+        components: UI.grid([
+          [
+            UI.button({
+              custom_id: `edit_${event.author.id}`,
+              label: "Edit title",
+            }),
+            UI.button({
+              custom_id: `archive_${event.author.id}`,
+              label: "Archive",
+              style: Discord.ButtonStyle.SECONDARY,
+            }),
+          ],
+        ]),
+      })
+    }).pipe(
       Effect.withSpan("AutoThreads.handleMessages"),
       Effect.catchTag("ParseError", Effect.logDebug),
       Effect.catchAllCause(Effect.logError),

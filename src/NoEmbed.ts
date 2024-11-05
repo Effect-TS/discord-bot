@@ -2,7 +2,7 @@ import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordLive } from "bot/Discord"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
-import { Config, Effect, Layer, Schedule, Schema, pipe } from "effect"
+import { Config, Effect, Layer, Schedule, Schema } from "effect"
 import { nestedConfigProvider } from "./utils/Config.js"
 
 const make = Effect.gen(function* () {
@@ -64,27 +64,21 @@ const make = Effect.gen(function* () {
       Schema.decodeUnknown,
     )
 
-  const handleMessage = (message: Discord.MessageCreateEvent) =>
-    pipe(
-      Effect.Do,
-      Effect.bind("channel", () =>
-        getChannel(message.guild_id!, message.channel_id).pipe(
-          Effect.flatMap(EligibleChannel),
-        ),
-      ),
-      Effect.bind("message", () =>
-        (message.content
-          ? Effect.succeed(message)
-          : rest.getChannelMessage(message.channel_id, message.id).json
-        ).pipe(Effect.flatMap(EligibleMessage)),
-      ),
-      Effect.flatMap(({ message }) =>
-        rest.editMessage(message.channel_id, message.id, {
-          flags: message.flags | Discord.MessageFlag.SUPPRESS_EMBEDS,
-        }),
-      ),
+  const handleMessage = (event: Discord.MessageCreateEvent) =>
+    Effect.gen(function* () {
+      yield* getChannel(event.guild_id!, event.channel_id).pipe(
+        Effect.flatMap(EligibleChannel),
+      )
+      const message = event.content
+        ? event
+        : yield* rest
+            .getChannelMessage(event.channel_id, event.id)
+            .json.pipe(Effect.flatMap(EligibleMessage))
+      yield* rest.editMessage(message.channel_id, message.id, {
+        flags: message.flags! | Discord.MessageFlag.SUPPRESS_EMBEDS,
+      })
+    }).pipe(
       Effect.withSpan("NoEmbed.handleMessage"),
-      Effect.catchTag("ParseError", Effect.logDebug),
       Effect.catchAllCause(Effect.logError),
     )
 

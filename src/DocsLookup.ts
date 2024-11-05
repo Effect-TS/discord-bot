@@ -95,30 +95,24 @@ const make = Effect.gen(function* () {
       ],
     },
     ix =>
-      Effect.all({
-        key: ix.optionValue("query"),
-        reveal: ix.optionValue("public"),
-        docs: allDocs,
+      Effect.gen(function* () {
+        const key = yield* ix.optionValue("query")
+        const reveal = yield* ix.optionValue("public")
+        const docs = yield* allDocs
+        const entry = yield* Effect.fromNullable(docs.map[key])
+        yield* Effect.annotateCurrentSpan({
+          entry: entry.signature,
+          public: reveal,
+        })
+        const embed = yield* entry.embed
+        return Ix.response({
+          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            flags: reveal ? undefined : Discord.MessageFlag.EPHEMERAL,
+            embeds: [embed],
+          },
+        })
       }).pipe(
-        Effect.bind("entry", ({ key, docs }) =>
-          Effect.fromNullable(docs.map[key]),
-        ),
-        Effect.tap(({ entry, reveal }) =>
-          Effect.annotateCurrentSpan({
-            entry: entry.signature,
-            public: reveal,
-          }),
-        ),
-        Effect.bind("embed", ({ entry }) => entry.embed),
-        Effect.map(({ embed, reveal }) =>
-          Ix.response({
-            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              flags: reveal ? undefined : Discord.MessageFlag.EPHEMERAL,
-              embeds: [embed],
-            },
-          }),
-        ),
         Effect.catchTags({
           NoSuchElementException: () =>
             Effect.succeed(
@@ -138,27 +132,26 @@ const make = Effect.gen(function* () {
 
   const autocomplete = Ix.autocomplete(
     Ix.option("docs", "query"),
-    Ix.focusedOptionValue.pipe(
-      Effect.tap(query => Effect.annotateCurrentSpan("query", query)),
-      Effect.filterOrFail(
-        _ => _.length >= 3,
-        _ => new QueryTooShort({ actual: _.length, min: 3 }),
-      ),
-      Effect.flatMap(search),
-      Effect.map(results =>
-        Ix.response({
-          type: Discord.InteractionCallbackType
-            .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-          data: {
-            choices: results.slice(0, 25).map(
-              ({ label, key }): Discord.ApplicationCommandOptionChoice => ({
-                name: label,
-                value: key,
-              }),
-            ),
-          },
-        }),
-      ),
+    Effect.gen(function* () {
+      const query = yield* Ix.focusedOptionValue
+      yield* Effect.annotateCurrentSpan("query", query)
+      if (query.length < 3) {
+        return yield* new QueryTooShort({ actual: query.length, min: 3 })
+      }
+      const results = yield* search(query)
+      return Ix.response({
+        type: Discord.InteractionCallbackType
+          .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+        data: {
+          choices: results.slice(0, 25).map(
+            ({ label, key }): Discord.ApplicationCommandOptionChoice => ({
+              name: label,
+              value: key,
+            }),
+          ),
+        },
+      })
+    }).pipe(
       Effect.catchTags({
         QueryTooShort: _ =>
           Effect.succeed(
