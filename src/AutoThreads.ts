@@ -7,20 +7,13 @@ import {
   Config,
   ConfigProvider,
   Data,
-  Duration,
   Effect,
   Layer,
   Option,
-  Schedule,
   Schema,
   pipe,
 } from "effect"
 import { AiHelpers } from "./Ai.js"
-
-const retryPolicy = pipe(
-  Schedule.fixed(Duration.millis(500)),
-  Schedule.intersect(Schedule.recurs(2)),
-)
 
 export class NotValidMessageError extends Data.TaggedError(
   "NotValidMessageError",
@@ -68,12 +61,9 @@ const make = Effect.gen(function* () {
       const channel = yield* channels
         .get(event.guild_id!, event.channel_id)
         .pipe(Effect.flatMap(EligibleChannel))
+
       const title = yield* ai.generateTitle(event.content).pipe(
         Effect.tapErrorCause(Effect.log),
-        Effect.retry({
-          schedule: retryPolicy,
-          while: err => err._tag === "AiError",
-        }),
         Effect.withSpan("AutoThreads.generateTitle"),
         Effect.orElseSucceed(() =>
           pipe(
