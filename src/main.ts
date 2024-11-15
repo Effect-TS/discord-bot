@@ -9,6 +9,7 @@ import { ReproRequesterLive } from "bot/ReproRequester"
 import { Summarizer } from "bot/Summarizer"
 import { TracingLive } from "bot/Tracing"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
+import { PlaygroundLive } from "./Playground.js"
 
 const LogLevelLive = Layer.unwrapEffect(
   Effect.gen(function* () {
@@ -24,6 +25,7 @@ const MainLive = Layer.mergeAll(
   NoEmbedLive,
   DocsLookupLive,
   IssueifierLive,
+  PlaygroundLive,
   RemindersLive,
   ReproRequesterLive,
   Summarizer.Default,

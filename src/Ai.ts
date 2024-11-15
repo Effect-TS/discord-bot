@@ -5,16 +5,23 @@ import {
   OpenAiConfig,
 } from "@effect/ai-openai"
 import { NodeHttpClient } from "@effect/platform-node"
-import { Chunk, Config, Effect, Layer, pipe } from "effect"
+import { Chunk, Config, Effect, Layer, pipe, Schedule } from "effect"
 import * as Str from "./utils/String.js"
 import { Tokenizer } from "@effect/ai/Tokenizer"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordApplication } from "./Discord.js"
+import { HttpClient } from "@effect/platform"
 
 export const OpenAiLive = OpenAiClient.layerConfig({
   apiKey: Config.redacted("OPENAI_API_KEY"),
   organizationId: Config.redacted("OPENAI_ORGANIZATION").pipe(
     Config.withDefault(undefined),
+  ),
+  transformClient: Config.succeed(
+    HttpClient.retryTransient({
+      times: 3,
+      schedule: Schedule.exponential(500),
+    }),
   ),
 }).pipe(Layer.provide(NodeHttpClient.layerUndici))
 
