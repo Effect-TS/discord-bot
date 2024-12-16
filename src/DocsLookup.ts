@@ -1,21 +1,27 @@
-import { HttpClient } from "@effect/platform"
+import { HttpClient, HttpClientResponse } from "@effect/platform"
 import { DiscordLive } from "bot/Discord"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import {
-  Data,
-  Duration,
-  Effect,
-  Layer,
-  Schedule,
-  Schema,
-  identity,
-  pipe,
-} from "effect"
-import * as HtmlEnt from "html-entities"
-import * as Prettier from "prettier"
+import { Data, Duration, Effect, Layer, Option, Schedule, Schema } from "effect"
+import { Mutable } from "effect/Types"
 
-const docUrls = ["https://effect-ts.github.io/effect"]
+export interface Doc {
+  readonly module: {
+    readonly name: string
+  }
+  readonly project: string
+  readonly name: string
+  readonly description: null | string
+  readonly deprecated: boolean
+  readonly examples: string[]
+  readonly since: string
+  readonly category: null | string
+  readonly signature: null | string
+}
+
+const docUrls = [
+  "https://raw.githubusercontent.com/tim-smart/effect-io-ai/refs/heads/main/json/_all.json",
+]
 
 const make = Effect.gen(function* () {
   const registry = yield* InteractionsRegistry
@@ -25,14 +31,13 @@ const make = Effect.gen(function* () {
     HttpClient.retry(retryPolicy),
   )
 
-  const loadDocs = (baseUrl: string) =>
-    docsClient.get(`${baseUrl}/assets/js/search-data.json`).pipe(
-      Effect.flatMap(r => r.json),
-      Effect.scoped,
-      Effect.map(_ => Object.values(_ as object)),
-      Effect.flatMap(DocEntry.decodeArray),
-      Effect.map(entries => entries.filter(_ => _.isSignature)),
-    )
+  const loadDocs = (url: string) =>
+    docsClient
+      .get(url)
+      .pipe(
+        Effect.flatMap(HttpClientResponse.schemaBodyJson(DocEntry.Array)),
+        Effect.scoped,
+      )
 
   const allDocs = yield* Effect.forEach(docUrls, loadDocs, {
     concurrency: "unbounded",
@@ -50,7 +55,7 @@ const make = Effect.gen(function* () {
       forSearch: Object.entries(map).map(([key, entry]) => ({
         term: key.toLowerCase(),
         key,
-        label: `${entry.signature} (${entry.package})`,
+        label: `${entry.nameWithModule} (${entry.project})`,
         entry,
       })),
       map,
@@ -101,10 +106,10 @@ const make = Effect.gen(function* () {
         const docs = yield* allDocs
         const entry = yield* Effect.fromNullable(docs.map[key])
         yield* Effect.annotateCurrentSpan({
-          entry: entry.signature,
+          entry: entry.nameWithModule,
           public: reveal,
         })
-        const embed = yield* entry.embed
+        const embed = entry.embed
         return Ix.response({
           type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -181,89 +186,77 @@ export const DocsLookupLive = Layer.effectDiscard(make).pipe(
 // schema
 
 class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
-  doc: Schema.String,
-  title: Schema.String,
-  content: Schema.String,
-  url: pipe(
-    Schema.String,
-    Schema.transform(Schema.String, {
-      decode: path => `https://effect-ts.github.io${path}`,
-      encode: identity,
-    }),
-  ),
-  relUrl: Schema.String,
+  module: Schema.Struct({
+    name: Schema.String,
+  }),
+  project: Schema.String,
+  name: Schema.String,
+  description: Schema.optionalWith(Schema.String, {
+    as: "Option",
+    nullable: true,
+  }),
+  deprecated: Schema.Boolean,
+  examples: Schema.Array(Schema.String),
+  since: Schema.String,
+  category: Schema.optionalWith(Schema.String, {
+    as: "Option",
+    nullable: true,
+  }),
+  signature: Schema.optionalWith(Schema.String, {
+    as: "Option",
+    nullable: true,
+  }),
 }) {
+  static readonly Array = Schema.Array(this)
   static readonly decode = Schema.decodeUnknown(this)
-  static readonly decodeArray = Schema.decodeUnknown(Schema.Array(this))
+  static readonly decodeArray = Schema.decodeUnknown(this.Array)
+
+  get url() {
+    const project =
+      this.project === "effect"
+        ? "effect/effect"
+        : this.project.replace(/^@/g, "")
+    return `https://effect-ts.github.io/${project}/${this.module.name}.ts.html#${this.name.toLowerCase()}`
+  }
+
+  get nameWithModule() {
+    return `${this.module.name}.${this.name}`
+  }
 
   get isSignature() {
-    return (
-      this.content.trim().length > 0 &&
-      this.url.includes("#") &&
-      !this.title.includes(" overview") &&
-      this.title !== "Module"
-    )
-  }
-
-  get subpackage() {
-    const [, subpackage, suffix] = this.url.match(/github\.io\/(.+?)\/(.+?)\//)!
-    return suffix !== "modules" && subpackage !== suffix
-      ? subpackage === "effect"
-        ? suffix
-        : `${subpackage}-${suffix}`
-      : subpackage
-  }
-
-  get package() {
-    return this.subpackage === "effect"
-      ? "effect"
-      : `@effect/${this.subpackage}`
-  }
-
-  get module() {
-    return this.doc.replace(/\.ts$/, "")
-  }
-
-  get signature() {
-    return `${this.module}.${this.title}`
+    return Option.isSome(this.signature)
   }
 
   get searchTerm(): string {
-    return `/${this.subpackage}/${this.module}.${this.title}`
+    return `/${this.project}/${this.module.name}.${this.name}`
   }
 
-  get formattedContent() {
-    return Effect.forEach(
-      this.content
-        .split(" . ")
-        .map(_ => _.trim())
-        .filter(_ => _.length)
-        .map(_ => HtmlEnt.decode(_)),
-      text =>
-        text.startsWith("export ") ? wrapCodeBlock(text) : Effect.succeed(text),
-    )
-  }
+  get embed(): Discord.Embed {
+    const embed: Mutable<Discord.Embed> = {
+      author: {
+        name: this.project,
+      },
+      title: this.nameWithModule,
+      color: 0x882ecb,
+      url: this.url,
+      description: Option.getOrElse(this.description, () => ""),
+      footer: {
+        text: `Added in v${this.since}`,
+      },
+    }
 
-  get embed() {
-    return pipe(
-      this.formattedContent,
-      Effect.map((content): Discord.Embed => {
-        const footer = content.pop()!
+    if (Option.isSome(this.signature)) {
+      embed.description += "\n\n```ts\n" + this.signature.value + "\n```"
+    }
 
-        return {
-          author: {
-            name: this.package,
-          },
-          title: this.signature,
-          description: content.join("\n\n"),
-          color: 0x882ecb,
-          url: this.url,
-          footer: {
-            text: footer,
-          },
-        }
-      }),
-    )
+    if (this.examples.length > 0) {
+      embed.description += "\n\n**Example**"
+      for (const example of this.examples) {
+        embed.description += "\n\n```ts\n" + example + "\n```"
+      }
+    }
+
+    return embed
   }
 }
 
@@ -275,27 +268,3 @@ class QueryTooShort extends Data.TaggedError("QueryTooShort")<{
 }> {}
 
 const retryPolicy = Schedule.spaced(Duration.seconds(3))
-
-// helpers
-
-const wrapCodeBlock = (code: string) =>
-  pipe(
-    Effect.tryPromise(() => {
-      const codeWithNewlines = code
-        .replace(
-          / (<|\[|readonly|(?<!readonly |\()\b\w+\??:|\/\*\*|\*\/? |export declare)/g,
-          "\n$1",
-        )
-        .replace(/\*\//g, "*/\n")
-
-      return Prettier.format(codeWithNewlines, {
-        parser: "typescript",
-        trailingComma: "all",
-        semi: false,
-        arrowParens: "avoid",
-      })
-    }),
-    Effect.catchAllCause(_ => Effect.succeed(code)),
-    Effect.map(_ => "```typescript\n" + _ + "\n```"),
-    Effect.withSpan("DocsLookup.wrapCodeBlock"),
-  )
