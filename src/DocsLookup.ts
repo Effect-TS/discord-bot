@@ -4,6 +4,7 @@ import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Data, Duration, Effect, Layer, Option, Schedule, Schema } from "effect"
 import { Mutable } from "effect/Types"
+import * as Prettier from "prettier"
 
 export interface Doc {
   readonly module: {
@@ -109,7 +110,7 @@ const make = Effect.gen(function* () {
           entry: entry.nameWithModule,
           public: reveal,
         })
-        const embed = entry.embed
+        const embed = yield* entry.embed
         return Ix.response({
           type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -231,34 +232,47 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
     return `/${this.project}/${this.module.name}.${this.name}`
   }
 
-  get embed(): Discord.Embed {
-    const embed: Mutable<Discord.Embed> = {
-      author: {
-        name: this.project,
-      },
-      title: this.nameWithModule,
-      color: 0x882ecb,
-      url: this.url,
-      description: Option.getOrElse(this.description, () => ""),
-      footer: {
-        text: `Added in v${this.since}`,
-      },
-    }
-
-    if (Option.isSome(this.signature)) {
-      embed.description += "\n\n```ts\n" + this.signature.value + "\n```"
-    }
-
-    if (this.examples.length > 0) {
-      embed.description += "\n\n**Example**"
-      for (const example of this.examples) {
-        embed.description += "\n\n```ts\n" + example + "\n```"
+  get embed(): Effect.Effect<Discord.Embed> {
+    return Effect.gen(this, function* () {
+      const embed: Mutable<Discord.Embed> = {
+        author: {
+          name: this.project,
+        },
+        title: this.nameWithModule,
+        color: 0x882ecb,
+        url: this.url,
+        description: Option.getOrElse(this.description, () => ""),
+        footer: {
+          text: `Added in v${this.since}`,
+        },
       }
-    }
 
-    return embed
+      if (Option.isSome(this.signature)) {
+        embed.description +=
+          "\n\n```ts\n" + (yield* prettify(this.signature.value)) + "\n```"
+      }
+
+      if (this.examples.length > 0) {
+        embed.description += "\n\n**Example**"
+        for (const example of this.examples) {
+          embed.description += "\n\n```ts\n" + example + "\n```"
+        }
+      }
+
+      return embed
+    })
   }
 }
+
+// prettier
+
+const prettify = (code: string) =>
+  Effect.promise(() =>
+    Prettier.format(code, {
+      parser: "typescript",
+      semi: false,
+    }),
+  )
 
 // errors
 
