@@ -1,4 +1,4 @@
-import { AiInput, AiRole, Completions } from "@effect/ai"
+import { AiInput, Completions } from "@effect/ai"
 import { AiHelpers, CompletionsLive } from "bot/Ai"
 import { ChannelsCache } from "bot/ChannelsCache"
 import { DiscordApplication, DiscordLive } from "bot/Discord"
@@ -35,31 +35,29 @@ The title of this conversation is "${thread.name ?? "A thread"}".`),
       Effect.map(r => r.text),
     )
 
-  const run = gateway.handleDispatch("MESSAGE_CREATE", message =>
-    pipe(
-      Effect.succeed(message),
-      Effect.filterOrFail(
-        message => message.author.bot !== true,
-        () => new NonEligibleMessage({ reason: "from-bot" }),
-      ),
-      Effect.filterOrFail(
-        message => message.mentions.some(_ => _.id === botUser.id),
-        () => new NonEligibleMessage({ reason: "non-mentioned" }),
-      ),
-      Effect.zipRight(channels.get(message.guild_id!, message.channel_id)),
-      Effect.filterOrFail(
-        _ => _.type === Discord.ChannelType.PUBLIC_THREAD,
-        () => new NonEligibleMessage({ reason: "not-in-thread" }),
-      ),
-      Effect.flatMap(thread => generateCompletion(thread, message)),
-      Effect.tap(content =>
-        rest.createMessage(message.channel_id, {
-          message_reference: {
-            message_id: message.id,
-          },
+  const run = gateway.handleDispatch(
+    "MESSAGE_CREATE",
+    Effect.fnUntraced(
+      function* (message) {
+        if (message.author.bot)
+          return yield* new NonEligibleMessage({ reason: "from-bot" })
+        if (!message.mentions.some(_ => _.id === botUser.id))
+          return yield* new NonEligibleMessage({ reason: "non-mentioned" })
+
+        const channel = yield* channels.get(
+          message.guild_id!,
+          message.channel_id,
+        )
+        if (channel.type !== Discord.ChannelType.PUBLIC_THREAD)
+          return yield* new NonEligibleMessage({ reason: "not-in-thread" })
+
+        const content = yield* generateCompletion(channel, message)
+
+        yield* rest.createMessage(message.channel_id, {
+          message_reference: { message_id: message.id },
           content: Str.truncate(content, 2000),
-        }),
-      ),
+        })
+      },
       Effect.catchTags({
         NonEligibleMessage: _ => Effect.void,
       }),

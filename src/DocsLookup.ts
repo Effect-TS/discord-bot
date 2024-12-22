@@ -100,8 +100,8 @@ const make = Effect.gen(function* () {
         },
       ],
     },
-    ix =>
-      Effect.gen(function* () {
+    Effect.fn("DocsLookup.command")(
+      function* (ix) {
         const key = yield* ix.optionValue("query")
         const reveal = yield* ix.optionValue("public")
         const docs = yield* allDocs
@@ -118,22 +118,20 @@ const make = Effect.gen(function* () {
             embeds: [embed],
           },
         })
-      }).pipe(
-        Effect.catchTags({
-          NoSuchElementException: () =>
-            Effect.succeed(
-              Ix.response({
-                type: Discord.InteractionCallbackType
-                  .CHANNEL_MESSAGE_WITH_SOURCE,
-                data: {
-                  flags: Discord.MessageFlag.EPHEMERAL,
-                  content: `Sorry, that query could not found.`,
-                },
-              }),
-            ),
-        }),
-        Effect.withSpan("DocsLookup.command"),
-      ),
+      },
+      Effect.catchTags({
+        NoSuchElementException: () =>
+          Effect.succeed(
+            Ix.response({
+              type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+              data: {
+                flags: Discord.MessageFlag.EPHEMERAL,
+                content: `Sorry, that query could not found.`,
+              },
+            }),
+          ),
+      }),
+    ),
   )
 
   const autocomplete = Ix.autocomplete(

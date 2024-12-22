@@ -64,8 +64,8 @@ const make = Effect.gen(function* () {
       Schema.decodeUnknown,
     )
 
-  const handleMessage = (event: Discord.MessageCreateEvent) =>
-    Effect.gen(function* () {
+  const handleMessage = Effect.fnUntraced(
+    function* (event: Discord.MessageCreateEvent) {
       yield* getChannel(event.guild_id!, event.channel_id).pipe(
         Effect.flatMap(EligibleChannel),
       )
@@ -77,10 +77,10 @@ const make = Effect.gen(function* () {
       yield* rest.editMessage(message.channel_id, message.id, {
         flags: message.flags | Discord.MessageFlag.SUPPRESS_EMBEDS,
       })
-    }).pipe(
-      Effect.withSpan("NoEmbed.handleMessage"),
-      Effect.catchAllCause(Effect.logDebug),
-    )
+    },
+    Effect.withSpan("NoEmbed.handleMessage"),
+    Effect.catchAllCause(Effect.logDebug),
+  )
 
   yield* gateway
     .handleDispatch("MESSAGE_CREATE", handleMessage)
