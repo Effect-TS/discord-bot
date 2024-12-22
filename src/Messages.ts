@@ -15,28 +15,30 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
     const rest = yield* DiscordREST
     const members = yield* MemberCache
 
-    const replaceMentions = (guildId: Discord.Snowflake, content: string) =>
-      Effect.gen(function* () {
-        const mentions = yield* Effect.forEach(
-          content.matchAll(/<@(\d+)>/g),
-          ([, userId]) =>
-            Effect.option(members.get(guildId, userId as Discord.Snowflake)),
-          { concurrency: "unbounded" },
-        )
+    const replaceMentions = Effect.fnUntraced(function* (
+      guildId: Discord.Snowflake,
+      content: string,
+    ) {
+      const mentions = yield* Effect.forEach(
+        content.matchAll(/<@(\d+)>/g),
+        ([, userId]) =>
+          Effect.option(members.get(guildId, userId as Discord.Snowflake)),
+        { concurrency: "unbounded" },
+      )
 
-        return mentions.reduce(
-          (content, member) =>
-            Option.match(member, {
-              onNone: () => content,
-              onSome: member =>
-                content.replace(
-                  new RegExp(`<@${member.user!.id}>`, "g"),
-                  `**@${member.nick ?? member.user!.username}**`,
-                ),
-            }),
-          content,
-        )
-      })
+      return mentions.reduce(
+        (content, member) =>
+          Option.match(member, {
+            onNone: () => content,
+            onSome: member =>
+              content.replace(
+                new RegExp(`<@${member.user!.id}>`, "g"),
+                `**@${member.nick ?? member.user!.username}**`,
+              ),
+          }),
+        content,
+      )
+    })
 
     const regularForChannel = (channelId: string) =>
       pipe(

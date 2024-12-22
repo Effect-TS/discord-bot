@@ -41,37 +41,35 @@ const make = Effect.gen(function* () {
 
   const application = yield* DiscordApplication
 
-  const createIssue = (channel: Discord.Channel, repo: GithubRepo) =>
-    pipe(
-      messages.cleanForChannel(channel),
-      Stream.runCollect,
-      Effect.map(chunk =>
-        Chunk.map(
-          Chunk.reverse(chunk),
-          (msg): AiInput.Message =>
-            AiInput.Message.fromInput(
-              msg.content,
-              AiRole.userWithName(msg.author.username),
-            ),
-        ),
+  const createIssue = Effect.fn("Issueifier.createIssue")(function* (
+    channel: Discord.Channel,
+    repo: GithubRepo,
+  ) {
+    const chunk = yield* Stream.runCollect(messages.cleanForChannel(channel))
+    const input = chunk.pipe(
+      Chunk.reverse,
+      Chunk.map(
+        (msg): AiInput.Message =>
+          AiInput.Message.fromInput(
+            msg.content,
+            AiRole.userWithName(msg.author.username),
+          ),
       ),
-      Effect.flatMap(messages => ai.generateSummary(channel.name!, messages)),
-      Effect.flatMap(summary =>
-        createGithubIssue({
-          owner: repo.owner,
-          repo: repo.repo,
-          title: `From Discord: ${channel.name}`,
-          body: `# Summary
+    )
+    const summary = yield* ai.generateSummary(channel.name!, input)
+    return yield* createGithubIssue({
+      owner: repo.owner,
+      repo: repo.repo,
+      title: `From Discord: ${channel.name}`,
+      body: `# Summary
 ${summary}
 
 # Discord thread
 
 https://discord.com/channels/${channel.guild_id}/${channel.id}
 `,
-        }),
-      ),
-      Effect.withSpan("Issueifier.createIssue"),
-    )
+    })
+  })
 
   const followUp = (
     context: Discord.Interaction,
@@ -125,8 +123,8 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         },
       ],
     },
-    ix =>
-      Effect.gen(function* () {
+    Effect.fn("Issueifier.command")(
+      function* (ix) {
         const context = yield* Ix.Interaction
         const repoIndex = yield* ix.optionValue("repository")
         const repo = githubRepos[repoIndex]
@@ -147,10 +145,9 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           type: Discord.InteractionCallbackType
             .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
         })
-      }).pipe(
-        Effect.annotateLogs("command", "issueify"),
-        Effect.withSpan("Issueifier.command"),
-      ),
+      },
+      Effect.annotateLogs("command", "issueify"),
+    ),
   )
 
   const ix = Ix.builder
