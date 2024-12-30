@@ -265,12 +265,12 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
 // prettier
 
 const prettify = (code: string) =>
-  Effect.promise(() =>
+  Effect.tryPromise(() =>
     Prettier.format(code, {
       parser: "typescript",
       semi: false,
     }),
-  )
+  ).pipe(Effect.orElseSucceed(() => code))
 
 // errors
 
