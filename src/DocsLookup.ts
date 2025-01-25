@@ -5,6 +5,7 @@ import { InteractionsRegistry } from "dfx/gateway"
 import { Data, Duration, Effect, Layer, Option, Schedule, Schema } from "effect"
 import { Mutable } from "effect/Types"
 import * as Prettier from "prettier"
+import fuzzysort from "fuzzysort"
 
 export interface Doc {
   readonly module: {
@@ -54,7 +55,7 @@ const make = Effect.gen(function* () {
     ),
     Effect.map(map => ({
       forSearch: Object.entries(map).map(([key, entry]) => ({
-        term: key.toLowerCase(),
+        term: entry.preparedFuzzySearch,
         key,
         label: `${entry.nameWithModule} (${entry.project})`,
         entry,
@@ -72,7 +73,7 @@ const make = Effect.gen(function* () {
     return Effect.logDebug("searching").pipe(
       Effect.zipRight(allDocs),
       Effect.map(({ forSearch }) =>
-        forSearch.filter(_ => _.term.includes(query)),
+        fuzzysort.go(query, forSearch, { key: "term" }).map(x => x.obj),
       ),
       Effect.annotateLogs("module", "DocsLookup"),
       Effect.annotateLogs("query", query),
@@ -229,6 +230,10 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   get searchTerm(): string {
     return `/${this.project}/${this.module.name}.${this.name}`
   }
+
+  readonly preparedFuzzySearch = fuzzysort.prepare(
+    `${this.name}.${this.module.name}/${this.project}`,
+  )
 
   get embed(): Effect.Effect<Discord.Embed> {
     return Effect.gen(this, function* () {
