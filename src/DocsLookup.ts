@@ -232,7 +232,7 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   }
 
   readonly preparedFuzzySearch = fuzzysort.prepare(
-    `${this.name}.${this.module.name}`,
+    `${this.module.name}.${this.name}`,
   )
 
   get embed(): Effect.Effect<Discord.Embed> {
