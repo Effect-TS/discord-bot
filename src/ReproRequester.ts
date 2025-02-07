@@ -49,27 +49,26 @@ const make = Effect.gen(function* () {
     ),
   )
 
-  const respond = (channel: Discord.Channel, context: Discord.Interaction) =>
-    Effect.gen(function* () {
-      const input = yield* ai.generateAiInput(channel)
-      const content = yield* tokenizer.truncate(input, 30_000).pipe(
-        Effect.flatMap(completions.create),
-        Effect.map(response => response.text),
-        AiInput.provideSystem(systemInstruction),
-        Effect.annotateLogs({
-          thread: channel.id,
-        }),
-      )
-      yield* discord.editOriginalInteractionResponse(
-        application.id,
-        context.token,
-        { content },
-      )
-    }).pipe(
-      Effect.withSpan("ReproRequester.respond", {
-        attributes: { channel: channel.id },
+  const respond = Effect.fn("ReproRequester.respond")(function* (
+    channel: Discord.Channel,
+    context: Discord.Interaction,
+  ) {
+    yield* Effect.annotateCurrentSpan({ channel: channel.id })
+    const input = yield* ai.generateAiInput(channel)
+    const content = yield* tokenizer.truncate(input, 30_000).pipe(
+      Effect.flatMap(completions.create),
+      Effect.map(response => response.text),
+      AiInput.provideSystem(systemInstruction),
+      Effect.annotateLogs({
+        thread: channel.id,
       }),
     )
+    yield* discord.editOriginalInteractionResponse(
+      application.id,
+      context.token,
+      { content },
+    )
+  })
 
   const ix = Ix.builder
     .add(command)
