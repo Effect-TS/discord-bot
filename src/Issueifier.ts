@@ -126,7 +126,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
     Effect.fn("Issueifier.command")(
       function* (ix) {
         const context = yield* Ix.Interaction
-        const repoIndex = yield* ix.optionValue("repository")
+        const repoIndex = ix.optionValue("repository")
         const repo = githubRepos[repoIndex]
         yield* Effect.annotateCurrentSpan({ repo: repo.label })
         const channel = yield* channels.get(

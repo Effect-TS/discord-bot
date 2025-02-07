@@ -6,6 +6,7 @@ import { Messages } from "bot/Messages"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Cause, Chunk, Data, Effect, Option, Stream, pipe } from "effect"
+import { constTrue } from "effect/Function"
 
 export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError",
@@ -21,20 +22,19 @@ export class Summarizer extends Effect.Service<Summarizer>()("app/Summarizer", {
     const scope = yield* Effect.scope
     const application = yield* DiscordApplication
 
-    const summarizeThread = (channel: Discord.Channel, small = true) =>
-      pipe(
-        Effect.all({
-          parentChannel: channels.get(channel.guild_id!, channel.parent_id!),
-          messages: Effect.map(
-            Stream.runCollect(messages.cleanForChannel(channel)),
-            Chunk.reverse,
-          ),
-        }),
-        Effect.flatMap(({ parentChannel, messages }) =>
-          summarize(parentChannel, channel, messages, small),
-        ),
-        Effect.withSpan("Summarizer.summarizeThread"),
+    const summarizeThread = Effect.fn("Summarizer.summarizeThread")(function* (
+      channel: Discord.Channel,
+      small: boolean = true,
+    ) {
+      const parentChannel = yield* channels.get(
+        channel.guild_id!,
+        channel.parent_id!,
       )
+      const threadMessages = yield* Stream.runCollect(
+        messages.cleanForChannel(channel),
+      ).pipe(Effect.map(Chunk.reverse))
+      return yield* summarize(parentChannel, channel, threadMessages, small)
+    })
 
     const summarizeWithMessages = (
       channel: Discord.Channel,
@@ -85,14 +85,19 @@ ${messageContent.join("\n\n")}`,
         Effect.withSpan("Summarizer.summarize"),
       )
 
-    const summarizeMessage = (
-      thread: Discord.Channel,
-      index: number,
-      message: Discord.Message,
-      replyTo: Option.Option<readonly [Discord.Message, number]>,
-      small: boolean,
-    ) =>
-      Effect.gen(function* () {
+    const summarizeMessage = Effect.fn("Summarizer.summarizeMessage")(
+      function* (
+        thread: Discord.Channel,
+        index: number,
+        message: Discord.Message,
+        replyTo: Option.Option<readonly [Discord.Message, number]>,
+        small: boolean,
+      ) {
+        yield* Effect.annotateCurrentSpan({
+          channelId: thread.id,
+          messageId: message.id,
+        })
+
         const user = message.author
         const member = yield* members.get(thread.guild_id!, message.author.id)
         const username = member.nick ?? user.username
@@ -119,14 +124,8 @@ ${messageContent.join("\n\n")}`,
 
         return `${header}<br />
 ${message.content}${imagesContent}`
-      }).pipe(
-        Effect.withSpan("Summarizer.summarizeMessage", {
-          attributes: {
-            channelId: thread.id,
-            messageId: message.id,
-          },
-        }),
-      )
+      },
+    )
 
     const followUpResponse = (
       context: Discord.Interaction,
@@ -180,42 +179,34 @@ ${message.content}${imagesContent}`
           },
         ],
       },
-      ix =>
-        pipe(
-          Effect.all({
-            context: Ix.Interaction,
-            small: Effect.map(
-              ix.optionValueOptional("small"),
-              Option.getOrElse(() => true),
-            ),
-          }),
-          Effect.bind("channel", ({ context }) =>
-            channels.get(context.guild_id!, context.channel_id!),
-          ),
-          Effect.tap(({ channel, small }) =>
-            Effect.annotateCurrentSpan({
-              channelId: channel.id,
-              small,
-            }),
-          ),
-          Effect.filterOrFail(
-            ({ channel }) => channel.type === Discord.ChannelType.PUBLIC_THREAD,
-            () => new NotInThreadError(),
-          ),
-          Effect.tap(({ context, channel, small }) =>
-            Effect.forkIn(followUpResponse(context, channel, small), scope),
-          ),
-          Effect.as(
-            Ix.response({
-              type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-              data: {
-                content: "Creating summary...",
-                flags: Discord.MessageFlag.EPHEMERAL,
-              },
-            }),
-          ),
-          Effect.withSpan("Summarizer.command"),
-        ),
+      Effect.fn("Summarizer.command")(function* (ix) {
+        const context = yield* Ix.Interaction
+        const small = ix.optionValueOrElse("small", constTrue)
+        console.log("small", small)
+        const channel = yield* channels.get(
+          context.guild_id!,
+          context.channel_id!,
+        )
+
+        yield* Effect.annotateCurrentSpan({
+          channelId: channel.id,
+          small,
+        })
+
+        if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
+          return yield* new NotInThreadError()
+        }
+
+        yield* Effect.forkIn(followUpResponse(context, channel, small), scope)
+
+        return Ix.response({
+          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: "Creating summary...",
+            flags: Discord.MessageFlag.EPHEMERAL,
+          },
+        })
+      }),
     )
 
     const ix = Ix.builder

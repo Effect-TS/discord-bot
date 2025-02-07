@@ -103,8 +103,8 @@ const make = Effect.gen(function* () {
     },
     Effect.fn("DocsLookup.command")(
       function* (ix) {
-        const key = yield* ix.optionValue("query")
-        const reveal = yield* ix.optionValue("public")
+        const key = ix.optionValue("query")
+        const reveal = ix.optionValue("public")
         const docs = yield* allDocs
         const entry = yield* Effect.fromNullable(docs.map[key])
         yield* Effect.annotateCurrentSpan({
@@ -127,7 +127,7 @@ const make = Effect.gen(function* () {
               type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
                 flags: Discord.MessageFlag.EPHEMERAL,
-                content: `Sorry, that query could not found.`,
+                content: `Sorry, that query could not be found.`,
               },
             }),
           ),

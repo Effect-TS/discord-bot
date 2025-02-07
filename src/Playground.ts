@@ -1,5 +1,5 @@
 import { InteractionsRegistry } from "dfx/gateway"
-import { Discord, Ix, IxHelpers } from "dfx"
+import { Discord, Ix } from "dfx"
 import { Effect, Encoding, Layer, Option } from "effect"
 import { DiscordLive } from "./Discord.js"
 
@@ -17,33 +17,29 @@ export const PlaygroundLive = Effect.gen(function* () {
       type: Discord.ApplicationCommandType.MESSAGE,
       name: "Open in playground",
     },
-    Effect.gen(function* () {
-      const interaction = yield* Ix.Interaction
-      const command = yield* Ix.ApplicationCommand
-      const resolved = yield* IxHelpers.resolved(interaction)
-      const message = resolved.messages?.[command.target_id!]
-      const content = yield* Effect.fromNullable(message?.content)
-      const code = yield* extractCode(content)
-      const url = yield* linkFromCode(code)
+    Effect.fn("Playground.command")(
+      function* (ix) {
+        const code = yield* extractCode(ix.target.content)
+        const url = yield* linkFromCode(code)
 
-      const response = `Here is your [playground link](${url}).`
-      if (response.length > 1950) {
+        const response = `Here is your [playground link](${url}).`
+        if (response.length > 1950) {
+          return Ix.response({
+            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+              flags: Discord.MessageFlag.EPHEMERAL,
+              content: `The code snippet is too long to be displayed in a single message.`,
+            },
+          })
+        }
         return Ix.response({
           type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             flags: Discord.MessageFlag.EPHEMERAL,
-            content: `The code snippet is too long to be displayed in a single message.`,
+            content: `Here is your [playground link](${url}).`,
           },
         })
-      }
-      return Ix.response({
-        type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          flags: Discord.MessageFlag.EPHEMERAL,
-          content: `Here is your [playground link](${url}).`,
-        },
-      })
-    }).pipe(
+      },
       Effect.catchTag("NoSuchElementException", () =>
         Effect.succeed(
           Ix.response({

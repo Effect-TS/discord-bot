@@ -4,7 +4,7 @@ import { DiscordGateway } from "dfx/gateway"
 import { Discord } from "dfx/index"
 import { Cron, Data, Effect, FiberMap, Layer, Schedule, pipe } from "effect"
 
-class MissingTopic extends Data.TaggedError("MissingTopic")<{}> {}
+class MissingTopic extends Data.TaggedError("MissingTopic") {}
 
 class InvalidTopic extends Data.TaggedError("InvalidTopic")<{
   readonly reason: string
