@@ -7,20 +7,6 @@ import { Mutable } from "effect/Types"
 import * as Prettier from "prettier"
 import fuzzysort from "fuzzysort"
 
-export interface Doc {
-  readonly module: {
-    readonly name: string
-  }
-  readonly project: string
-  readonly name: string
-  readonly description: null | string
-  readonly deprecated: boolean
-  readonly examples: string[]
-  readonly since: string
-  readonly category: null | string
-  readonly signature: null | string
-}
-
 const docUrls = [
   "https://raw.githubusercontent.com/tim-smart/effect-io-ai/refs/heads/main/json/_all.json",
 ]
@@ -57,7 +43,7 @@ const make = Effect.gen(function* () {
       forSearch: Object.entries(map).map(([key, entry]) => ({
         term: entry.preparedFuzzySearch,
         key,
-        label: `${entry.nameWithModule} (${entry.project})`,
+        label: `${entry.nameWithModule} (${entry._tag}) (${entry.project})`,
         entry,
       })),
       map,
@@ -186,6 +172,7 @@ export const DocsLookupLive = Layer.effectDiscard(make).pipe(
 // schema
 
 class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
+  _tag: Schema.String,
   module: Schema.Struct({
     name: Schema.String,
   }),
@@ -228,7 +215,7 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   }
 
   get searchTerm(): string {
-    return `/${this.project}/${this.module.name}.${this.name}`
+    return `/${this.project}/${this.module.name}.${this.name}.${this._tag}`
   }
 
   readonly preparedFuzzySearch = fuzzysort.prepare(
