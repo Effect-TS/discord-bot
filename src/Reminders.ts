@@ -2,7 +2,7 @@ import { DiscordLive } from "bot/Discord"
 import { DiscordREST } from "dfx/DiscordREST"
 import { DiscordGateway } from "dfx/gateway"
 import { Discord } from "dfx/index"
-import { Cron, Data, Effect, FiberMap, Layer, Schedule, pipe } from "effect"
+import { Cron, Data, Effect, FiberMap, Layer, Schedule } from "effect"
 
 class MissingTopic extends Data.TaggedError("MissingTopic") {}
 
@@ -33,8 +33,8 @@ const make = Effect.gen(function* () {
   const gateway = yield* DiscordGateway
   const fibers = yield* FiberMap.make<Discord.Snowflake>()
 
-  const handleChannel = (channel: Discord.Channel) =>
-    Effect.gen(function* (_) {
+  const handleChannel = Effect.fnUntraced(
+    function* (channel: Discord.Channel) {
       yield* FiberMap.remove(fibers, channel.id)
 
       const [errors, matches] = yield* parseTopic(channel.topic ?? "")
@@ -62,29 +62,28 @@ const make = Effect.gen(function* () {
         Effect.catchAllCause(Effect.logError),
         FiberMap.run(fibers, channel.id),
       )
-    }).pipe(
-      Effect.catchTags({
-        MissingTopic: () => Effect.void,
-      }),
-      Effect.annotateLogs({
+    },
+    Effect.catchTags({
+      MissingTopic: () => Effect.void,
+    }),
+    (effect, channel) =>
+      Effect.annotateLogs(effect, {
         channelId: channel.id,
       }),
-    )
+  )
 
-  const createThread = (channelId: Discord.Snowflake, message: string) =>
-    pipe(
-      rest.createMessage(channelId, {
-        content: message,
-      }).json,
-      Effect.flatMap(msg =>
-        rest.startThreadFromMessage(msg.channel_id, msg.id, {
-          name: `${new Date().toDateString()} - ${message}`,
-        }),
-      ),
-      Effect.asVoid,
-      Effect.retry(createThreadPolicy),
-      Effect.withSpan("Reminders.createThread", { attributes: { message } }),
-    )
+  const createThread = Effect.fn("Reminders.createThread")(function* (
+    channelId: Discord.Snowflake,
+    message: string,
+  ) {
+    yield* Effect.annotateCurrentSpan({ message })
+    const msg = yield* rest.createMessage(channelId, {
+      content: message,
+    }).json
+    yield* rest.startThreadFromMessage(msg.channel_id, msg.id, {
+      name: `${new Date().toDateString()} - ${message}`,
+    })
+  }, Effect.retry(createThreadPolicy))
 
   yield* gateway
     .handleDispatch("GUILD_CREATE", ({ channels }) =>
