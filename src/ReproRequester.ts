@@ -29,23 +29,23 @@ const make = Effect.gen(function* () {
       description:
         "Generate a message indicating that reproduction is required",
     },
-    Effect.gen(function* () {
-      const context = yield* Ix.Interaction
-      const channel = yield* channels.get(
-        context.guild_id!,
-        context.channel_id!,
-      )
-      if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
-        return yield* new NotInThreadError()
-      }
-      yield* respond(channel, context).pipe(Effect.forkIn(scope))
-      return Ix.response({
-        type: Discord.InteractionCallbackType
-          .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
-      })
-    }).pipe(
+    Effect.fn("ReproRequester.command")(
+      function* (ix) {
+        const context = ix.interaction
+        const channel = yield* channels.get(
+          context.guild_id!,
+          context.channel_id!,
+        )
+        if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
+          return yield* new NotInThreadError()
+        }
+        yield* respond(channel, context).pipe(Effect.forkIn(scope))
+        return Ix.response({
+          type: Discord.InteractionCallbackType
+            .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+        })
+      },
       Effect.annotateLogs("command", "repro"),
-      Effect.withSpan("ReproRequester.command"),
     ),
   )
 
