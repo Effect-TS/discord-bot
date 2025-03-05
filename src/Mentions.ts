@@ -5,7 +5,7 @@ import { DiscordApplication, DiscordLive } from "bot/Discord"
 import * as Str from "bot/utils/String"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
-import { Data, Effect, Layer, pipe } from "effect"
+import { Data, Effect, Layer } from "effect"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
   readonly reason: "non-mentioned" | "not-in-thread" | "from-bot"
