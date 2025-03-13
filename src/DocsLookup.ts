@@ -20,12 +20,10 @@ const make = Effect.gen(function* () {
   )
 
   const loadDocs = (url: string) =>
-    docsClient
-      .get(url)
-      .pipe(
-        Effect.flatMap(HttpClientResponse.schemaBodyJson(DocEntry.Array)),
-        Effect.scoped,
-      )
+    Effect.flatMap(
+      docsClient.get(url),
+      HttpClientResponse.schemaBodyJson(DocEntry.Array),
+    )
 
   const allDocs = yield* Effect.forEach(docUrls, loadDocs, {
     concurrency: "unbounded",
@@ -193,6 +191,7 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
     as: "Option",
     nullable: true,
   }),
+  sourceUrl: Schema.String,
 }) {
   static readonly Array = Schema.Array(this)
   static readonly decode = Schema.decodeUnknown(this)
@@ -203,11 +202,15 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
       this.project === "effect"
         ? "effect/effect"
         : this.project.replace(/^@/g, "")
-    return `https://effect-ts.github.io/${project}/${this.module.name}.ts.html#${this.name.toLowerCase()}`
+    return `https://effect-ts.github.io/${project}/${this.module.name}.html#${this.name.toLowerCase()}`
+  }
+
+  get moduleTitle() {
+    return this.module.name.replace(/\.[^/.]+$/, "")
   }
 
   get nameWithModule() {
-    return `${this.module.name}.${this.name}`
+    return `${this.moduleTitle}.${this.name}`
   }
 
   get isSignature() {
@@ -215,11 +218,11 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   }
 
   get searchTerm(): string {
-    return `/${this.project}/${this.module.name}.${this.name}.${this._tag}`
+    return `/${this.project}/${this.moduleTitle}.${this.name}.${this._tag}`
   }
 
   readonly preparedFuzzySearch = fuzzysort.prepare(
-    `${this.module.name}.${this.name}`,
+    `${this.moduleTitle}.${this.name}`,
   )
 
   get embed(): Effect.Effect<Discord.Embed> {
@@ -232,6 +235,12 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
         color: 0x882ecb,
         url: this.url,
         description: Option.getOrElse(this.description, () => ""),
+        fields: [
+          {
+            name: " ",
+            value: `[View source](${this.sourceUrl})`,
+          },
+        ],
         footer: {
           text: `Added in v${this.since}`,
         },

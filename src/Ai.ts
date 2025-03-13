@@ -1,9 +1,5 @@
 import { AiInput, AiRole, Completions } from "@effect/ai"
-import {
-  OpenAiClient,
-  OpenAiCompletions,
-  OpenAiConfig,
-} from "@effect/ai-openai"
+import { OpenAiClient, OpenAiCompletions } from "@effect/ai-openai"
 import { NodeHttpClient } from "@effect/platform-node"
 import { Chunk, Config, Effect, Layer, pipe, Schedule } from "effect"
 import * as Str from "./utils/String.js"
@@ -84,7 +80,7 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
 
 Create a short title summarizing the message. Do not include markdown in the title.`,
         ),
-        Effect.provideService(OpenAiConfig.OpenAiConfig, {
+        OpenAiCompletions.withConfigOverride({
           temperature: 0.25,
           max_tokens: 64,
         }),
