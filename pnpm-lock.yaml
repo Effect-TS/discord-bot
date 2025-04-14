@@ -21,8 +21,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       '@effect/opentelemetry':
-        specifier: ^0.46.2
-        version: 0.46.2(@effect/platform@0.80.8(effect@3.14.8))(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.32.0)(effect@3.14.8)
+        specifier: ^0.46.4
+        version: 0.46.4(@effect/platform@0.80.8(effect@3.14.8))(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.32.0)(effect@3.14.8)
       '@effect/platform':
         specifier: ^0.80.8
         version: 0.80.8(effect@3.14.8)
@@ -104,8 +104,8 @@ packages:
   '@effect/language-service@0.6.0':
     resolution: {integrity: sha512-qwoxzi3VogP5pYEu+GseK76FFUuktaiJCoFh13/Z2M6hoy45mSN1hvs1Y2JMNG9St7HHiarzQPxF14fGKwjTaQ==}
 
-  '@effect/opentelemetry@0.46.2':
-    resolution: {integrity: sha512-cnPobauSATS8DFN5ShYGCSJjuaUtkYPokZf/6y4l5TLsYMWRFDmBcCPFm8ogQC8wlB5UMlKipY0o1E5aaeRZaw==}
+  '@effect/opentelemetry@0.46.4':
+    resolution: {integrity: sha512-QCsg6dwa9fwII2MpBJqr2g0w+xHTRKUKIiuzSgdJhq6uKYSXuQHAMtKQpfrC7jZRkA8mw9gIAYVLZrElYk6pbg==}
     peerDependencies:
       '@effect/platform': ^0.80.8
       '@opentelemetry/api': ^1.9
@@ -1221,7 +1221,7 @@ snapshots:
 
   '@effect/language-service@0.6.0': {}
 
-  '@effect/opentelemetry@0.46.2(@effect/platform@0.80.8(effect@3.14.8))(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.32.0)(effect@3.14.8)':
+  '@effect/opentelemetry@0.46.4(@effect/platform@0.80.8(effect@3.14.8))(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.32.0)(effect@3.14.8)':
     dependencies:
       '@effect/platform': 0.80.8(effect@3.14.8)
       '@opentelemetry/semantic-conventions': 1.32.0
