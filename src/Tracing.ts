@@ -1,9 +1,6 @@
 import * as DevTools from "@effect/experimental/DevTools"
-import * as NodeSdk from "@effect/opentelemetry/NodeSdk"
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http"
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http"
-import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
-import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base"
+import * as OtlpTracer from "@effect/opentelemetry/OtlpTracer"
+import { NodeHttpClient } from "@effect/platform-node"
 import { Config, Effect, FiberRef, Layer, LogLevel, Redacted } from "effect"
 
 export const TracingLive = Layer.unwrapEffect(
@@ -24,23 +21,12 @@ export const TracingLive = Layer.unwrapEffect(
       "X-Honeycomb-Dataset": dataset,
     }
 
-    return NodeSdk.layer(() => ({
+    return OtlpTracer.layer({
+      url: "https://api.honeycomb.io/v1/traces",
       resource: {
         serviceName: dataset,
       },
-      spanProcessor: new BatchSpanProcessor(
-        new OTLPTraceExporter({
-          url: "https://api.honeycomb.io/v1/traces",
-          headers,
-        }),
-      ),
-      metricReader: new PeriodicExportingMetricReader({
-        exporter: new OTLPMetricExporter({
-          url: "https://api.honeycomb.io/v1/metrics",
-          headers,
-        }),
-        exportIntervalMillis: 5000,
-      }),
-    }))
+      headers,
+    }).pipe(Layer.provide(NodeHttpClient.layerUndici))
   }),
 )
