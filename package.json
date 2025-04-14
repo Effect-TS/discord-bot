@@ -22,7 +22,7 @@
     "@effect/ai-openai": "^0.16.9",
     "@effect/experimental": "^0.44.8",
     "@effect/language-service": "^0.6.0",
-    "@effect/opentelemetry": "^0.46.2",
+    "@effect/opentelemetry": "^0.46.4",
     "@effect/platform": "^0.80.8",
     "@effect/platform-node": "^0.76.17",
     "@octokit/types": "^14.0.0",
