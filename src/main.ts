@@ -8,7 +8,7 @@ import { RemindersLive } from "bot/Reminders"
 import { ReproRequesterLive } from "bot/ReproRequester"
 import { Summarizer } from "bot/Summarizer"
 import { TracingLive } from "bot/Tracing"
-import { Config, Effect, Layer, LogLevel, Logger } from "effect"
+import { Config, Effect, Layer, LogLevel, Logger, RuntimeFlags } from "effect"
 import { PlaygroundLive } from "./Playground.js"
 
 const LogLevelLive = Layer.unwrapEffect(
@@ -29,6 +29,10 @@ const MainLive = Layer.mergeAll(
   RemindersLive,
   ReproRequesterLive,
   Summarizer.Default,
-).pipe(Layer.provide(TracingLive), Layer.provide(LogLevelLive))
+).pipe(
+  Layer.provide(TracingLive),
+  Layer.provide(LogLevelLive),
+  Layer.provide(RuntimeFlags.disableRuntimeMetrics),
+)
 
 NodeRuntime.runMain(Layer.launch(MainLive))
