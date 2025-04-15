@@ -1,5 +1,5 @@
 import * as DevTools from "@effect/experimental/DevTools"
-import * as OtlpTracer from "@effect/opentelemetry/OtlpTracer"
+import * as Otlp from "@effect/opentelemetry/Otlp"
 import { NodeHttpClient } from "@effect/platform-node"
 import { Config, Effect, FiberRef, Layer, LogLevel, Redacted } from "effect"
 
@@ -21,8 +21,8 @@ export const TracingLive = Layer.unwrapEffect(
       "X-Honeycomb-Dataset": dataset,
     }
 
-    return OtlpTracer.layer({
-      url: "https://api.honeycomb.io/v1/traces",
+    return Otlp.layer({
+      baseUrl: "https://api.honeycomb.io",
       resource: {
         serviceName: dataset,
       },
