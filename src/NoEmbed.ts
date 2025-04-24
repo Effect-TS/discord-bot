@@ -64,23 +64,21 @@ const make = Effect.gen(function* () {
       Schema.decodeUnknown,
     )
 
-  const handleMessage = Effect.fnUntraced(
-    function* (event: Discord.MessageCreateEvent) {
-      yield* getChannel(event.guild_id!, event.channel_id).pipe(
-        Effect.flatMap(EligibleChannel),
-      )
-      const message = yield* EligibleMessage(
-        event.content
-          ? event
-          : yield* rest.getChannelMessage(event.channel_id, event.id).json,
-      )
-      yield* rest.editMessage(message.channel_id, message.id, {
-        flags: message.flags | Discord.MessageFlag.SUPPRESS_EMBEDS,
-      })
-    },
-    Effect.withSpan("NoEmbed.handleMessage"),
-    Effect.catchAllCause(Effect.logDebug),
-  )
+  const handleMessage = Effect.fn("NoEmbed.handleMessage")(function* (
+    event: Discord.MessageCreateEvent,
+  ) {
+    yield* getChannel(event.guild_id!, event.channel_id).pipe(
+      Effect.flatMap(EligibleChannel),
+    )
+    const message = yield* EligibleMessage(
+      event.content
+        ? event
+        : yield* rest.getChannelMessage(event.channel_id, event.id).json,
+    )
+    yield* rest.editMessage(message.channel_id, message.id, {
+      flags: message.flags | Discord.MessageFlag.SUPPRESS_EMBEDS,
+    })
+  }, Effect.catchAllCause(Effect.logDebug))
 
   yield* gateway
     .handleDispatch("MESSAGE_CREATE", handleMessage)
