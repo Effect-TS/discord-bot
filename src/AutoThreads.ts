@@ -57,7 +57,7 @@ const make = Effect.gen(function* () {
 
   const handleMessages = gateway.handleDispatch(
     "MESSAGE_CREATE",
-    Effect.fnUntraced(
+    Effect.fn("AutoThreads.handleMessages")(
       function* (event) {
         const message = yield* EligibleMessage(event)
         const channel = yield* channels
@@ -103,7 +103,6 @@ const make = Effect.gen(function* () {
           ]),
         })
       },
-      Effect.withSpan("AutoThreads.handleMessages"),
       Effect.catchTag("ParseError", Effect.logDebug),
       Effect.catchAllCause(Effect.logError),
     ),
