@@ -9,6 +9,7 @@ const interfaces = Os.networkInterfaces()
 for (const [, ifaceList] of Object.entries(interfaces)) {
   if (!ifaceList) continue
   for (const iface of ifaceList) {
+    if (iface.internal) continue
     console.dir(iface)
   }
 }
