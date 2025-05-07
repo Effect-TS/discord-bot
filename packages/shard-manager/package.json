@@ -1,0 +1,21 @@
+{
+  "name": "@chat/shard-manager",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "description": "",
+  "files": ["dist"],
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest --coverage",
+    "build": "tsup"
+  },
+  "devDependencies": {
+    "@effect/cluster": "^0.30.10",
+    "@effect/platform-node": "^0.77.10",
+    "@effect/sql": "^0.33.20",
+    "@effect/sql-pg": "^0.34.20",
+    "effect": "^3.14.20",
+    "tsup": "^8.4.0"
+  }
+}
