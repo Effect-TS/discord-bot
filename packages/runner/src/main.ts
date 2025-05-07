@@ -4,8 +4,6 @@ import { Effect, Layer, Option } from "effect"
 import * as Os from "node:os"
 import { SqlClientLayer } from "./Sql.js"
 
-console.dir(process.env)
-
 const interfaces = Os.networkInterfaces()
 
 for (const [, ifaceList] of Object.entries(interfaces)) {
