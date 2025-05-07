@@ -1,0 +1,15 @@
+# fly.toml app configuration file generated for runner on 2025-05-08T11:13:23+12:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'runner'
+primary_region = 'iad'
+
+[build]
+  dockerfile = "runner.Dockerfile"
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1

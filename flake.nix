@@ -13,6 +13,7 @@
         packages = with pkgs; [
           corepack
           nodejs
+          flyctl
         ];
       };
     });

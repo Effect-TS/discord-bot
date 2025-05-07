@@ -1,0 +1,13 @@
+# fly.toml app configuration file generated for shard-manager on 2025-05-08T11:20:03+12:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'shard-manager'
+primary_region = 'iad'
+
+[build]
+  dockerfile = 'shard-manager.Dockerfile'
+
+[[vm]]
+  size = 'shared-cpu-1x'
