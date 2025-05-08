@@ -1,6 +1,6 @@
 import { RunnerAddress } from "@effect/cluster"
 import { NodeClusterRunnerSocket } from "@effect/platform-node"
-import { Config, Effect, Layer, Option } from "effect"
+import { Config, Effect, Layer, Logger, LogLevel, Option } from "effect"
 
 export const ClusterLayer = Layer.unwrapEffect(
   Effect.gen(function* () {
@@ -17,6 +17,6 @@ export const ClusterLayer = Layer.unwrapEffect(
       shardingConfig: {
         shardManagerAddress: RunnerAddress.make(shardManagerHost.value, 8080),
       },
-    })
+    }).pipe(Layer.provide(Logger.minimumLogLevel(LogLevel.All)))
   }),
 )
