@@ -1,0 +1,17 @@
+{
+  "name": "@chat/domain",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "dependencies": {
+    "@effect/cluster": "^0.30.10",
+    "@effect/rpc": "^0.56.8",
+    "@effect/sql": "^0.33.20",
+    "effect": "^3.14.20"
+  }
+}

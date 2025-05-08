@@ -1,0 +1,28 @@
+{
+  "name": "@chat/discord-bot",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "build": "tsup"
+  },
+  "devDependencies": {
+    "@chat/shared": "workspace:*",
+    "@effect/ai": "^0.13.20",
+    "@effect/ai-openai": "^0.16.21",
+    "@effect/cluster": "^0.30.10",
+    "@effect/experimental": "^0.44.20",
+    "@effect/language-service": "^0.9.2",
+    "@effect/opentelemetry": "^0.46.17",
+    "@effect/platform": "^0.80.20",
+    "@effect/platform-node": "^0.77.10",
+    "@octokit/plugin-rest-endpoint-methods": "^14.0.0",
+    "@octokit/types": "^14.0.0",
+    "@types/node": "^22.15.15",
+    "dfx": "^0.115.0",
+    "effect": "^3.14.20",
+    "fuzzysort": "^3.1.0",
+    "html-entities": "^2.6.0",
+    "octokit": "^4.1.3"
+  }
+}

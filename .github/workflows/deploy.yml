@@ -34,3 +34,16 @@ jobs:
       - run: flyctl deploy --remote-only --config fly.runner.toml
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  deploy-discord-bot:
+    name: Deploy discord-bot
+    runs-on: ubuntu-latest
+    concurrency: deploy-discord-bot
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only --config fly.discord-bot.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
