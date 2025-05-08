@@ -10,6 +10,7 @@ import { Summarizer } from "bot/Summarizer"
 import { TracingLive } from "bot/Tracing"
 import { Config, Effect, Layer, LogLevel, Logger, RuntimeFlags } from "effect"
 import { PlaygroundLive } from "./Playground.js"
+import { ClusterLayer } from "./Cluster.js"
 
 const LogLevelLive = Layer.unwrapEffect(
   Effect.gen(function* () {
@@ -21,6 +22,7 @@ const LogLevelLive = Layer.unwrapEffect(
 
 const MainLive = Layer.mergeAll(
   AutoThreadsLive,
+  ClusterLayer,
   DadJokesLive,
   NoEmbedLive,
   DocsLookupLive,
