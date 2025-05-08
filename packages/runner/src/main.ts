@@ -8,11 +8,12 @@ const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
   const runnerIp = yield* Config.string("FLY_PRIVATE_IP").pipe(
     Config.withDefault("localhost")
   )
+  const shardManagerHost = runnerIp === "localhost" ? "localhost" : "shard-manager.internal"
   return NodeClusterRunnerSocket.layer({
     storage: "sql",
     shardingConfig: {
       runnerAddress: Option.some(RunnerAddress.make(runnerIp, 34431)),
-      shardManagerAddress: RunnerAddress.make("shard-manager.internal", 8080)
+      shardManagerAddress: RunnerAddress.make(shardManagerHost, 8080)
     }
   })
 }))

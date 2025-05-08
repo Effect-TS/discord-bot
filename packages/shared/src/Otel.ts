@@ -11,7 +11,10 @@ export const TracerLayer = (serviceName: string): Layer.Layer<never> =>
       Config.withDefault(serviceName)
     )
     if (Option.isNone(apiKey)) {
-      return Layer.empty
+      return Otlp.layer({
+        baseUrl: "http://localhost:4318",
+        resource: { serviceName }
+      })
     }
 
     return Otlp.layer({
