@@ -1,10 +1,11 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
+import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { AiInput, Completions, Tokenizer } from "@effect/ai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, Layer } from "effect"
 import { AiHelpers, CompletionsLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
-import { DiscordApplication, DiscordLive } from "./Discord.ts"
 import { NotInThreadError } from "./Summarizer.ts"
 
 const systemInstruction = `You are Effect Bot, a helpful assistant for the Effect Discord community.
@@ -90,5 +91,5 @@ export const ReproRequesterLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(AiHelpers.Default),
   Layer.provide(ChannelsCache.Default),
   Layer.provide(CompletionsLive),
-  Layer.provide(DiscordLive)
+  Layer.provide(DiscordGatewayLayer)
 )

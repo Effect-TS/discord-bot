@@ -1,7 +1,7 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, Encoding, Layer, Option } from "effect"
-import { DiscordLive } from "./Discord.ts"
 
 export const PlaygroundLive = Effect.gen(function*() {
   const registry = yield* InteractionsRegistry
@@ -55,7 +55,7 @@ export const PlaygroundLive = Effect.gen(function*() {
 
   const ix = Ix.builder.add(menu).catchAllCause(Effect.logError)
   yield* registry.register(ix)
-}).pipe(Layer.effectDiscard, Layer.provide(DiscordLive))
+}).pipe(Layer.effectDiscard, Layer.provide(DiscordGatewayLayer))
 
 const extractCode = (content: string): Option.Option<string> => {
   const codeBlock = content.matchAll(/```.*$([\s\S]*?)```/gm)

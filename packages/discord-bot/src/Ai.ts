@@ -1,3 +1,4 @@
+import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { AiInput, AiRole, Completions } from "@effect/ai"
 import { OpenAiClient, OpenAiCompletions } from "@effect/ai-openai"
 import { Tokenizer } from "@effect/ai/Tokenizer"
@@ -5,7 +6,6 @@ import { HttpClient } from "@effect/platform"
 import { NodeHttpClient } from "@effect/platform-node"
 import { Discord, DiscordREST } from "dfx"
 import { Chunk, Config, Effect, Layer, pipe, Schedule } from "effect"
-import { DiscordApplication } from "./Discord.ts"
 import * as Str from "./utils/String.ts"
 
 export const OpenAiLive = OpenAiClient.layerConfig({

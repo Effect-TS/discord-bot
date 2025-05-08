@@ -1,6 +1,6 @@
 import { Discord, DiscordREST } from "dfx"
 import { Chunk, Effect, Option, pipe, Stream } from "effect"
-import { DiscordLive } from "./Discord.ts"
+import { DiscordRestLayer } from "./DiscordRest.ts"
 import { MemberCache } from "./MemberCache.ts"
 
 export const cleanupMarkdown = (content: string) =>
@@ -11,6 +11,7 @@ export const cleanupMarkdown = (content: string) =>
     .replace(/([^\n])\n```([^\n]*\n[^\n])/gm, "$1\n\n```$2")
 
 export class Messages extends Effect.Service<Messages>()("app/Messages", {
+  dependencies: [MemberCache.Default, DiscordRestLayer],
   effect: Effect.gen(function*() {
     const rest = yield* DiscordREST
     const members = yield* MemberCache
@@ -106,6 +107,5 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
       cleanForChannel,
       replaceMentions
     } as const
-  }),
-  dependencies: [MemberCache.Default, DiscordLive]
+  })
 }) {}

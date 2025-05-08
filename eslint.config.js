@@ -18,7 +18,7 @@ export default tseslint.config(
   {
     plugins: {
       "simple-import-sort": simpleImportSort,
-      "sort-destructure-keys": sortDestructureKeys,
+      "sort-destructure-keys": sortDestructureKeys
     },
 
     languageOptions: {
@@ -34,7 +34,7 @@ export default tseslint.config(
         options: {
           alwaysTryTypes: true
         }
-      },
+      }
     },
 
     rules: {
@@ -47,7 +47,8 @@ export default tseslint.config(
       "no-restricted-syntax": [
         "error",
         {
-          selector: "CallExpression[callee.property.name='push'] > SpreadElement.arguments",
+          selector:
+            "CallExpression[callee.property.name='push'] > SpreadElement.arguments",
           message: "Do not use spread arguments in Array.push"
         }
       ],
@@ -106,7 +107,7 @@ export default tseslint.config(
         {
           config: {
             indentWidth: 2,
-            lineWidth: 120,
+            lineWidth: 80,
             semiColons: "asi",
             quoteStyle: "alwaysDouble",
             trailingCommas: "never",

@@ -1,8 +1,8 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { HttpClient, HttpClientRequest, HttpClientResponse } from "@effect/platform"
 import { Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, flow, Layer, Schedule, Schema } from "effect"
-import { DiscordLive } from "./Discord.ts"
 
 const make = Effect.gen(function*() {
   const client = (yield* HttpClient.HttpClient).pipe(
@@ -47,7 +47,7 @@ const make = Effect.gen(function*() {
 })
 
 export const DadJokesLive = Layer.effectDiscard(make).pipe(
-  Layer.provide(DiscordLive)
+  Layer.provide(DiscordGatewayLayer)
 )
 
 class Joke extends Schema.Class<Joke>("DadJokes/Joke")({

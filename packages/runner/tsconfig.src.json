@@ -8,6 +8,8 @@
     "rootDir": "src"
   },
   "references": [
+    { "path": "../domain/tsconfig.src.json" },
+    { "path": "../discord/tsconfig.src.json" },
     { "path": "../shared/tsconfig.src.json" }
   ]
 }

@@ -6,9 +6,5 @@
     "outDir": "build/src",
     "tsBuildInfoFile": ".tsbuildinfo/src.tsbuildinfo",
     "rootDir": "src"
-  },
-  "references": [
-    { "path": "../discord/tsconfig.src.json" },
-    { "path": "../shared/tsconfig.src.json" }
-  ]
+  }
 }

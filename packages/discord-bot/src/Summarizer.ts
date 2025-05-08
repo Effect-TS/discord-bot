@@ -1,12 +1,13 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
+import { DiscordApplication } from "@chat/discord/DiscordRest"
+import { MemberCache } from "@chat/discord/MemberCache"
+import { Messages } from "@chat/discord/Messages"
 import { HttpBody } from "@effect/platform"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Cause, Chunk, Data, Effect, Option, pipe, Stream } from "effect"
 import { constTrue } from "effect/Function"
 import { ChannelsCache } from "./ChannelsCache.ts"
-import { DiscordApplication, DiscordLive } from "./Discord.ts"
-import { MemberCache } from "./MemberCache.ts"
-import { Messages } from "./Messages.ts"
 
 export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError"
@@ -230,6 +231,6 @@ ${message.content}${imagesContent}`
     ChannelsCache.Default,
     MemberCache.Default,
     Messages.Default,
-    DiscordLive
+    DiscordGatewayLayer
   ]
 }) {}

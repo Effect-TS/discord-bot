@@ -1,12 +1,13 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
+import { DiscordApplication } from "@chat/discord/DiscordRest"
+import { Messages } from "@chat/discord/Messages"
 import { AiInput, AiRole } from "@effect/ai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Array, Cause, Chunk, Data, Effect, FiberMap, Layer, pipe, Stream } from "effect"
 import { AiHelpers } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
-import { DiscordApplication, DiscordLive } from "./Discord.ts"
 import { Github } from "./Github.ts"
-import { Messages } from "./Messages.ts"
 
 export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError"
@@ -158,7 +159,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(AiHelpers.Default),
   Layer.provide(ChannelsCache.Default),
-  Layer.provide(DiscordLive),
+  Layer.provide(DiscordGatewayLayer),
   Layer.provide(Messages.Default),
   Layer.provide(Github.Default)
 )

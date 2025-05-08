@@ -1,5 +1,5 @@
 {
-  "name": "@chat/domain",
+  "name": "@chat/discord",
   "version": "0.0.1",
   "description": "",
   "type": "module",
@@ -9,10 +9,9 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "@effect/ai": "^0.13.20",
-    "@effect/cluster": "^0.30.10",
-    "@effect/rpc": "^0.56.8",
-    "@effect/sql": "^0.33.20",
+    "@effect/platform": "^0.80.20",
+    "@effect/platform-node": "^0.77.10",
+    "dfx": "^0.115.0",
     "effect": "^3.14.20"
   }
 }

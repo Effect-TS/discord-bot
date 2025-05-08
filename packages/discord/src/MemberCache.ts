@@ -1,7 +1,7 @@
 import type { Discord } from "dfx"
 import { DiscordREST } from "dfx"
 import { Cache, Data, Duration, Effect } from "effect"
-import { DiscordLive } from "./Discord.ts"
+import { DiscordRestLayer } from "./DiscordRest.ts"
 
 export class GetMember extends Data.TaggedClass("GetMember")<{
   readonly guildId: Discord.Snowflake
@@ -9,8 +9,9 @@ export class GetMember extends Data.TaggedClass("GetMember")<{
 }> {}
 
 export class MemberCache extends Effect.Service<MemberCache>()(
-  "app/MemberCache",
+  "discord/MemberCache",
   {
+    dependencies: [DiscordRestLayer],
     effect: Effect.gen(function*() {
       const rest = yield* DiscordREST
 
@@ -28,7 +29,6 @@ export class MemberCache extends Effect.Service<MemberCache>()(
               Effect.withSpan("MemberCache.get", { attributes: { userId } })
             )
       } as const
-    }),
-    dependencies: [DiscordLive]
+    })
   }
 ) {}

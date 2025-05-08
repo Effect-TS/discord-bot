@@ -1,8 +1,8 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/gateway"
 import { Config, Effect, Layer, Schedule, Schema } from "effect"
 import { ChannelsCache } from "./ChannelsCache.ts"
-import { DiscordLive } from "./Discord.ts"
 import { nestedConfigProvider } from "./utils/Config.ts"
 
 const make = Effect.gen(function*() {
@@ -96,5 +96,5 @@ const make = Effect.gen(function*() {
 
 export const NoEmbedLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(ChannelsCache.Default),
-  Layer.provide(DiscordLive)
+  Layer.provide(DiscordGatewayLayer)
 )

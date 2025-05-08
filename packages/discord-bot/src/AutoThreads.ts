@@ -1,9 +1,9 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
 import { DiscordGateway, InteractionsRegistry } from "dfx/gateway"
 import { Config, ConfigProvider, Data, Effect, Layer, Option, pipe, Schema } from "effect"
 import { AiHelpers } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
-import { DiscordLive } from "./Discord.ts"
 import * as Str from "./utils/String.ts"
 
 export class NotValidMessageError extends Data.TaggedError(
@@ -209,5 +209,5 @@ const make = Effect.gen(function*() {
 export const AutoThreadsLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(ChannelsCache.Default),
   Layer.provide(AiHelpers.Default),
-  Layer.provide(DiscordLive)
+  Layer.provide(DiscordGatewayLayer)
 )

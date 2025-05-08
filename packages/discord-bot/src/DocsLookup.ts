@@ -1,3 +1,4 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { HttpClient, HttpClientResponse } from "@effect/platform"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
@@ -5,7 +6,6 @@ import { Data, Duration, Effect, Layer, Option, Schedule, Schema } from "effect"
 import type { Mutable } from "effect/Types"
 import fuzzysort from "fuzzysort"
 import * as Prettier from "prettier"
-import { DiscordLive } from "./Discord.ts"
 
 const docUrls = [
   "https://raw.githubusercontent.com/tim-smart/effect-io-ai/refs/heads/main/json/_all.json"
@@ -162,7 +162,7 @@ const make = Effect.gen(function*() {
 })
 
 export const DocsLookupLive = Layer.effectDiscard(make).pipe(
-  Layer.provide(DiscordLive)
+  Layer.provide(DiscordGatewayLayer)
 )
 
 // schema

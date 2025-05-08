@@ -1,8 +1,8 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import type { Discord } from "dfx"
 import { DiscordREST } from "dfx/DiscordREST"
 import { DiscordGateway } from "dfx/gateway"
 import { Cron, Data, Effect, FiberMap, Layer, Schedule } from "effect"
-import { DiscordLive } from "./Discord.ts"
 
 class MissingTopic extends Data.TaggedError("MissingTopic") {}
 
@@ -99,5 +99,5 @@ const make = Effect.gen(function*() {
 }).pipe(Effect.annotateLogs({ service: "Reminders" }))
 
 export const RemindersLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(DiscordLive)
+  Layer.provide(DiscordGatewayLayer)
 )

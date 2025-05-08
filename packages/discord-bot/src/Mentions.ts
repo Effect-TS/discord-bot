@@ -1,10 +1,11 @@
+import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
+import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { AiInput, Completions } from "@effect/ai"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import { Data, Effect, Layer } from "effect"
 import { AiHelpers, CompletionsLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
-import { DiscordApplication, DiscordLive } from "./Discord.ts"
 import * as Str from "./utils/String.ts"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
@@ -74,6 +75,6 @@ The title of this conversation is "${thread.name ?? "A thread"}".`),
 export const MentionsLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(AiHelpers.Default),
   Layer.provide(ChannelsCache.Default),
-  Layer.provide(DiscordLive),
+  Layer.provide(DiscordGatewayLayer),
   Layer.provide(CompletionsLive)
 )
