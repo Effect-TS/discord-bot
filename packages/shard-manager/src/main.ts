@@ -1,13 +1,17 @@
+import { TracerLayer } from "@chat/shared/Otel"
+import { SqlClientLayer } from "@chat/shared/Sql"
+import { RunnerAddress } from "@effect/cluster"
 import { NodeClusterShardManagerSocket, NodeRuntime } from "@effect/platform-node"
-import { PgClient } from "@effect/sql-pg"
-import { Config, Layer } from "effect"
+import { Layer } from "effect"
 
-const SqlLayer = PgClient.layerConfig({
-  url: Config.redacted("DATABASE_URL")
-})
-
-NodeClusterShardManagerSocket.layer({ storage: "sql" }).pipe(
-  Layer.provide(SqlLayer),
+NodeClusterShardManagerSocket.layer({
+  storage: "sql",
+  shardingConfig: {
+    shardManagerAddress: RunnerAddress.make("fly-local-6pn", 8080)
+  }
+}).pipe(
+  Layer.provide(SqlClientLayer),
+  Layer.provide(TracerLayer("shard-manager")),
   Layer.launch,
   NodeRuntime.runMain
 )

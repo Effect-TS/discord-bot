@@ -11,6 +11,7 @@
     "build": "tsup"
   },
   "devDependencies": {
+    "@chat/shared": "workspace:*",
     "@effect/cluster": "^0.30.10",
     "@effect/platform-node": "^0.77.10",
     "@effect/sql": "^0.33.20",

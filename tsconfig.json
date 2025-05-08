@@ -2,7 +2,8 @@
   "extends": "./tsconfig.base.json",
   "include": [],
   "references": [
+    { "path": "packages/runner" },
     { "path": "packages/shard-manager" },
-    { "path": "packages/runner" }
+    { "path": "packages/shared" }
   ]
 }

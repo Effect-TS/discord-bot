@@ -6,9 +6,5 @@
     "outDir": "build/src",
     "tsBuildInfoFile": ".tsbuildinfo/src.tsbuildinfo",
     "rootDir": "src"
-  },
-  "references": [
-    { "path": "../sql/tsconfig.src.json" },
-    { "path": "../tracing/tsconfig.src.json" }
-  ]
+  }
 }

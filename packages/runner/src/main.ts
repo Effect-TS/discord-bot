@@ -1,24 +1,18 @@
+import { TracerLayer } from "@chat/shared/Otel"
+import { SqlClientLayer } from "@chat/shared/Sql"
 import { RunnerAddress } from "@effect/cluster"
 import { NodeClusterRunnerSocket, NodeRuntime } from "@effect/platform-node"
-import { Effect, Layer, Option } from "effect"
-import * as Os from "node:os"
-import { SqlClientLayer } from "./Sql.js"
-
-const interfaces = Os.networkInterfaces()
-
-for (const [, ifaceList] of Object.entries(interfaces)) {
-  if (!ifaceList) continue
-  for (const iface of ifaceList) {
-    if (iface.internal) continue
-    console.dir(iface)
-  }
-}
+import { Config, Effect, Layer, Option } from "effect"
 
 const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
+  const runnerIp = yield* Config.string("FLY_PRIVATE_IP").pipe(
+    Config.withDefault("localhost")
+  )
   return NodeClusterRunnerSocket.layer({
     storage: "sql",
     shardingConfig: {
-      runnerAddress: Option.some(RunnerAddress.make("::", 34431))
+      runnerAddress: Option.some(RunnerAddress.make(runnerIp, 34431)),
+      shardManagerAddress: RunnerAddress.make("shard-manager.internal", 8080)
     }
   })
 }))
@@ -26,6 +20,7 @@ const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
 Layer.empty.pipe(
   Layer.provide(RunnerLayer),
   Layer.provide(SqlClientLayer),
+  Layer.provide(TracerLayer("chat-runner")),
   Layer.launch,
   NodeRuntime.runMain
 )
