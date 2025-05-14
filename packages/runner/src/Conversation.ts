@@ -21,7 +21,8 @@ export class ConversationHistory
           const messagesFiber = yield* discord.listMessages(threadId, {
             limit: 10
           }).pipe(Effect.fork)
-          const openingMessage = yield* discord.getChannel(threadId).pipe(
+          const channel = yield* discord.getChannel(threadId)
+          const openingMessage = yield* Effect.succeed(channel).pipe(
             Effect.filterOrFail((thread): thread is Discord.ThreadResponse =>
               "parent_id" in thread
             ),
@@ -32,32 +33,35 @@ export class ConversationHistory
           )
           const messages = yield* Fiber.join(messagesFiber)
 
-          return AiInput.make(
-            Option.match(openingMessage, {
-              onNone: () => messages,
-              onSome: (openingMessage) => [...messages, openingMessage]
-            }).slice()
-              .reverse()
-              .filter(
-                (msg) =>
-                  msg.type === Discord.MessageType.DEFAULT ||
-                  msg.type === Discord.MessageType.REPLY
-              )
-              .filter((msg) =>
-                msg.id !== excludeMessageId && msg.content.trim().length > 0
-              )
-              .map(
-                (msg): AiInput.Message =>
-                  msg.author.id === botUser.id ?
-                    new AiInput.AssistantMessage({
-                      parts: [new AiInput.TextPart({ text: msg.content })]
-                    }) :
-                    new AiInput.UserMessage({
-                      parts: [new AiInput.TextPart({ text: msg.content })],
-                      userName: msg.author.username
-                    })
-              )
-          )
+          return {
+            history: AiInput.make(
+              Option.match(openingMessage, {
+                onNone: () => messages,
+                onSome: (openingMessage) => [...messages, openingMessage]
+              }).slice()
+                .reverse()
+                .filter(
+                  (msg) =>
+                    msg.type === Discord.MessageType.DEFAULT ||
+                    msg.type === Discord.MessageType.REPLY
+                )
+                .filter((msg) =>
+                  msg.id !== excludeMessageId && msg.content.trim().length > 0
+                )
+                .map(
+                  (msg): AiInput.Message =>
+                    msg.author.id === botUser.id ?
+                      new AiInput.AssistantMessage({
+                        parts: [new AiInput.TextPart({ text: msg.content })]
+                      }) :
+                      new AiInput.UserMessage({
+                        parts: [new AiInput.TextPart({ text: msg.content })],
+                        userName: msg.author.username
+                      })
+                )
+            ),
+            thread: "name" in channel ? channel.name! : undefined
+          }
         }
       )
 
@@ -65,6 +69,18 @@ export class ConversationHistory
     })
   })
 {}
+
+const systemPrompt = (thread?: string) =>
+  `You are Effect Bot, a friendly, helpful assistant for the Effect Discord community.
+
+Please keep replies under 2000 characters.${
+    thread ?
+      `
+
+The title of this conversation is "${thread}".` :
+      ""
+  }
+`
 
 export const ConversationEntity = Conversation.toLayer(
   Effect.gen(function*() {
@@ -75,13 +91,19 @@ export const ConversationEntity = Conversation.toLayer(
     return {
       send: Effect.fnUntraced(function*({ payload }) {
         if (!chat) {
-          const prompt = yield* history.forDiscordChannel(
+          const result = yield* history.forDiscordChannel(
             payload.address.discordChannelId,
             payload.messageId
           ).pipe(
-            Effect.orElseSucceed(() => AiInput.empty)
+            Effect.orElseSucceed(() => ({
+              history: AiInput.empty,
+              thread: undefined
+            }))
           )
-          chat = yield* AiChat.fromPrompt({ prompt })
+          chat = yield* AiChat.fromPrompt({
+            prompt: result.history,
+            system: systemPrompt(result.thread)
+          })
         }
         const response = yield* chat.generateText({ prompt: payload.message })
         return response.text

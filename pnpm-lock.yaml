@@ -103,8 +103,8 @@ importers:
         specifier: ^0.80.2
         version: 0.80.2(@effect/cluster@0.33.2(@effect/platform@0.82.1(effect@3.15.1))(@effect/rpc@0.59.2(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(@effect/sql@0.35.1(@effect/experimental@0.46.1(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.1(effect@3.15.1))(@effect/rpc@0.59.2(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(@effect/sql@0.35.1(@effect/experimental@0.46.1(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(effect@3.15.1)
       dfx:
-        specifier: ^0.118.10
-        version: 0.118.10(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1)
+        specifier: ^0.118.11
+        version: 0.118.11(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1)
       effect:
         specifier: ^3.15.1
         version: 3.15.1
@@ -154,8 +154,8 @@ importers:
         specifier: ^22.15.17
         version: 22.15.17
       dfx:
-        specifier: ^0.118.10
-        version: 0.118.10(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1)
+        specifier: ^0.118.11
+        version: 0.118.11(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1)
       effect:
         specifier: ^3.15.1
         version: 3.15.1
@@ -223,8 +223,8 @@ importers:
         specifier: ^0.36.1
         version: 0.36.1(@effect/experimental@0.46.1(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.1(effect@3.15.1))(@effect/sql@0.35.1(@effect/experimental@0.46.1(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1))(effect@3.15.1)
       dfx:
-        specifier: ^0.118.10
-        version: 0.118.10(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1)
+        specifier: ^0.118.11
+        version: 0.118.11(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1)
       effect:
         specifier: ^3.15.1
         version: 3.15.1
@@ -1641,8 +1641,8 @@ packages:
     resolution: {integrity: sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA==}
     engines: {node: '>=8'}
 
-  dfx@0.118.10:
-    resolution: {integrity: sha512-vDv76FVotU1waQXp3yotc4R6KXyVfycTel5ip3sT+TvOb9QjzM0wNNNuFpjiDXHvrwakDeTrGHlNbCCdoq88EQ==}
+  dfx@0.118.11:
+    resolution: {integrity: sha512-NDGfkz9Lpak8CWvg1EH565dKGc+482neypEI1GGMpCBvN6JHiyNFH8/RlKeCGHik4AlxL1lGdWJWCWFhZccA5A==}
     peerDependencies:
       '@effect/platform': ^0.82
       effect: ^3.15
@@ -4551,7 +4551,7 @@ snapshots:
   detect-libc@2.0.4:
     optional: true
 
-  dfx@0.118.10(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1):
+  dfx@0.118.11(@effect/platform@0.82.1(effect@3.15.1))(effect@3.15.1):
     dependencies:
       '@effect/platform': 0.82.1(effect@3.15.1)
       discord-api-types: 0.38.5

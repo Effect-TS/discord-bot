@@ -75,6 +75,10 @@ const make = Effect.gen(function*() {
       Effect.catchTags({
         NonEligibleMessage: (_) => Effect.void
       }),
+      (effect, message) =>
+        Effect.withSpan(effect, "Mentions.handleMessage", {
+          attributes: { messageId: message.id }
+        }),
       Effect.catchAllCause(Effect.logError)
     )
   )
