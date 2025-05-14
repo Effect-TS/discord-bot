@@ -25,17 +25,18 @@ export const PlaygroundLive = Effect.gen(function*() {
         const response = `Here is your [playground link](${url}).`
         if (response.length > 1950) {
           return Ix.response({
-            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+            type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
-              flags: Discord.MessageFlag.EPHEMERAL,
-              content: `The code snippet is too long to be displayed in a single message.`
+              flags: Discord.MessageFlags.Ephemeral,
+              content:
+                `The code snippet is too long to be displayed in a single message.`
             }
           })
         }
         return Ix.response({
-          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            flags: Discord.MessageFlag.EPHEMERAL,
+            flags: Discord.MessageFlags.Ephemeral,
             content: `Here is your [playground link](${url}).`
           }
         })
@@ -43,9 +44,9 @@ export const PlaygroundLive = Effect.gen(function*() {
       Effect.catchTag("NoSuchElementException", () =>
         Effect.succeed(
           Ix.response({
-            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+            type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
-              flags: Discord.MessageFlag.EPHEMERAL,
+              flags: Discord.MessageFlags.Ephemeral,
               content: "No code snippets were found in the message."
             }
           })

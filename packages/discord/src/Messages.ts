@@ -22,7 +22,8 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
     ) {
       const mentions = yield* Effect.forEach(
         content.matchAll(/<@(\d+)>/g),
-        ([, userId]) => Effect.option(members.get(guildId, userId as Discord.Snowflake)),
+        ([, userId]) =>
+          Effect.option(members.get(guildId, userId as Discord.Snowflake)),
         { concurrency: "unbounded" }
       )
 
@@ -44,10 +45,10 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
       pipe(
         Stream.paginateChunkEffect(Option.none<Discord.Snowflake>(), (before) =>
           pipe(
-            rest.getChannelMessages(channelId, {
+            rest.listMessages(channelId, {
               limit: 100,
               before: Option.getOrUndefined(before)!
-            }).json,
+            }),
             Effect.map((messages) =>
               messages.length < 100
                 ? ([
@@ -64,10 +65,10 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
         Stream.flatMap(
           (msg) => {
             if (msg.type === Discord.MessageType.THREAD_STARTER_MESSAGE) {
-              return rest.getChannelMessage(
+              return rest.getMessage(
                 msg.message_reference!.channel_id!,
                 msg.message_reference!.message_id!
-              ).json
+              )
             } else if (
               msg.content !== "" &&
               (msg.type === Discord.MessageType.REPLY ||
@@ -82,7 +83,9 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
         )
       )
 
-    const cleanForChannel = (channel: Discord.Channel) =>
+    const cleanForChannel = (
+      channel: Discord.ThreadResponse | Discord.GuildChannelResponse
+    ) =>
       pipe(
         regularForChannel(channel.id),
         Stream.map((msg) => ({
@@ -92,8 +95,8 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
         Stream.mapEffect(
           (msg) =>
             Effect.map(
-              replaceMentions(channel.guild_id!, msg.content),
-              (content): Discord.Message => ({
+              replaceMentions(channel.guild_id, msg.content),
+              (content): Discord.MessageResponse => ({
                 ...msg,
                 content
               })

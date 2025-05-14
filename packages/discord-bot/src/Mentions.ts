@@ -1,11 +1,11 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
-import { AiInput, Completions } from "@effect/ai"
+import { Conversation, DiscordThread } from "@chat/domain/Conversation"
 import { Discord, DiscordREST } from "dfx"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import { Data, Effect, Layer } from "effect"
-import { AiHelpers, CompletionsLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
+import { ClusterLayer } from "./Cluster.ts"
 import * as Str from "./utils/String.ts"
 
 class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
@@ -13,28 +13,33 @@ class NonEligibleMessage extends Data.TaggedError("NonEligibleMessage")<{
 }> {}
 
 const make = Effect.gen(function*() {
-  const ai = yield* AiHelpers
   const rest = yield* DiscordREST
   const gateway = yield* DiscordGateway
   const channels = yield* ChannelsCache
-  const completions = yield* Completions.Completions
+  const makeConversation = yield* Conversation.client
 
   const application = yield* DiscordApplication
   const botUser = application.bot!
 
-  const generateCompletion = (
-    thread: Discord.Channel,
-    message: Discord.MessageCreateEvent
-  ) =>
-    ai.generateAiInput(thread, message).pipe(
-      Effect.flatMap(completions.create),
-      AiInput.provideSystem(`You are Effect Bot, a funny, helpful assistant for the Effect Discord community.
-
-Please keep replies under 2000 characters.
-
-The title of this conversation is "${thread.name ?? "A thread"}".`),
-      Effect.map((r) => r.text)
-    )
+  //   const generateCompletion = (
+  //     thread: Discord.Channel,
+  //     message: Discord.MessageCreateEvent
+  //   ) =>
+  //     ai.generateAiInput(thread, message).pipe(
+  //       Effect.flatMap((prompt) =>
+  //         AiLanguageModel.generateText({
+  //           prompt,
+  //           system:
+  //             `You are Effect Bot, a funny, helpful assistant for the Effect Discord community.
+  //
+  // Please keep replies under 2000 characters.
+  //
+  // The title of this conversation is "${thread.name ?? "A thread"}".`
+  //         })
+  //       ),
+  //       model.use,
+  //       Effect.map((r) => r.text)
+  //     )
 
   const run = gateway.handleDispatch(
     "MESSAGE_CREATE",
@@ -51,11 +56,16 @@ The title of this conversation is "${thread.name ?? "A thread"}".`),
           message.guild_id!,
           message.channel_id
         )
-        if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
+        if (channel.type !== Discord.ChannelTypes.PUBLIC_THREAD) {
           return yield* new NonEligibleMessage({ reason: "not-in-thread" })
         }
 
-        const content = yield* generateCompletion(channel, message)
+        const conversation = makeConversation(channel.id)
+        const content = yield* conversation.send({
+          address: new DiscordThread({ threadId: channel.id }),
+          messageId: message.id,
+          message: message.content
+        })
 
         yield* rest.createMessage(message.channel_id, {
           message_reference: { message_id: message.id },
@@ -73,8 +83,7 @@ The title of this conversation is "${thread.name ?? "A thread"}".`),
 })
 
 export const MentionsLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(AiHelpers.Default),
   Layer.provide(ChannelsCache.Default),
   Layer.provide(DiscordGatewayLayer),
-  Layer.provide(CompletionsLive)
+  Layer.provide(ClusterLayer)
 )

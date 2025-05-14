@@ -1,5 +1,9 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
-import { HttpClient, HttpClientRequest, HttpClientResponse } from "@effect/platform"
+import {
+  HttpClient,
+  HttpClientRequest,
+  HttpClientResponse
+} from "@effect/platform"
 import { Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, flow, Layer, Schedule, Schema } from "effect"

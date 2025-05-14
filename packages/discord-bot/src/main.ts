@@ -2,10 +2,10 @@ import { TracerLayer } from "@chat/shared/Otel"
 import { NodeRuntime } from "@effect/platform-node"
 import { Config, Effect, Layer, Logger, LogLevel, RuntimeFlags } from "effect"
 import { AutoThreadsLive } from "./AutoThreads.ts"
-import { ClusterLayer } from "./Cluster.ts"
 import { DadJokesLive } from "./DadJokes.ts"
 import { DocsLookupLive } from "./DocsLookup.ts"
 import { IssueifierLive } from "./Issueifier.ts"
+import { MentionsLive } from "./Mentions.ts"
 import { NoEmbedLive } from "./NoEmbed.ts"
 import { PlaygroundLive } from "./Playground.ts"
 import { RemindersLive } from "./Reminders.ts"
@@ -22,11 +22,11 @@ const LogLevelLive = Layer.unwrapEffect(
 
 const MainLive = Layer.mergeAll(
   AutoThreadsLive,
-  ClusterLayer,
   DadJokesLive,
   NoEmbedLive,
   DocsLookupLive,
   IssueifierLive,
+  MentionsLive,
   PlaygroundLive,
   RemindersLive,
   ReproRequesterLive,

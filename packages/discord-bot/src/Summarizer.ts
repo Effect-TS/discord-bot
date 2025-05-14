@@ -24,7 +24,7 @@ export class Summarizer extends Effect.Service<Summarizer>()("app/Summarizer", {
     const application = yield* DiscordApplication
 
     const summarizeThread = Effect.fn("Summarizer.summarizeThread")(function*(
-      channel: Discord.Channel,
+      channel: Discord.ThreadResponse,
       small: boolean = true
     ) {
       const parentChannel = yield* channels.get(
@@ -34,24 +34,31 @@ export class Summarizer extends Effect.Service<Summarizer>()("app/Summarizer", {
       const threadMessages = yield* Stream.runCollect(
         messages.cleanForChannel(channel)
       ).pipe(Effect.map(Chunk.reverse))
-      return yield* summarize(parentChannel, channel, threadMessages, small)
+      return yield* summarize(
+        parentChannel as any,
+        channel,
+        threadMessages,
+        small
+      )
     })
 
     const summarizeWithMessages = (
-      channel: Discord.Channel,
-      messages: Chunk.Chunk<Discord.Message>,
+      channel: Discord.ThreadResponse,
+      messages: Chunk.Chunk<Discord.MessageResponse>,
       small = true
     ) =>
       pipe(
         channels.get(channel.guild_id!, channel.parent_id!),
-        Effect.flatMap((parentChannel) => summarize(parentChannel, channel, messages, small)),
+        Effect.flatMap((parentChannel) =>
+          summarize(parentChannel as any, channel, messages, small)
+        ),
         Effect.withSpan("Summarizer.summarizeWithMessages")
       )
 
     const summarize = (
-      channel: Discord.Channel,
-      thread: Discord.Channel,
-      messages: Chunk.Chunk<Discord.Message>,
+      channel: Discord.GuildChannelResponse,
+      thread: Discord.ThreadResponse,
+      messages: Chunk.Chunk<Discord.MessageResponse>,
       small: boolean
     ) =>
       Effect.forEach(
@@ -59,7 +66,9 @@ export class Summarizer extends Effect.Service<Summarizer>()("app/Summarizer", {
         (message, index) => {
           const reply = pipe(
             Option.fromNullable(message.message_reference),
-            Option.flatMap((ref) => Chunk.findFirstIndex(messages, (_) => _.id === ref.message_id)),
+            Option.flatMap((ref) =>
+              Chunk.findFirstIndex(messages, (_) => _.id === ref.message_id)
+            ),
             Option.map(
               (index) => [Chunk.unsafeGet(messages, index), index + 1] as const
             )
@@ -86,10 +95,10 @@ ${messageContent.join("\n\n")}`
 
     const summarizeMessage = Effect.fn("Summarizer.summarizeMessage")(
       function*(
-        thread: Discord.Channel,
+        thread: Discord.ThreadResponse,
         index: number,
-        message: Discord.Message,
-        replyTo: Option.Option<readonly [Discord.Message, number]>,
+        message: Discord.MessageResponse,
+        replyTo: Option.Option<readonly [Discord.MessageResponse, number]>,
         small: boolean
       ) {
         yield* Effect.annotateCurrentSpan({
@@ -109,13 +118,16 @@ ${messageContent.join("\n\n")}`
           onSome: ([, index]) => ` (replying to \\#${index})`
         })
 
-        const header = `${smallOpen}${index}: **${username}**${reply} ${smallOpen}&mdash; ${
-          new Date(
-            message.timestamp
-          ).toUTCString()
-        }${smallClose}${smallClose}`
+        const header =
+          `${smallOpen}${index}: **${username}**${reply} ${smallOpen}&mdash; ${
+            new Date(
+              message.timestamp
+            ).toUTCString()
+          }${smallClose}${smallClose}`
 
-        const images = message.attachments.filter((_) => _.content_type?.startsWith("image/"))
+        const images = message.attachments.filter((_) =>
+          _.content_type?.startsWith("image/")
+        )
         const imagesContent = images.length > 0
           ? "\n\n" + images.map((_) => `![Attachment](${_.url})`).join("\n")
           : ""
@@ -126,8 +138,8 @@ ${message.content}${imagesContent}`
     )
 
     const followUpResponse = (
-      context: Discord.Interaction,
-      channel: Discord.Channel,
+      context: Discord.APIInteraction,
+      channel: Discord.ThreadResponse,
       small: boolean
     ) =>
       pipe(
@@ -140,19 +152,26 @@ ${message.content}${imagesContent}`
             new Blob([summary], { type: "text/plain" }),
             `${channel.name} Summary.md`
           )
+          formData.append(
+            "payload_json",
+            JSON.stringify({ content: summary })
+          )
 
-          return rest.editOriginalInteractionResponse(
-            application.id,
-            context.token,
-            { content: "Here is your summary!" },
-            { body: HttpBody.formData(formData) }
+          return rest.httpClient.patch(
+            `/webhooks/${application.id}/${context.token}/messages/@original`,
+            {
+              body: HttpBody.formData(formData)
+            }
           )
         }),
         Effect.catchAllCause((cause) =>
-          rest.editOriginalInteractionResponse(application.id, context.token, {
-            content: "Could not create summary. Here are the full error details:\n\n```" +
-              Cause.pretty(cause) +
-              "\n```"
+          rest.updateOriginalWebhookMessage(application.id, context.token, {
+            payload: {
+              content:
+                "Could not create summary. Here are the full error details:\n\n```" +
+                Cause.pretty(cause) +
+                "\n```"
+            }
           })
         ),
         Effect.withSpan("Summarizer.followUpResponse", {
@@ -181,7 +200,7 @@ ${message.content}${imagesContent}`
         const small = ix.optionValueOrElse("small", constTrue)
         const channel = yield* channels.get(
           context.guild_id!,
-          context.channel_id!
+          context.channel!.id
         )
 
         yield* Effect.annotateCurrentSpan({
@@ -189,17 +208,17 @@ ${message.content}${imagesContent}`
           small
         })
 
-        if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
+        if (channel.type !== Discord.ChannelTypes.PUBLIC_THREAD) {
           return yield* new NotInThreadError()
         }
 
         yield* Effect.forkIn(followUpResponse(context, channel, small), scope)
 
         return Ix.response({
-          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: "Creating summary...",
-            flags: Discord.MessageFlag.EPHEMERAL
+            flags: Discord.MessageFlags.Ephemeral
           }
         })
       })
@@ -210,10 +229,10 @@ ${message.content}${imagesContent}`
       .catchTagRespond("NotInThreadError", () =>
         Effect.succeed(
           Ix.response({
-            type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+            type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
               content: "This command can only be used in a thread",
-              flags: Discord.MessageFlag.EPHEMERAL
+              flags: Discord.MessageFlags.Ephemeral
             }
           })
         ))

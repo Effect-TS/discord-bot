@@ -12,11 +12,14 @@ export class DiscordApplication extends Effect.Service<DiscordApplication>()(
   "app/DiscordApplication",
   {
     effect: DiscordREST.pipe(
-      Effect.flatMap((_) => _.getCurrentBotApplicationInformation().json),
+      Effect.flatMap((_) => _.getMyApplication()),
       Effect.orDie
     ),
     dependencies: [DiscordLayer]
   }
 ) {}
 
-export const DiscordRestLayer = Layer.merge(DiscordLayer, DiscordApplication.Default)
+export const DiscordRestLayer = Layer.merge(
+  DiscordLayer,
+  DiscordApplication.Default
+)

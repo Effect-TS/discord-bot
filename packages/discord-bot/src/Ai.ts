@@ -1,11 +1,10 @@
 import { DiscordApplication } from "@chat/discord/DiscordRest"
-import { AiInput, AiRole, Completions } from "@effect/ai"
-import { OpenAiClient, OpenAiCompletions } from "@effect/ai-openai"
-import { Tokenizer } from "@effect/ai/Tokenizer"
+import { AiInput, AiLanguageModel, Tokenizer } from "@effect/ai"
+import { OpenAiClient, OpenAiLanguageModel } from "@effect/ai-openai"
 import { HttpClient } from "@effect/platform"
 import { NodeHttpClient } from "@effect/platform-node"
 import { Discord, DiscordREST } from "dfx"
-import { Chunk, Config, Effect, Layer, pipe, Schedule } from "effect"
+import { Config, Effect, Layer, pipe, Schedule } from "effect"
 import * as Str from "./utils/String.ts"
 
 export const OpenAiLive = OpenAiClient.layerConfig({
@@ -21,32 +20,28 @@ export const OpenAiLive = OpenAiClient.layerConfig({
   )
 }).pipe(Layer.provide(NodeHttpClient.layerUndici))
 
-export const CompletionsLive = OpenAiCompletions.layer({
-  model: "gpt-4o"
-}).pipe(Layer.provide(OpenAiLive))
+export const ChatModel = OpenAiLanguageModel.model("gpt-4o")
 
 export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
   effect: Effect.gen(function*() {
     const rest = yield* DiscordREST
-    const completions = yield* Completions.Completions
-    const tokenizer = yield* Tokenizer
+    const model = yield* ChatModel
 
     const application = yield* DiscordApplication
     const botUser = application.bot!
 
     const generateAiInput = (
-      thread: Discord.Channel,
-      message?: Discord.MessageCreateEvent
+      thread: Discord.ThreadResponse,
+      message?: Discord.MessageResponse
     ) =>
       pipe(
         Effect.all(
           {
-            openingMessage: rest.getChannelMessage(thread.parent_id!, thread.id)
-              .json,
-            messages: rest.getChannelMessages(thread.id, {
-              before: message!.id,
+            openingMessage: rest.getMessage(thread.parent_id!, thread.id),
+            messages: rest.listMessages(thread.id, {
+              before: message?.id,
               limit: 10
-            }).json
+            })
           },
           { concurrency: "unbounded" }
         ),
@@ -62,25 +57,29 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
               .filter((msg) => msg.content.trim().length > 0)
               .map(
                 (msg): AiInput.Message =>
-                  AiInput.Message.fromInput(
-                    msg.content,
-                    msg.author.id === botUser.id
-                      ? AiRole.model
-                      : AiRole.userWithName(msg.author.username)
-                  )
+                  msg.author.id === botUser.id
+                    ? AiInput.AssistantMessage.make({
+                      parts: [new AiInput.TextPart({ text: msg.content })]
+                    })
+                    : AiInput.UserMessage.make({
+                      parts: [new AiInput.TextPart({ text: msg.content })],
+                      userName: msg.author.username
+                    })
               )
           )
         )
       )
 
     const generateTitle = (prompt: string) =>
-      completions.create(prompt).pipe(
-        AiInput.provideSystem(
+      AiLanguageModel.generateText({
+        prompt,
+        system:
           `You are a helpful assistant for the Effect Typescript library Discord community.
 
 Create a short title summarizing the message. Do not include markdown in the title.`
-        ),
-        OpenAiCompletions.withConfigOverride({
+      }).pipe(
+        model.use,
+        OpenAiLanguageModel.withConfigOverride({
           temperature: 0.25,
           max_tokens: 64
         }),
@@ -88,25 +87,26 @@ Create a short title summarizing the message. Do not include markdown in the tit
         Effect.withSpan("Ai.generateTitle", { attributes: { prompt } })
       )
 
-    const generateDocs = (
+    const generateDocs = Effect.fn("AiHelpers.generateDocs")(function*(
       title: string,
       messages: AiInput.AiInput,
       instruction =
         "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate."
-    ) =>
-      pipe(
-        tokenizer.truncate(
-          Chunk.appendAll(messages, AiInput.make(instruction)),
-          30_000
-        ),
-        Effect.flatMap(completions.create),
-        AiInput.provideSystem(
+    ) {
+      const tokenizer = yield* Tokenizer.Tokenizer
+      const prompt = yield* tokenizer.truncate(
+        AiInput.concat(messages, AiInput.make(instruction)),
+        30_000
+      )
+      const response = yield* AiLanguageModel.generateText({
+        prompt,
+        system:
           `You are a helpful assistant for the Effect Typescript library Discord community.
 
 The title of this chat is "${title}".`
-        ),
-        Effect.map((_) => _.text)
-      )
+      })
+      return response.text
+    }, model.use)
 
     const generateSummary = (title: string, messages: AiInput.AiInput) =>
       generateDocs(
@@ -122,7 +122,8 @@ The title of this chat is "${title}".`
       generateAiInput
     } as const
   }),
-  dependencies: [CompletionsLive]
+  dependencies: [OpenAiLive]
 }) {}
 
-const cleanTitle = (_: string) => pipe(Str.firstParagraph(_), Str.removeQuotes, Str.removePeriod)
+const cleanTitle = (_: string) =>
+  pipe(Str.firstParagraph(_), Str.removeQuotes, Str.removePeriod)

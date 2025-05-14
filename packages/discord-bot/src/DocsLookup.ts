@@ -56,7 +56,9 @@ const make = Effect.gen(function*() {
     query = query.toLowerCase()
     return Effect.logDebug("searching").pipe(
       Effect.zipRight(allDocs),
-      Effect.map(({ forSearch }) => fuzzysort.go(query, forSearch, { key: "term" }).map((x) => x.obj)),
+      Effect.map(({ forSearch }) =>
+        fuzzysort.go(query, forSearch, { key: "term" }).map((x) => x.obj)
+      ),
       Effect.annotateLogs("module", "DocsLookup"),
       Effect.annotateLogs("query", query),
       Effect.withSpan("DocsLookup.search", { attributes: { query } })
@@ -95,9 +97,9 @@ const make = Effect.gen(function*() {
         })
         const embed = yield* entry.embed
         return Ix.response({
-          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            flags: reveal ? undefined as any : Discord.MessageFlag.EPHEMERAL,
+            flags: reveal ? undefined as any : Discord.MessageFlags.Ephemeral,
             embeds: [embed]
           }
         })
@@ -106,9 +108,10 @@ const make = Effect.gen(function*() {
         NoSuchElementException: () =>
           Effect.succeed(
             Ix.response({
-              type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+              type:
+                Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
-                flags: Discord.MessageFlag.EPHEMERAL,
+                flags: Discord.MessageFlags.Ephemeral,
                 content: `Sorry, that query could not be found.`
               }
             })
@@ -120,18 +123,18 @@ const make = Effect.gen(function*() {
   const autocomplete = Ix.autocomplete(
     Ix.option("docs", "query"),
     Effect.gen(function*() {
-      const query = yield* Ix.focusedOptionValue
+      const query = String(yield* Ix.focusedOptionValue)
       yield* Effect.annotateCurrentSpan("query", query)
       if (query.length < 3) {
         return yield* new QueryTooShort({ actual: query.length, min: 3 })
       }
       const results = yield* search(query)
       return Ix.response({
-        type: Discord.InteractionCallbackType
+        type: Discord.InteractionCallbackTypes
           .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
         data: {
           choices: results.slice(0, 25).map(
-            ({ key, label }): Discord.ApplicationCommandOptionChoice => ({
+            ({ key, label }) => ({
               name: label,
               value: key
             })
@@ -143,7 +146,7 @@ const make = Effect.gen(function*() {
         QueryTooShort: (_) =>
           Effect.succeed(
             Ix.response({
-              type: Discord.InteractionCallbackType
+              type: Discord.InteractionCallbackTypes
                 .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
               data: { choices: [] }
             })
@@ -222,9 +225,9 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
     `${this.moduleTitle}.${this.name}`
   )
 
-  get embed(): Effect.Effect<Discord.Embed> {
+  get embed(): Effect.Effect<Discord.RichEmbed> {
     return Effect.gen(this, function*() {
-      const embed: Mutable<Discord.Embed> = {
+      const embed: Mutable<Discord.RichEmbed> = {
         author: {
           name: this.project
         },
@@ -244,7 +247,8 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
       }
 
       if (Option.isSome(this.signature)) {
-        embed.description += "\n\n```ts\n" + (yield* prettify(this.signature.value)) + "\n```"
+        embed.description += "\n\n```ts\n" +
+          (yield* prettify(this.signature.value)) + "\n```"
       }
 
       if (this.examples.length > 0) {

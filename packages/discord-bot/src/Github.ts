@@ -1,6 +1,15 @@
 import type { Api } from "@octokit/plugin-rest-endpoint-methods"
 import type { OctokitResponse } from "@octokit/types"
-import { Chunk, Config, Data, Effect, Option, pipe, Redacted, Stream } from "effect"
+import {
+  Chunk,
+  Config,
+  Data,
+  Effect,
+  Option,
+  pipe,
+  Redacted,
+  Stream
+} from "effect"
 import { Octokit } from "octokit"
 import { nestedConfigProvider } from "./utils/Config.ts"
 

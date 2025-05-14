@@ -3,12 +3,15 @@ import { SqlClientLayer } from "@chat/shared/Sql"
 import { RunnerAddress } from "@effect/cluster"
 import { NodeClusterRunnerSocket, NodeRuntime } from "@effect/platform-node"
 import { Config, Effect, Layer, Option } from "effect"
+import { ConversationEntity } from "./Conversation.ts"
 
 const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
   const runnerIp = yield* Config.string("FLY_PRIVATE_IP").pipe(
     Config.withDefault("localhost")
   )
-  const shardManagerHost = runnerIp === "localhost" ? "localhost" : "shard-manager.internal"
+  const shardManagerHost = runnerIp === "localhost"
+    ? "localhost"
+    : "shard-manager.internal"
   return NodeClusterRunnerSocket.layer({
     storage: "sql",
     shardingConfig: {
@@ -18,7 +21,9 @@ const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
   })
 }))
 
-Layer.empty.pipe(
+Layer.mergeAll(
+  ConversationEntity
+).pipe(
   Layer.provide(RunnerLayer),
   Layer.provide(SqlClientLayer),
   Layer.provide(TracerLayer("chat-runner")),

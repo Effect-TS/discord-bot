@@ -1,7 +1,16 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
 import { DiscordGateway, InteractionsRegistry } from "dfx/gateway"
-import { Config, ConfigProvider, Data, Effect, Layer, Option, pipe, Schema } from "effect"
+import {
+  Config,
+  ConfigProvider,
+  Data,
+  Effect,
+  Layer,
+  Option,
+  pipe,
+  Schema
+} from "effect"
 import { AiHelpers } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import * as Str from "./utils/String.ts"
@@ -30,7 +39,7 @@ const make = Effect.gen(function*() {
   const EligibleChannel = Schema.Struct({
     id: Schema.String,
     topic: Schema.String.pipe(Schema.includes(topicKeyword)),
-    type: Schema.Literal(Discord.ChannelType.GUILD_TEXT)
+    type: Schema.Literal(Discord.ChannelTypes.GUILD_TEXT)
   })
     .annotations({ identifier: "EligibleChannel" })
     .pipe(Schema.decodeUnknown)
@@ -69,14 +78,14 @@ const make = Effect.gen(function*() {
 
         yield* Effect.annotateCurrentSpan({ title })
 
-        const thread = yield* rest.startThreadFromMessage(
+        const thread = yield* rest.createThreadFromMessage(
           channel.id,
           message.id,
           {
             name: Str.truncate(title, 100),
             auto_archive_duration: 1440
           }
-        ).json
+        )
 
         yield* rest.createMessage(thread.id, {
           components: UI.grid([
@@ -88,7 +97,7 @@ const make = Effect.gen(function*() {
               UI.button({
                 custom_id: `archive_${event.author.id}`,
                 label: "Archive",
-                style: Discord.ButtonStyle.SECONDARY
+                style: Discord.ButtonStyleTypes.SECONDARY
               })
             ]
           ])
@@ -105,14 +114,15 @@ const make = Effect.gen(function*() {
     )
   )
 
-  const hasManage = Perms.has(Discord.PermissionFlag.MANAGE_CHANNELS)
+  const hasManage = Perms.has(Discord.Permissions.ManageChannels)
 
-  const withEditPermissions = <R, E, A>(self: Effect.Effect<A, E, R>) =>
-    Effect.gen(function*() {
+  const withEditPermissions = Effect.fnUntraced(
+    function*<R, E, A>(self: Effect.Effect<A, E, R>) {
       const ix = yield* Ix.Interaction
       const ctx = yield* Ix.MessageComponentData
       const authorId = ctx.custom_id.split("_")[1]
-      const canEdit = authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
+      const canEdit = authorId === ix.member?.user?.id ||
+        hasManage(ix.member!.permissions!)
 
       if (!canEdit) {
         return yield* new PermissionsError({
@@ -122,25 +132,26 @@ const make = Effect.gen(function*() {
       }
 
       return yield* self
-    })
+    }
+  )
 
   const edit = Ix.messageComponent(
     Ix.idStartsWith("edit_"),
     pipe(
       Ix.Interaction,
-      Effect.flatMap((ix) => channels.get(ix.guild_id!, ix.channel_id!)),
+      Effect.flatMap((ix) => channels.get(ix.guild_id!, ix.channel!.id)),
       Effect.map((channel) =>
         Ix.response({
-          type: Discord.InteractionCallbackType.MODAL,
+          type: Discord.InteractionCallbackTypes.MODAL,
           data: {
             custom_id: "edit",
             title: "Edit title",
-            components: UI.singleColumn([
+            components: UI.singleColumnModal([
               UI.textInput({
                 custom_id: "title",
                 label: "New title",
                 max_length: 100,
-                value: channel.name!
+                value: "name" in channel ? channel.name! : ""
               })
             ])
           }
@@ -156,9 +167,9 @@ const make = Effect.gen(function*() {
     Effect.gen(function*() {
       const context = yield* Ix.Interaction
       const title = yield* Ix.modalValue("title")
-      yield* rest.modifyChannel(context.channel_id!, { name: title })
+      yield* rest.updateChannel(context.channel!.id, { name: title })
       return Ix.response({
-        type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE
+        type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE
       })
     }).pipe(Effect.withSpan("AutoThreads.editSubmit"))
   )
@@ -167,10 +178,12 @@ const make = Effect.gen(function*() {
     Ix.idStartsWith("archive_"),
     pipe(
       Ix.Interaction,
-      Effect.tap((ix) => rest.modifyChannel(ix.channel_id!, { archived: true })),
+      Effect.tap((ix) =>
+        rest.updateChannel(ix.channel!.id, { archived: true })
+      ),
       Effect.as(
         Ix.response({
-          type: Discord.InteractionCallbackType.DEFERRED_UPDATE_MESSAGE
+          type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE
         })
       ),
       withEditPermissions,
@@ -185,10 +198,11 @@ const make = Effect.gen(function*() {
     .catchTagRespond("PermissionsError", (_) =>
       Effect.succeed(
         Ix.response({
-          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            flags: Discord.MessageFlag.EPHEMERAL,
-            content: `You don't have permission to ${_.action} this ${_.subject}.`
+            flags: Discord.MessageFlags.Ephemeral,
+            content:
+              `You don't have permission to ${_.action} this ${_.subject}.`
           }
         })
       ))

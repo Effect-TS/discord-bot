@@ -1,10 +1,20 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { Messages } from "@chat/discord/Messages"
-import { AiInput, AiRole } from "@effect/ai"
+import { AiInput } from "@effect/ai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Array, Cause, Chunk, Data, Effect, FiberMap, Layer, pipe, Stream } from "effect"
+import {
+  Array,
+  Cause,
+  Chunk,
+  Data,
+  Effect,
+  FiberMap,
+  Layer,
+  pipe,
+  Stream
+} from "effect"
 import { AiHelpers } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { Github } from "./Github.ts"
@@ -33,25 +43,27 @@ const make = Effect.gen(function*() {
   const application = yield* DiscordApplication
 
   const createIssue = Effect.fn("Issueifier.createIssue")(function*(
-    channel: Discord.Channel,
+    channel: Discord.ThreadResponse,
     repo: GithubRepo
   ) {
+    const channelName = channel.name
     const chunk = yield* Stream.runCollect(messages.cleanForChannel(channel))
     const input = chunk.pipe(
       Chunk.reverse,
       Chunk.map(
         (msg): AiInput.Message =>
-          AiInput.Message.fromInput(
-            msg.content,
-            AiRole.userWithName(msg.author.username)
-          )
-      )
+          new AiInput.UserMessage({
+            parts: [new AiInput.TextPart({ text: msg.content })],
+            userName: msg.author.username
+          })
+      ),
+      AiInput.make
     )
-    const summary = yield* ai.generateSummary(channel.name!, input)
+    const summary = yield* ai.generateSummary(channelName, input)
     return yield* createGithubIssue({
       owner: repo.owner,
       repo: repo.repo,
-      title: `From Discord: ${channel.name}`,
+      title: `From Discord: ${channelName}`,
       body: `# Summary
 ${summary}
 
@@ -63,31 +75,36 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
   })
 
   const followUp = (
-    context: Discord.Interaction,
-    channel: Discord.Channel,
+    context: Discord.APIInteraction,
+    channel: Discord.ThreadResponse,
     repo: GithubRepo
   ) =>
     pipe(
       createIssue(channel, repo),
       Effect.tap((issue) =>
-        rest.editOriginalInteractionResponse(application.id, context.token, {
-          content: `Created Github issue for thread: ${issue.html_url}`
+        rest.updateOriginalWebhookMessage(application.id, context.token, {
+          payload: {
+            content: `Created Github issue for thread: ${issue.html_url}`
+          }
         })
       ),
       Effect.tapErrorCause(Effect.logError),
       Effect.catchAllCause((cause) =>
         rest
-          .editOriginalInteractionResponse(application.id, context.token, {
-            content: "Failed to create Github issue:\n\n```\n" +
-              Cause.pretty(cause) +
-              "\n```"
+          .updateOriginalWebhookMessage(application.id, context.token, {
+            payload: {
+              content: "Failed to create Github issue:\n\n```\n" +
+                Cause.pretty(cause) +
+                "\n```"
+            }
           })
           .pipe(
             Effect.zipLeft(Effect.sleep("1 minutes")),
             Effect.zipRight(
-              rest.deleteOriginalInteractionResponse(
+              rest.deleteOriginalWebhookMessage(
                 application.id,
-                context.token
+                context.token,
+                {}
               )
             )
           )
@@ -98,7 +115,8 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
   const command = Ix.global(
     {
       name: "issueify",
-      description: "Convert this thread into an issue for the Effect Website repo",
+      description:
+        "Convert this thread into an issue for the Effect Website repo",
       options: [
         {
           type: Discord.ApplicationCommandOptionType.NUMBER,
@@ -106,7 +124,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           description: "What repository to create the issue in.",
           choices: Array.map(githubRepos, ({ label }, value) => ({
             name: label,
-            value: value.toString()
+            value
           })),
           required: true
         }
@@ -120,9 +138,9 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         yield* Effect.annotateCurrentSpan({ repo: repo.label })
         const channel = yield* channels.get(
           context.guild_id!,
-          context.channel_id!
+          context.channel!.id
         )
-        if (channel.type !== Discord.ChannelType.PUBLIC_THREAD) {
+        if (channel.type !== Discord.ChannelTypes.PUBLIC_THREAD) {
           return yield* new NotInThreadError()
         }
         yield* followUp(context, channel, repo).pipe(
@@ -131,7 +149,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           FiberMap.run(fiberMap, context.id)
         )
         return Ix.response({
-          type: Discord.InteractionCallbackType
+          type: Discord.InteractionCallbackTypes
             .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
         })
       },
@@ -144,10 +162,10 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
     .catchTagRespond("NotInThreadError", () =>
       Effect.succeed(
         Ix.response({
-          type: Discord.InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: "This command can only be used in a thread",
-            flags: Discord.MessageFlag.EPHEMERAL
+            flags: Discord.MessageFlags.Ephemeral
           }
         })
       ))

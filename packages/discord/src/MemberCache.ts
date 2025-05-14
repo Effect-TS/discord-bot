@@ -18,7 +18,8 @@ export class MemberCache extends Effect.Service<MemberCache>()(
       const cache = yield* Cache.make({
         capacity: 1000,
         timeToLive: Duration.days(1),
-        lookup: ({ guildId, userId }: GetMember) => rest.getGuildMember(guildId, userId).json
+        lookup: ({ guildId, userId }: GetMember) =>
+          rest.getGuildMember(guildId, userId)
       })
 
       return {

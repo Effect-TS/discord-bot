@@ -14,7 +14,8 @@ class InvalidTopic extends Data.TaggedError("InvalidTopic")<{
 const parseTopic = (topic: string) =>
   Effect.partition(
     topic.matchAll(/\[reminder:(.+?):(.+?)\]/g),
-    ([match, expression, message]) => parseExpression(match, expression, message)
+    ([match, expression, message]) =>
+      parseExpression(match, expression, message)
   )
 
 const parseExpression = (match: string, expression: string, message: string) =>
@@ -33,7 +34,7 @@ const make = Effect.gen(function*() {
   const fibers = yield* FiberMap.make<Discord.Snowflake>()
 
   const handleChannel = Effect.fnUntraced(
-    function*(channel: Discord.Channel) {
+    function*(channel: Discord.GatewayChannelModifyDispatchData) {
       yield* FiberMap.remove(fibers, channel.id)
 
       const [errors, matches] = yield* parseTopic(channel.topic ?? "")
@@ -78,14 +79,17 @@ const make = Effect.gen(function*() {
     yield* Effect.annotateCurrentSpan({ message })
     const msg = yield* rest.createMessage(channelId, {
       content: message
-    }).json
-    yield* rest.startThreadFromMessage(msg.channel_id, msg.id, {
+    })
+    yield* rest.createThreadFromMessage(msg.channel_id, msg.id, {
       name: `${new Date().toDateString()} - ${message}`
     })
   }, Effect.retry(createThreadPolicy))
 
   yield* gateway
-    .handleDispatch("GUILD_CREATE", ({ channels }) => Effect.forEach(channels, handleChannel))
+    .handleDispatch(
+      "GUILD_CREATE",
+      ({ channels }) => Effect.forEach(channels, handleChannel)
+    )
     .pipe(Effect.forkScoped)
   yield* gateway
     .handleDispatch("CHANNEL_CREATE", handleChannel)

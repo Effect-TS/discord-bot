@@ -1,34 +1,11 @@
 import { DiscordApplication, DiscordRestLayer } from "@chat/discord/DiscordRest"
 import { Conversation } from "@chat/domain/Conversation"
-import { AiChat, AiInput, AiRole } from "@effect/ai"
+import { AiChat, AiInput } from "@effect/ai"
+import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST } from "dfx"
-import { Effect, Fiber, Option } from "effect"
+import { Effect, Fiber, Layer, Option } from "effect"
 import "@effect/platform"
-
-export const ConversationEntity = Conversation.toLayer(
-  Effect.gen(function*() {
-    const history = yield* ConversationHistory
-    let chat: AiChat.AiChat.Service | undefined = undefined
-
-    return {
-      send: Effect.fnUntraced(function*({ payload }) {
-        if (!chat) {
-          const input = yield* history.forDiscordChannel(
-            payload.address.discordChannelId,
-            payload.messageId
-          ).pipe(
-            Effect.orElseSucceed(() => AiInput.empty)
-          )
-          chat = yield* AiChat.fromInput(input)
-        }
-        const response = yield* chat.send(payload.message)
-        return response.text
-      })
-    }
-  }),
-  { maxIdleTime: "10 minutes" }
-)
-// Layer.provide(Layer.succeed(AiInput.SystemInstruction, ``))
+import { OpenAiLayer } from "./OpenAi.ts"
 
 export class ConversationHistory
   extends Effect.Service<ConversationHistory>()("ConversationHistory", {
@@ -41,12 +18,15 @@ export class ConversationHistory
         "ConversationHistory.forDiscordChannel"
       )(
         function*(threadId: string, excludeMessageId: string) {
-          const messagesFiber = yield* discord.getChannelMessages(threadId, {
+          const messagesFiber = yield* discord.listMessages(threadId, {
             limit: 10
-          }).json.pipe(Effect.fork)
-          const openingMessage = yield* discord.getChannel(threadId).json.pipe(
+          }).pipe(Effect.fork)
+          const openingMessage = yield* discord.getChannel(threadId).pipe(
+            Effect.filterOrFail((thread): thread is Discord.ThreadResponse =>
+              "parent_id" in thread
+            ),
             Effect.flatMap((thread) =>
-              discord.getChannelMessage(thread.parent_id!, thread.id).json
+              discord.getMessage(thread.parent_id!, thread.id)
             ),
             Effect.option
           )
@@ -56,7 +36,7 @@ export class ConversationHistory
             Option.match(openingMessage, {
               onNone: () => messages,
               onSome: (openingMessage) => [...messages, openingMessage]
-            })
+            }).slice()
               .reverse()
               .filter(
                 (msg) =>
@@ -68,12 +48,14 @@ export class ConversationHistory
               )
               .map(
                 (msg): AiInput.Message =>
-                  AiInput.Message.fromInput(
-                    msg.content,
-                    msg.author.id === botUser.id
-                      ? AiRole.model
-                      : AiRole.userWithName(msg.author.username)
-                  )
+                  msg.author.id === botUser.id ?
+                    new AiInput.AssistantMessage({
+                      parts: [new AiInput.TextPart({ text: msg.content })]
+                    }) :
+                    new AiInput.UserMessage({
+                      parts: [new AiInput.TextPart({ text: msg.content })],
+                      userName: msg.author.username
+                    })
               )
           )
         }
@@ -83,3 +65,30 @@ export class ConversationHistory
     })
   })
 {}
+
+export const ConversationEntity = Conversation.toLayer(
+  Effect.gen(function*() {
+    const history = yield* ConversationHistory
+    let chat: AiChat.AiChat.Service | undefined = undefined
+    const model = yield* OpenAiLanguageModel.model("gpt-4o")
+
+    return {
+      send: Effect.fnUntraced(function*({ payload }) {
+        if (!chat) {
+          const prompt = yield* history.forDiscordChannel(
+            payload.address.discordChannelId,
+            payload.messageId
+          ).pipe(
+            Effect.orElseSucceed(() => AiInput.empty)
+          )
+          chat = yield* AiChat.fromPrompt({ prompt })
+        }
+        const response = yield* chat.generateText({ prompt: payload.message })
+        return response.text
+      }, model.use)
+    }
+  }),
+  { maxIdleTime: "10 minutes" }
+).pipe(
+  Layer.provide([ConversationHistory.Default, OpenAiLayer])
+)

@@ -24,10 +24,13 @@ const make = Effect.gen(function*() {
     !urlExclude.some((_) => url.includes(_))
 
   const getChannel = (guildId: string, id: string) =>
-    Effect.flatMap(channels.get(guildId, id), (_) =>
-      _.type === Discord.ChannelType.PUBLIC_THREAD
-        ? channels.get(guildId, _.parent_id!)
-        : Effect.succeed(_))
+    Effect.flatMap(
+      channels.get(guildId, id),
+      (_) =>
+        _.type === Discord.ChannelTypes.PUBLIC_THREAD
+          ? channels.get(guildId, _.parent_id!)
+          : Effect.succeed(_)
+    )
 
   const EligibleChannel = Schema.Struct({
     topic: Schema.String.pipe(Schema.includes(topicKeyword))
@@ -48,7 +51,7 @@ const make = Effect.gen(function*() {
           })
         ),
         type: Schema.String.pipe(
-          Schema.filter((_) => _ !== Discord.EmbedType.GIFV, {
+          Schema.filter((_) => _ !== "gifv", {
             message: () => "embed type is gif"
           })
         )
@@ -64,17 +67,17 @@ const make = Effect.gen(function*() {
     )
 
   const handleMessage = Effect.fnUntraced(
-    function*(event: Discord.MessageCreateEvent) {
+    function*(event: Discord.GatewayMessageCreateDispatchData) {
       yield* getChannel(event.guild_id!, event.channel_id).pipe(
         Effect.flatMap(EligibleChannel)
       )
       const message = yield* EligibleMessage(
         event.content
           ? event
-          : yield* rest.getChannelMessage(event.channel_id, event.id).json
+          : yield* rest.getMessage(event.channel_id, event.id)
       )
-      yield* rest.editMessage(message.channel_id, message.id, {
-        flags: message.flags | Discord.MessageFlag.SUPPRESS_EMBEDS
+      yield* rest.updateMessage(message.channel_id, message.id, {
+        flags: message.flags | Discord.MessageFlags.SuppressEmbeds
       })
     },
     Effect.catchTag("ParseError", Effect.logDebug),
