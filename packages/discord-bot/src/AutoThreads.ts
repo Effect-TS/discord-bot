@@ -146,7 +146,7 @@ const make = Effect.gen(function*() {
           data: {
             custom_id: "edit",
             title: "Edit title",
-            components: UI.singleColumnModal([
+            components: UI.singleColumn([
               UI.textInput({
                 custom_id: "title",
                 label: "New title",
