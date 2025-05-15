@@ -2,7 +2,16 @@ import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { HttpClient, HttpClientResponse } from "@effect/platform"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Data, Duration, Effect, Layer, Option, Schedule, Schema } from "effect"
+import {
+  Data,
+  Duration,
+  Effect,
+  Layer,
+  Option,
+  Resource,
+  Schedule,
+  Schema
+} from "effect"
 import type { Mutable } from "effect/Types"
 import fuzzysort from "fuzzysort"
 import * as Prettier from "prettier"
@@ -25,37 +34,36 @@ const make = Effect.gen(function*() {
       HttpClientResponse.schemaBodyJson(DocEntry.Array)
     )
 
-  const allDocs = yield* Effect.forEach(docUrls, loadDocs, {
-    concurrency: "unbounded"
-  }).pipe(
-    Effect.map((_) =>
-      _.flat().reduce(
-        (acc, entry) => {
-          acc[entry.searchTerm] = entry
-          return acc
-        },
-        {} as Record<string, DocEntry>
-      )
+  const docs = yield* Resource.auto(
+    Effect.forEach(docUrls, loadDocs, {
+      concurrency: docUrls.length
+    }).pipe(
+      Effect.map((_) =>
+        _.flat().reduce(
+          (acc, entry) => {
+            acc[entry.searchTerm] = entry
+            return acc
+          },
+          {} as Record<string, DocEntry>
+        )
+      ),
+      Effect.map((map) => ({
+        forSearch: Object.entries(map).map(([key, entry]) => ({
+          term: entry.preparedFuzzySearch,
+          key,
+          label: `${entry.nameWithModule} (${entry._tag}) (${entry.project})`,
+          entry
+        })),
+        map
+      }))
     ),
-    Effect.map((map) => ({
-      forSearch: Object.entries(map).map(([key, entry]) => ({
-        term: entry.preparedFuzzySearch,
-        key,
-        label: `${entry.nameWithModule} (${entry._tag}) (${entry.project})`,
-        entry
-      })),
-      map
-    })),
-    Effect.cachedWithTTL(Duration.hours(3))
+    Schedule.spaced(Duration.hours(3))
   )
-
-  // prime the cache
-  yield* allDocs
 
   const search = (query: string) => {
     query = query.toLowerCase()
     return Effect.logDebug("searching").pipe(
-      Effect.zipRight(allDocs),
+      Effect.zipRight(Resource.get(docs)),
       Effect.map(({ forSearch }) =>
         fuzzysort.go(query, forSearch, { key: "term" }).map((x) => x.obj)
       ),
@@ -89,8 +97,8 @@ const make = Effect.gen(function*() {
       function*(ix) {
         const key = ix.optionValue("query")
         const reveal = ix.optionValue("public")
-        const docs = yield* allDocs
-        const entry = yield* Effect.fromNullable(docs.map[key])
+        const { map } = yield* Resource.get(docs)
+        const entry = yield* Effect.fromNullable(map[key])
         yield* Effect.annotateCurrentSpan({
           entry: entry.nameWithModule,
           public: reveal
