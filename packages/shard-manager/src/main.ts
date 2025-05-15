@@ -1,7 +1,10 @@
 import { TracerLayer } from "@chat/shared/Otel"
 import { SqlClientLayer } from "@chat/shared/Sql"
 import { RunnerAddress } from "@effect/cluster"
-import { NodeClusterShardManagerSocket, NodeRuntime } from "@effect/platform-node"
+import {
+  NodeClusterShardManagerSocket,
+  NodeRuntime
+} from "@effect/platform-node"
 import { Config, Effect, Layer } from "effect"
 
 Layer.unwrapEffect(Effect.gen(function*() {
