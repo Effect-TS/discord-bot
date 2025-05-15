@@ -33,8 +33,8 @@ importers:
         specifier: ^0.3.2
         version: 0.3.2
       '@effect/language-service':
-        specifier: ^0.15.1
-        version: 0.15.1
+        specifier: ^0.16.0
+        version: 0.16.0
       '@eslint/js':
         specifier: ^9.26.0
         version: 9.26.0
@@ -108,8 +108,8 @@ importers:
         specifier: ^0.80.3
         version: 0.80.3(@effect/cluster@0.33.3(@effect/platform@0.82.2(effect@3.15.1))(@effect/rpc@0.59.3(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(@effect/sql@0.35.2(@effect/experimental@0.46.2(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.2(effect@3.15.1))(@effect/rpc@0.59.3(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(@effect/sql@0.35.2(@effect/experimental@0.46.2(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(effect@3.15.1)
       dfx:
-        specifier: ^0.118.14
-        version: 0.118.14(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1)
+        specifier: ^0.118.15
+        version: 0.118.15(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1)
       effect:
         specifier: ^3.15.1
         version: 3.15.1
@@ -138,8 +138,8 @@ importers:
         specifier: ^0.46.2
         version: 0.46.2(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1)
       '@effect/language-service':
-        specifier: ^0.15.1
-        version: 0.15.1
+        specifier: ^0.16.0
+        version: 0.16.0
       '@effect/opentelemetry':
         specifier: ^0.48.2
         version: 0.48.2(@effect/platform@0.82.2(effect@3.15.1))(@opentelemetry/semantic-conventions@1.33.0)(effect@3.15.1)
@@ -159,8 +159,8 @@ importers:
         specifier: ^22.15.18
         version: 22.15.18
       dfx:
-        specifier: ^0.118.14
-        version: 0.118.14(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1)
+        specifier: ^0.118.15
+        version: 0.118.15(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1)
       effect:
         specifier: ^3.15.1
         version: 3.15.1
@@ -228,8 +228,8 @@ importers:
         specifier: ^0.36.2
         version: 0.36.2(@effect/experimental@0.46.2(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.2(effect@3.15.1))(@effect/sql@0.35.2(@effect/experimental@0.46.2(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1))(effect@3.15.1)
       dfx:
-        specifier: ^0.118.14
-        version: 0.118.14(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1)
+        specifier: ^0.118.15
+        version: 0.118.15(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1)
       effect:
         specifier: ^3.15.1
         version: 3.15.1
@@ -427,8 +427,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.15.1':
-    resolution: {integrity: sha512-rEp9131jd7dDu6OveV0SHmkqHPoFyOUPBChY4MjUElo1VCHgJcZnhAQf3BYI9hA9VZ2Pz0XGcsJMfnutoSPmOw==}
+  '@effect/language-service@0.16.0':
+    resolution: {integrity: sha512-PRFDcRQwvKXj2gn7v1kvmzxenmE3xUy3xCO0OKB49885/n1g5sIglRttN1LYOZB4DcSMqLbnWJnEVgJJrWXZTw==}
 
   '@effect/opentelemetry@0.48.2':
     resolution: {integrity: sha512-gmmg1ra0npuvTgAr6ji20NVpVySwYYX6CwgDvakYoWb+vNhWW/hE2AjPxxnyygrUywQMow2f66UIh945btOoQA==}
@@ -1646,14 +1646,14 @@ packages:
     resolution: {integrity: sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA==}
     engines: {node: '>=8'}
 
-  dfx@0.118.14:
-    resolution: {integrity: sha512-1fMHNRyJaztgl87MtsdnP4bL6jagFZKnvM4ZDZrRgCyzsCGqcH2SMj2Y4b+roQaYa1TmcMSBzUMgNN4n7WTD/w==}
+  dfx@0.118.15:
+    resolution: {integrity: sha512-5fg3xPKBDAHI+h4KbsSQ85/jtTcRXRr18pP0OYt0HMtfQtsQjDWT7DHZFsv2dOzDfRkb2H/BRHYKLhwSHsShDw==}
     peerDependencies:
       '@effect/platform': ^0.82
       effect: ^3.15
 
-  discord-api-types@0.38.5:
-    resolution: {integrity: sha512-2sRkDRid39myMMeRzVTWLc2PyafSxu6k3LHpkB1Lx6IVzqycRnIhOedCbXg3IYpbJhKvA7ErNAh0DA/nXG/1Uw==}
+  discord-api-types@0.38.8:
+    resolution: {integrity: sha512-xuRXPD44FcbKHrQK15FS1HFlMRNJtsaZou/SVws18vQ7zHqmlxyDktMkZpyvD6gE2ctGOVYC/jUyoMMAyBWfcw==}
 
   discord-verify@1.2.0:
     resolution: {integrity: sha512-8qlrMROW8DhpzWWzgNq9kpeLDxKanWa4EDVoj/ASVv2nr+dSr4JPmu2tFSydf3hAGI/OIJTnZyD0JulMYIxx4w==}
@@ -3362,7 +3362,7 @@ snapshots:
       effect: 3.15.1
       uuid: 11.1.0
 
-  '@effect/language-service@0.15.1': {}
+  '@effect/language-service@0.16.0': {}
 
   '@effect/opentelemetry@0.48.2(@effect/platform@0.82.2(effect@3.15.1))(@opentelemetry/semantic-conventions@1.33.0)(effect@3.15.1)':
     dependencies:
@@ -4556,15 +4556,15 @@ snapshots:
   detect-libc@2.0.4:
     optional: true
 
-  dfx@0.118.14(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1):
+  dfx@0.118.15(@effect/platform@0.82.2(effect@3.15.1))(effect@3.15.1):
     dependencies:
       '@effect/platform': 0.82.2(effect@3.15.1)
-      discord-api-types: 0.38.5
+      discord-api-types: 0.38.8
       effect: 3.15.1
     optionalDependencies:
       discord-verify: 1.2.0
 
-  discord-api-types@0.38.5: {}
+  discord-api-types@0.38.8: {}
 
   discord-verify@1.2.0:
     dependencies:

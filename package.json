@@ -21,7 +21,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.27.1",
     "@effect/build-utils": "^0.8.3",
     "@effect/eslint-plugin": "^0.3.2",
-    "@effect/language-service": "^0.15.1",
+    "@effect/language-service": "^0.16.0",
     "@eslint/js": "^9.26.0",
     "@types/node": "^22.15.18",
     "@vitest/coverage-v8": "^3.1.3",
