@@ -5,7 +5,7 @@ import { AutoThreadsLive } from "./AutoThreads.ts"
 import { DadJokesLive } from "./DadJokes.ts"
 import { DocsLookupLive } from "./DocsLookup.ts"
 import { IssueifierLive } from "./Issueifier.ts"
-import { MentionsLive } from "./Mentions.ts"
+import { MessageLoggerLayer } from "./MessageLogger.ts"
 import { NoEmbedLive } from "./NoEmbed.ts"
 import { PlaygroundLive } from "./Playground.ts"
 import { RemindersLive } from "./Reminders.ts"
@@ -26,7 +26,7 @@ const MainLive = Layer.mergeAll(
   NoEmbedLive,
   DocsLookupLive,
   IssueifierLive,
-  MentionsLive,
+  MessageLoggerLayer,
   PlaygroundLive,
   RemindersLive,
   ReproRequesterLive,

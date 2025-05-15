@@ -4,6 +4,7 @@ import { RunnerAddress } from "@effect/cluster"
 import { NodeClusterRunnerSocket, NodeRuntime } from "@effect/platform-node"
 import { Config, Effect, Layer, Option } from "effect"
 import { ConversationEntity } from "./Conversation.ts"
+import { MessageLoggerEntity } from "./MessageLogger.ts"
 
 const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
   const runnerIp = yield* Config.string("FLY_PRIVATE_IP").pipe(
@@ -22,7 +23,8 @@ const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
 }))
 
 Layer.mergeAll(
-  ConversationEntity
+  ConversationEntity,
+  MessageLoggerEntity
 ).pipe(
   Layer.provide(RunnerLayer),
   Layer.provide(SqlClientLayer),

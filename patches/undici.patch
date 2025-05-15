@@ -1,0 +1,13 @@
+diff --git a/lib/web/fetch/body.js b/lib/web/fetch/body.js
+index 81d9b6d0e67a11ecb51241e0daf3b8a05cd11b49..d5edc13e5f2216ab47d21291ed8aca22f52b7191 100644
+--- a/lib/web/fetch/body.js
++++ b/lib/web/fetch/body.js
+@@ -117,7 +117,7 @@ function extractBody (object, keepalive = false) {
+ 
+     // Set source to a copy of the bytes held by object.
+     source = new Uint8Array(object.buffer.slice(object.byteOffset, object.byteOffset + object.byteLength))
+-  } else if (webidl.is.FormData(object)) {
++  } else if (util.isFormDataLike(object)) {
+     const boundary = `----formdata-undici-0${`${random(1e11)}`.padStart(11, '0')}`
+     const prefix = `--${boundary}\r\nContent-Disposition: form-data`
+ 

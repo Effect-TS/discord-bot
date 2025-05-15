@@ -2,7 +2,6 @@ import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { MemberCache } from "@chat/discord/MemberCache"
 import { Messages } from "@chat/discord/Messages"
-import { HttpBody } from "@effect/platform"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Cause, Chunk, Data, Effect, Option, pipe, Stream } from "effect"
@@ -144,26 +143,19 @@ ${message.content}${imagesContent}`
     ) =>
       pipe(
         summarizeThread(channel, small),
-        Effect.tap((summary) => {
-          const formData = new FormData()
-
-          formData.append(
-            "file",
-            new Blob([summary], { type: "text/plain" }),
-            `${channel.name} Summary.md`
+        Effect.tap((summary) =>
+          rest.updateOriginalWebhookMessage(
+            application.id,
+            context.token,
+            { payload: { content: "Here is your summary!" } }
+          ).pipe(
+            rest.withFiles([
+              new File([summary], `${channel.name} Summary.md`, {
+                type: "text/plain"
+              })
+            ])
           )
-          formData.append(
-            "payload_json",
-            JSON.stringify({ content: summary })
-          )
-
-          return rest.httpClient.patch(
-            `/webhooks/${application.id}/${context.token}/messages/@original`,
-            {
-              body: HttpBody.formData(formData)
-            }
-          )
-        }),
+        ),
         Effect.catchAllCause((cause) =>
           rest.updateOriginalWebhookMessage(application.id, context.token, {
             payload: {
