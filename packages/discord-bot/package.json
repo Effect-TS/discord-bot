@@ -21,7 +21,7 @@
     "@octokit/plugin-rest-endpoint-methods": "^14.0.0",
     "@octokit/types": "^14.0.0",
     "@types/node": "^22.15.18",
-    "dfx": "^0.118.13",
+    "dfx": "^0.118.14",
     "effect": "^3.15.1",
     "fuzzysort": "^3.1.0",
     "html-entities": "^2.6.0",
