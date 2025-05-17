@@ -9,10 +9,10 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "@effect/ai": "^0.16.3",
-    "@effect/cluster": "^0.33.3",
-    "@effect/rpc": "^0.59.3",
-    "@effect/sql": "^0.35.2",
-    "effect": "^3.15.1"
+    "@effect/ai": "^0.16.4",
+    "@effect/cluster": "^0.34.0",
+    "@effect/rpc": "^0.59.4",
+    "@effect/sql": "^0.35.3",
+    "effect": "^3.15.2"
   }
 }
