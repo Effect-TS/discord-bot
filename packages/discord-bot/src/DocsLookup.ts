@@ -172,7 +172,7 @@ const make = Effect.gen(function*() {
   yield* registry.register(ix)
 })
 
-export const DocsLookupLive = Layer.effectDiscard(make).pipe(
+export const DocsLookupLive = Layer.scopedDiscard(make).pipe(
   Layer.provide(DiscordGatewayLayer)
 )
 
