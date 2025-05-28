@@ -107,7 +107,7 @@ export const ConversationEntity = Conversation.toLayer(
         }
         const response = yield* chat.generateText({ prompt: payload.message })
         return response.text
-      }, model.use)
+      }, Effect.provide(model))
     }
   }),
   { maxIdleTime: "10 minutes" }
