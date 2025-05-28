@@ -20,7 +20,7 @@ export const OpenAiLive = OpenAiClient.layerConfig({
   )
 }).pipe(Layer.provide(NodeHttpClient.layerUndici))
 
-export const ChatModel = OpenAiLanguageModel.model("gpt-4o")
+export const ChatModel = OpenAiLanguageModel.modelWithTokenizer("gpt-4o")
 
 export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
   effect: Effect.gen(function*() {
@@ -78,7 +78,7 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
 
 Create a short title summarizing the message. Do not include markdown in the title.`
       }).pipe(
-        model.use,
+        Effect.provide(model),
         OpenAiLanguageModel.withConfigOverride({
           temperature: 0.25,
           max_tokens: 64
@@ -106,7 +106,7 @@ Create a short title summarizing the message. Do not include markdown in the tit
 The title of this chat is "${title}".`
       })
       return response.text
-    }, model.use)
+    }, Effect.provide(model))
 
     const generateSummary = (title: string, messages: AiInput.AiInput) =>
       generateDocs(

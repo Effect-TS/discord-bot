@@ -10,15 +10,15 @@
     "@chat/discord": "workspace:*",
     "@chat/domain": "workspace:*",
     "@chat/shared": "workspace:*",
-    "@effect/ai": "^0.16.9",
-    "@effect/ai-openai": "^0.19.9",
-    "@effect/cluster": "^0.34.5",
-    "@effect/platform": "^0.82.8",
-    "@effect/platform-node": "^0.81.5",
-    "@effect/rpc": "^0.59.9",
-    "@effect/sql": "^0.35.8",
-    "@effect/sql-pg": "^0.36.8",
-    "dfx": "^0.118.17",
-    "effect": "^3.15.4"
+    "@effect/ai": "^0.18.0",
+    "@effect/ai-openai": "^0.21.0",
+    "@effect/cluster": "^0.36.0",
+    "@effect/platform": "^0.84.0",
+    "@effect/platform-node": "^0.83.0",
+    "@effect/rpc": "^0.61.0",
+    "@effect/sql": "^0.37.0",
+    "@effect/sql-pg": "^0.38.0",
+    "dfx": "^0.120.0",
+    "effect": "^3.16.0"
   }
 }

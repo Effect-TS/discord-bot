@@ -69,7 +69,7 @@ const make = Effect.gen(function*() {
       )
     },
     Effect.catchAllCause(Effect.log),
-    model.use
+    Effect.provide(model)
   )
 
   const ix = Ix.builder
