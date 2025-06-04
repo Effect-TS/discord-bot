@@ -13,10 +13,14 @@ const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
   const shardManagerHost = runnerIp === "localhost"
     ? "localhost"
     : "shard-manager.internal"
+  const listenHost = runnerIp === "localhost"
+    ? "localhost"
+    : "fly-local-6pn"
   return NodeClusterRunnerSocket.layer({
     storage: "sql",
     shardingConfig: {
       runnerAddress: Option.some(RunnerAddress.make(runnerIp, 34431)),
+      runnerListenAddress: Option.some(RunnerAddress.make(listenHost, 34431)),
       shardManagerAddress: RunnerAddress.make(shardManagerHost, 8080)
     }
   })
