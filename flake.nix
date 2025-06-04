@@ -68,6 +68,7 @@
             corepack
             nodejs
             flyctl
+            postgresql
           ];
 
           shellHook = ''
