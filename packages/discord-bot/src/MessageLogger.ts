@@ -1,6 +1,5 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { MessageLogger } from "@chat/domain/MessageLogger"
-import { MessageWorkflow } from "@chat/domain/MessageWorkflow"
 import { DiscordGateway } from "dfx/DiscordGateway"
 import { Effect, Layer } from "effect"
 import { ChannelsCache } from "./ChannelsCache.ts"
@@ -31,11 +30,11 @@ const make = Effect.gen(function*() {
           message: message.content
         })
 
-        yield* MessageWorkflow.execute({
-          id: message.id,
-          message: message.content,
-          author: message.author.username
-        }, { discard: true })
+        // yield* MessageWorkflow.execute({
+        //   id: message.id,
+        //   message: message.content,
+        //   author: message.author.username
+        // }, { discard: true })
       },
       (effect, message) =>
         Effect.withSpan(effect, "MessageLogger.handle", {
