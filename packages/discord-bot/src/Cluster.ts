@@ -1,9 +1,11 @@
 import { SqlClientLayer } from "@chat/shared/Sql"
-import { RunnerAddress } from "@effect/cluster"
+import type { Runners, Sharding } from "@effect/cluster"
+import { ClusterWorkflowEngine, RunnerAddress } from "@effect/cluster"
 import { NodeClusterRunnerSocket } from "@effect/platform-node"
+import type { WorkflowEngine } from "@effect/workflow"
 import { Config, Effect, Layer } from "effect"
 
-export const ClusterLayer = Layer.unwrapEffect(
+const ShardingLayer = Layer.unwrapEffect(
   Effect.gen(function*() {
     const shardManagerHost = yield* Config.string("SHARD_MANAGER_HOST").pipe(
       Config.withDefault("localhost")
@@ -21,3 +23,9 @@ export const ClusterLayer = Layer.unwrapEffect(
   Layer.provide(SqlClientLayer),
   Layer.orDie
 )
+
+export const ClusterLayer: Layer.Layer<
+  Sharding.Sharding | Runners.Runners | WorkflowEngine.WorkflowEngine
+> = ClusterWorkflowEngine.layer.pipe(
+  Layer.provideMerge(ShardingLayer)
+) as any
