@@ -1,10 +1,11 @@
 import { TracerLayer } from "@chat/shared/Otel"
 import { SqlClientLayer } from "@chat/shared/Sql"
-import { RunnerAddress } from "@effect/cluster"
+import { ClusterWorkflowEngine, RunnerAddress } from "@effect/cluster"
 import { NodeClusterRunnerSocket, NodeRuntime } from "@effect/platform-node"
 import { Config, Effect, Layer, Option } from "effect"
 import { ConversationEntity } from "./Conversation.ts"
 import { MessageLoggerEntity } from "./MessageLogger.ts"
+import { MessageWorkflowLayer } from "./MessageWorkflow.ts"
 
 const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
   const runnerIp = yield* Config.string("FLY_PRIVATE_IP").pipe(
@@ -28,8 +29,10 @@ const RunnerLayer = Layer.unwrapEffect(Effect.gen(function*() {
 
 Layer.mergeAll(
   ConversationEntity,
-  MessageLoggerEntity
+  MessageLoggerEntity,
+  MessageWorkflowLayer
 ).pipe(
+  Layer.provide(ClusterWorkflowEngine.layer),
   Layer.provide(RunnerLayer),
   Layer.provide(SqlClientLayer),
   Layer.provide(TracerLayer("chat-runner")),
