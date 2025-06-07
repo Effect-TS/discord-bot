@@ -1,6 +1,6 @@
 import { SqlClientLayer } from "@chat/shared/Sql"
 import type { Runners, Sharding } from "@effect/cluster"
-import { RunnerAddress } from "@effect/cluster"
+import { ClusterWorkflowEngine, RunnerAddress } from "@effect/cluster"
 import { NodeClusterRunnerSocket } from "@effect/platform-node"
 import type { WorkflowEngine } from "@effect/workflow"
 import { Config, Effect, Layer } from "effect"
@@ -26,4 +26,6 @@ const ShardingLayer = Layer.unwrapEffect(
 
 export const ClusterLayer: Layer.Layer<
   Sharding.Sharding | Runners.Runners | WorkflowEngine.WorkflowEngine
-> = ShardingLayer as any
+> = ClusterWorkflowEngine.layer.pipe(
+  Layer.provideMerge(ShardingLayer)
+)

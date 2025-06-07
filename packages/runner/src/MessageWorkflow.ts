@@ -8,6 +8,13 @@ export const MessageWorkflowLayer = MessageWorkflow.toLayer(
       yield* Effect.log("Running")
 
       yield* DurableClock.sleep({
+        name: "Wait 2 minutes",
+        duration: "2 minutes"
+      })
+
+      yield* Effect.log("Starting big sleep")
+
+      yield* DurableClock.sleep({
         name: "Wait 1 day",
         duration: "1 day"
       })
