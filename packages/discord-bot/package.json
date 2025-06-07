@@ -10,14 +10,14 @@
     "@chat/discord": "workspace:*",
     "@chat/domain": "workspace:*",
     "@chat/shared": "workspace:*",
-    "@effect/ai": "^0.18.9",
-    "@effect/ai-openai": "^0.21.9",
-    "@effect/cluster": "^0.38.5",
-    "@effect/experimental": "^0.48.8",
+    "@effect/ai": "^0.18.10",
+    "@effect/ai-openai": "^0.21.10",
+    "@effect/cluster": "^0.38.7",
+    "@effect/experimental": "^0.48.9",
     "@effect/language-service": "^0.19.0",
-    "@effect/opentelemetry": "^0.50.7",
-    "@effect/platform": "^0.84.7",
-    "@effect/platform-node": "^0.85.5",
+    "@effect/opentelemetry": "^0.50.8",
+    "@effect/platform": "^0.84.8",
+    "@effect/platform-node": "^0.85.7",
     "@octokit/plugin-rest-endpoint-methods": "^16.0.0",
     "@octokit/types": "^14.1.0",
     "@types/node": "^22.15.30",
@@ -28,6 +28,6 @@
     "octokit": "^5.0.3"
   },
   "dependencies": {
-    "@effect/workflow": "^0.1.4"
+    "@effect/workflow": "^0.1.5"
   }
 }
