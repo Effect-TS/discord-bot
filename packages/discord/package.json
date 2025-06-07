@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@effect/platform": "^0.84.8",
-    "@effect/platform-node": "^0.85.7",
+    "@effect/platform-node": "^0.85.8",
     "dfx": "^0.120.0",
     "effect": "^3.16.4"
   }
