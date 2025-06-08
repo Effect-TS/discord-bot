@@ -12,9 +12,9 @@
     "@chat/shared": "workspace:*",
     "@effect/ai": "^0.18.12",
     "@effect/ai-openai": "^0.21.12",
-    "@effect/cluster": "^0.38.10",
+    "@effect/cluster": "^0.38.11",
     "@effect/platform": "^0.84.9",
-    "@effect/platform-node": "^0.85.10",
+    "@effect/platform-node": "^0.85.11",
     "@effect/rpc": "^0.61.10",
     "@effect/sql": "^0.37.10",
     "@effect/sql-pg": "^0.38.10",
@@ -22,6 +22,6 @@
     "effect": "^3.16.5"
   },
   "dependencies": {
-    "@effect/workflow": "^0.1.8"
+    "@effect/workflow": "^0.1.9"
   }
 }
