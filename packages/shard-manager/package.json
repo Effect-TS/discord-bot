@@ -14,10 +14,10 @@
   },
   "devDependencies": {
     "@chat/shared": "workspace:*",
-    "@effect/cluster": "^0.38.9",
-    "@effect/platform-node": "^0.85.9",
-    "@effect/sql": "^0.37.9",
-    "@effect/sql-pg": "^0.38.9",
-    "effect": "^3.16.4"
+    "@effect/cluster": "^0.38.10",
+    "@effect/platform-node": "^0.85.10",
+    "@effect/sql": "^0.37.10",
+    "@effect/sql-pg": "^0.38.10",
+    "effect": "^3.16.5"
   }
 }
