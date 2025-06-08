@@ -10,10 +10,10 @@
   },
   "dependencies": {
     "@effect/ai": "^0.18.12",
-    "@effect/cluster": "^0.38.10",
+    "@effect/cluster": "^0.38.11",
     "@effect/rpc": "^0.61.10",
     "@effect/sql": "^0.37.10",
-    "@effect/workflow": "^0.1.8",
+    "@effect/workflow": "^0.1.9",
     "effect": "^3.16.5"
   }
 }
