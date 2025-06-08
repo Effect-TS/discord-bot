@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@effect/opentelemetry": "^0.50.8",
-    "@effect/platform-node": "^0.85.8",
+    "@effect/platform-node": "^0.85.9",
     "@effect/sql": "^0.37.9",
     "@effect/sql-pg": "^0.38.9",
     "effect": "^3.16.4"
