@@ -10,4 +10,6 @@ primary_region = 'iad'
   dockerfile = 'shard-manager.Dockerfile'
 
 [[vm]]
-  size = 'shared-cpu-1x'
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1
