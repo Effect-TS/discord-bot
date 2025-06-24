@@ -9,10 +9,10 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "@effect/opentelemetry": "^0.51.0",
-    "@effect/platform-node": "^0.86.0",
-    "@effect/sql": "^0.38.0",
-    "@effect/sql-pg": "^0.39.0",
-    "effect": "^3.16.7"
+    "@effect/opentelemetry": "^0.53.0",
+    "@effect/platform-node": "^0.88.0",
+    "@effect/sql": "^0.40.0",
+    "@effect/sql-pg": "^0.41.0",
+    "effect": "^3.16.9"
   }
 }
