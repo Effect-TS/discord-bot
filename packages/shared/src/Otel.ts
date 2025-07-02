@@ -1,6 +1,7 @@
 import * as Otlp from "@effect/opentelemetry/Otlp"
+import * as OtlpTracer from "@effect/opentelemetry/OtlpTracer"
 import { NodeHttpClient } from "@effect/platform-node"
-import { Config, Effect, Layer, Logger, Option, Redacted } from "effect"
+import { Config, Effect, Layer, Option, Redacted } from "effect"
 
 export const TracerLayer = (serviceName: string): Layer.Layer<never> =>
   Layer.unwrapEffect(Effect.gen(function*() {
@@ -17,16 +18,15 @@ export const TracerLayer = (serviceName: string): Layer.Layer<never> =>
       })
     }
 
-    return Otlp.layer({
-      baseUrl: "https://api.honeycomb.io",
+    return OtlpTracer.layer({
+      url: "https://api.honeycomb.io/v1/traces",
       resource: {
         serviceName: dataset
       },
       headers: {
         "x-honeycomb-team": Redacted.value(apiKey.value),
         "x-honeycomb-dataset": dataset
-      },
-      replaceLogger: Logger.tracerLogger
+      }
     })
   })).pipe(
     Layer.provide(NodeHttpClient.layerUndici),
