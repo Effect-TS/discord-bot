@@ -7,6 +7,7 @@ import { DocsLookupLive } from "./DocsLookup.ts"
 import { IssueifierLive } from "./Issueifier.ts"
 import { MessageLoggerLayer } from "./MessageLogger.ts"
 import { NoEmbedLive } from "./NoEmbed.ts"
+import { NotificationsLayer } from "./Notifications.ts"
 import { PlaygroundLive } from "./Playground.ts"
 import { RemindersLive } from "./Reminders.ts"
 import { ReproRequesterLive } from "./ReproRequester.ts"
@@ -27,6 +28,7 @@ const MainLive = Layer.mergeAll(
   DocsLookupLive,
   IssueifierLive,
   MessageLoggerLayer,
+  NotificationsLayer,
   PlaygroundLive,
   RemindersLive,
   ReproRequesterLive,

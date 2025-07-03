@@ -1,6 +1,6 @@
 services:
   grafana:
-    image: grafana/otel-lgtm:0.8.6
+    image: grafana/otel-lgtm:0.11.5
     container_name: grafana
     restart: unless-stopped
     ports:
