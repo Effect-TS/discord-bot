@@ -2,7 +2,7 @@ import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import assert from "assert"
 import { Discord, DiscordREST, Ix, UI } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Array, Effect, Layer } from "effect"
+import { Array, Effect, FiberSet, Layer } from "effect"
 import { RolesCache } from "./RolesCache.ts"
 
 export const NotificationsLayer = Effect.gen(function*() {
@@ -76,6 +76,7 @@ export const NotificationsLayer = Effect.gen(function*() {
       const roles = yield* notificationRoles(ix.guild_id!)
 
       const userRoles = new Set(ix.member?.roles ?? [])
+      const fibers = yield* FiberSet.make()
       for (const role of roles) {
         const currentlyHas = userRoles.has(role.id)
         const shouldHave = data.values.includes(role.id)
@@ -83,20 +84,27 @@ export const NotificationsLayer = Effect.gen(function*() {
           continue
         } else if (shouldHave) {
           userRoles.add(role.id)
-          yield* rest.addGuildMemberRole(
-            ix.guild_id!,
-            ix.member!.user.id,
-            role.id
+          yield* FiberSet.run(
+            fibers,
+            rest.addGuildMemberRole(
+              ix.guild_id!,
+              ix.member!.user.id,
+              role.id
+            )
           )
         } else {
           userRoles.delete(role.id)
-          yield* rest.deleteGuildMemberRole(
-            ix.guild_id!,
-            ix.member!.user.id,
-            role.id
+          yield* FiberSet.run(
+            fibers,
+            rest.deleteGuildMemberRole(
+              ix.guild_id!,
+              ix.member!.user.id,
+              role.id
+            )
           )
         }
       }
+      yield* FiberSet.awaitEmpty(fibers)
       return Ix.response({
         type: Discord.InteractionCallbackTypes.UPDATE_MESSAGE,
         data: yield* message(ix, Array.fromIterable(userRoles))
