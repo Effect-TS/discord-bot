@@ -7,11 +7,9 @@ export const OpenAiLayer = OpenAiClient.layerConfig({
   apiKey: Config.redacted("OPENAI_API_KEY"),
   organizationId: Config.redacted("OPENAI_ORGANIZATION").pipe(
     Config.withDefault(undefined)
-  ),
-  transformClient: Config.succeed(
-    HttpClient.retryTransient({
-      times: 3,
-      schedule: Schedule.exponential(500)
-    })
-  )
+  ) as any,
+  transformClient: HttpClient.retryTransient({
+    times: 3,
+    schedule: Schedule.exponential(500)
+  })
 }).pipe(Layer.provide(NodeHttpClient.layerUndici))
