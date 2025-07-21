@@ -54,7 +54,7 @@ export const NotificationsLayer = Effect.gen(function*() {
     }
   )
 
-  const command = Ix.guild(
+  const command = Ix.global(
     {
       name: "notifications",
       description: "Choose which notifications you want to receive"
