@@ -14,12 +14,12 @@
     "@effect/ai-openai": "^0.29.0",
     "@effect/cluster": "^0.48.2",
     "@effect/platform": "^0.90.6",
-    "@effect/platform-node": "^0.96.0",
+    "@effect/platform-node": "^0.96.1",
     "@effect/rpc": "^0.69.1",
     "@effect/sql": "^0.44.2",
     "@effect/sql-pg": "^0.45.1",
     "dfx": "^0.124.1",
-    "effect": "^3.17.8"
+    "effect": "^3.17.10"
   },
   "dependencies": {
     "@effect/workflow": "^0.9.2"

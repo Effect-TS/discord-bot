@@ -15,9 +15,9 @@
   "devDependencies": {
     "@chat/shared": "workspace:*",
     "@effect/cluster": "^0.48.2",
-    "@effect/platform-node": "^0.96.0",
+    "@effect/platform-node": "^0.96.1",
     "@effect/sql": "^0.44.2",
     "@effect/sql-pg": "^0.45.1",
-    "effect": "^3.17.8"
+    "effect": "^3.17.10"
   }
 }
