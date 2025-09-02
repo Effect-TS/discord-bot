@@ -1,7 +1,8 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { Messages } from "@chat/discord/Messages"
-import { AiInput } from "@effect/ai"
+import { AiInput, AiLanguageModel } from "@effect/ai"
+import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import {
@@ -13,9 +14,10 @@ import {
   FiberMap,
   Layer,
   pipe,
+  Schema,
   Stream
 } from "effect"
-import { AiHelpers } from "./Ai.ts"
+import { OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { Github } from "./Github.ts"
 
@@ -32,11 +34,11 @@ type GithubRepo = (typeof githubRepos)[number]
 const make = Effect.gen(function*() {
   const rest = yield* DiscordREST
   const channels = yield* ChannelsCache
-  const ai = yield* AiHelpers
   const messages = yield* Messages
   const registry = yield* InteractionsRegistry
   const github = yield* Github
   const fiberMap = yield* FiberMap.make<Discord.Snowflake>()
+  const summaryModel = yield* OpenAiLanguageModel.model("gpt-4.1-mini")
 
   const createGithubIssue = github.wrap((_) => _.issues.create)
 
@@ -59,13 +61,24 @@ const make = Effect.gen(function*() {
       ),
       AiInput.make
     )
-    const summary = yield* ai.generateSummary(channelName, input)
+    const summary = yield* AiLanguageModel.generateObject({
+      system:
+        `You are a helpful assistant that summarizes Discord threads into concise titles and summaries for Github issues.
+
+In the summary, include some key takeaways or important points discussed in the thread.
+
+The title of this conversation is: "${channelName}"`,
+      prompt: input,
+      schema: ThreadSummary
+    }).pipe(
+      Effect.provide(summaryModel)
+    )
     return yield* createGithubIssue({
       owner: repo.owner,
       repo: repo.repo,
-      title: `From Discord: ${channelName}`,
+      title: `From Discord: ${summary.value.title}`,
       body: `# Summary
-${summary}
+${summary.value.summary}
 
 # Discord thread
 
@@ -175,9 +188,21 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
 })
 
 export const IssueifierLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(AiHelpers.Default),
+  Layer.provide(OpenAiLive),
   Layer.provide(ChannelsCache.Default),
   Layer.provide(DiscordGatewayLayer),
   Layer.provide(Messages.Default),
   Layer.provide(Github.Default)
 )
+
+class ThreadSummary extends Schema.Class<ThreadSummary>("ThreadSummary")({
+  title: Schema.String.annotations({
+    description: "A short title summarizing the messages"
+  }),
+  summary: Schema.String.annotations({
+    description:
+      "A summary of the messages for a Github issue bug report or feature request"
+  })
+}, {
+  description: "A summary of a Discord thread"
+}) {}

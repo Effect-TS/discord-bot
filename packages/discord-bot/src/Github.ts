@@ -14,7 +14,7 @@ import { Octokit } from "octokit"
 import { nestedConfigProvider } from "./utils/Config.ts"
 
 export class GithubError extends Data.TaggedError("GithubError")<{
-  readonly reason: unknown
+  readonly cause: unknown
 }> {}
 
 export class Github extends Effect.Service<Github>()("app/Github", {
@@ -28,7 +28,7 @@ export class Github extends Effect.Service<Github>()("app/Github", {
       Effect.withSpan(
         Effect.tryPromise({
           try: () => f(rest as any),
-          catch: (reason) => new GithubError({ reason })
+          catch: (cause) => new GithubError({ cause })
         }),
         "Github.request"
       )
@@ -40,7 +40,7 @@ export class Github extends Effect.Service<Github>()("app/Github", {
       Effect.map(
         Effect.tryPromise({
           try: () => f(rest as any)(...args),
-          catch: (reason) => new GithubError({ reason })
+          catch: (cause) => new GithubError({ cause })
         }),
         (_) => _.data
       )
@@ -52,7 +52,7 @@ export class Github extends Effect.Service<Github>()("app/Github", {
         Effect.map(
           Effect.tryPromise({
             try: () => f(rest as any, page),
-            catch: (reason) => new GithubError({ reason })
+            catch: (cause) => new GithubError({ cause })
           }),
           (_) => [
             Chunk.unsafeFromArray(_.data),
