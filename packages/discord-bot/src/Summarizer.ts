@@ -157,14 +157,18 @@ ${message.content}${imagesContent}`
           )
         ),
         Effect.catchAllCause((cause) =>
-          rest.updateOriginalWebhookMessage(application.id, context.token, {
-            payload: {
-              content:
-                "Could not create summary. Here are the full error details:\n\n```" +
-                Cause.pretty(cause) +
-                "\n```"
+          rest.updateOriginalWebhookMessage(
+            application.id,
+            context.token,
+            {
+              payload: {
+                content:
+                  "Could not create summary. Here are the full error details:\n\n```" +
+                  Cause.pretty(cause) +
+                  "\n```"
+              }
             }
-          })
+          )
         ),
         Effect.withSpan("Summarizer.followUpResponse", {
           attributes: {

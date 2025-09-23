@@ -1,6 +1,6 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
-import { AiLanguageModel, Tokenizer } from "@effect/ai"
+import { LanguageModel, Prompt, Tokenizer } from "@effect/ai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, Layer } from "effect"
@@ -58,9 +58,14 @@ const make = Effect.gen(function*() {
       const tokenizer = yield* Tokenizer.Tokenizer
       const input = yield* ai.generateAiInput(channel)
       const prompt = yield* tokenizer.truncate(input, 30_000)
-      const response = yield* AiLanguageModel.generateText({
-        prompt,
-        system: systemInstruction
+      const response = yield* LanguageModel.generateText({
+        prompt: Prompt.merge(
+          Prompt.make([{
+            role: "system",
+            content: systemInstruction
+          }]),
+          prompt
+        )
       }).pipe(Effect.annotateLogs({ thread: channel.id }))
       yield* discord.updateOriginalWebhookMessage(
         application.id,

@@ -1,5 +1,5 @@
 import { DiscordApplication } from "@chat/discord/DiscordRest"
-import { AiInput, AiLanguageModel, Tokenizer } from "@effect/ai"
+import { LanguageModel, Prompt, Tokenizer } from "@effect/ai"
 import { OpenAiClient, OpenAiLanguageModel } from "@effect/ai-openai"
 import { HttpClient } from "@effect/platform"
 import { NodeHttpClient } from "@effect/platform-node"
@@ -44,7 +44,7 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
           { concurrency: "unbounded" }
         ),
         Effect.map(({ messages, openingMessage }) =>
-          AiInput.make(
+          Prompt.make(
             [...(message ? [message] : []), ...messages, openingMessage]
               .reverse()
               .filter(
@@ -54,14 +54,17 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
               )
               .filter((msg) => msg.content.trim().length > 0)
               .map(
-                (msg): AiInput.Message =>
+                (msg): Prompt.Message =>
                   msg.author.id === botUser.id
-                    ? AiInput.AssistantMessage.make({
-                      parts: [new AiInput.TextPart({ text: msg.content })]
+                    ? Prompt.makeMessage("assistant", {
+                      content: [Prompt.makePart("text", { text: msg.content })]
                     })
-                    : AiInput.UserMessage.make({
-                      parts: [new AiInput.TextPart({ text: msg.content })],
-                      userName: msg.author.username
+                    : Prompt.makeMessage("user", {
+                      content: [
+                        Prompt.makePart("text", {
+                          text: `<@${msg.author.id}>: ${msg.content}`
+                        })
+                      ]
                     })
               )
           )
@@ -69,17 +72,23 @@ export class AiHelpers extends Effect.Service<AiHelpers>()("app/AiHelpers", {
       )
 
     const generateTitle = (prompt: string) =>
-      AiLanguageModel.generateText({
-        prompt,
-        system:
-          `You are a helpful assistant for the Effect Typescript library Discord community.
+      LanguageModel.generateText({
+        prompt: [
+          {
+            role: "system",
+            content:
+              `You are a helpful assistant for the Effect Typescript library Discord community.
 
 Create a short title summarizing the message. Do not include markdown in the title.`
+          },
+          { role: "user", content: [{ type: "text", text: prompt }] }
+        ]
       }).pipe(
         Effect.provide(model),
         OpenAiLanguageModel.withConfigOverride({
-          temperature: 0.25,
-          max_tokens: 64
+          temperature: 0.25
+          // TODO
+          // max_tokens: 64
         }),
         Effect.map((_) => cleanTitle(_.text)),
         Effect.withSpan("Ai.generateTitle", { attributes: { prompt } })
@@ -87,26 +96,31 @@ Create a short title summarizing the message. Do not include markdown in the tit
 
     const generateDocs = Effect.fn("AiHelpers.generateDocs")(function*(
       title: string,
-      messages: AiInput.AiInput,
+      messages: Prompt.Prompt,
       instruction =
         "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate."
     ) {
       const tokenizer = yield* Tokenizer.Tokenizer
       const prompt = yield* tokenizer.truncate(
-        AiInput.concat(messages, AiInput.make(instruction)),
+        Prompt.merge(messages, Prompt.make(instruction)),
         30_000
       )
-      const response = yield* AiLanguageModel.generateText({
-        prompt,
-        system:
-          `You are a helpful assistant for the Effect Typescript library Discord community.
+      const response = yield* LanguageModel.generateText({
+        prompt: Prompt.merge(
+          Prompt.make([{
+            role: "system",
+            content:
+              `You are a helpful assistant for the Effect Typescript library Discord community.
 
 The title of this chat is "${title}".`
+          }]),
+          prompt
+        )
       })
       return response.text
     }, Effect.provide(model))
 
-    const generateSummary = (title: string, messages: AiInput.AiInput) =>
+    const generateSummary = (title: string, messages: Prompt.Prompt) =>
       generateDocs(
         title,
         messages,
