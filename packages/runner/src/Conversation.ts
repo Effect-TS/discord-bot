@@ -1,6 +1,6 @@
 import { DiscordApplication, DiscordRestLayer } from "@chat/discord/DiscordRest"
 import { Conversation } from "@chat/domain/Conversation"
-import { AiChat, AiInput } from "@effect/ai"
+import { Chat, Prompt } from "@effect/ai"
 import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST } from "dfx"
 import { Effect, Fiber, Layer, Option } from "effect"
@@ -34,7 +34,7 @@ export class ConversationHistory
           const messages = yield* Fiber.join(messagesFiber)
 
           return {
-            history: AiInput.make(
+            history: Prompt.make(
               Option.match(openingMessage, {
                 onNone: () => messages,
                 onSome: (openingMessage) => [...messages, openingMessage]
@@ -49,14 +49,19 @@ export class ConversationHistory
                   msg.id !== excludeMessageId && msg.content.trim().length > 0
                 )
                 .map(
-                  (msg): AiInput.Message =>
+                  (msg): Prompt.Message =>
                     msg.author.id === botUser.id ?
-                      new AiInput.AssistantMessage({
-                        parts: [new AiInput.TextPart({ text: msg.content })]
+                      Prompt.makeMessage("assistant", {
+                        content: [
+                          Prompt.makePart("text", { text: msg.content })
+                        ]
                       }) :
-                      new AiInput.UserMessage({
-                        parts: [new AiInput.TextPart({ text: msg.content })],
-                        userName: msg.author.username
+                      Prompt.makeMessage("user", {
+                        content: [
+                          Prompt.makePart("text", {
+                            text: `<@${msg.author.id}>: ${msg.content}`
+                          })
+                        ]
                       })
                 )
             ),
@@ -85,7 +90,7 @@ The title of this conversation is "${thread}".` :
 export const ConversationEntity = Conversation.toLayer(
   Effect.gen(function*() {
     const history = yield* ConversationHistory
-    let chat: AiChat.AiChat.Service | undefined = undefined
+    let chat: Chat.Service | undefined = undefined
     const model = yield* OpenAiLanguageModel.model("gpt-4o")
 
     return {
@@ -96,14 +101,17 @@ export const ConversationEntity = Conversation.toLayer(
             payload.messageId
           ).pipe(
             Effect.orElseSucceed(() => ({
-              history: AiInput.empty,
+              history: Prompt.empty,
               thread: undefined
             }))
           )
-          chat = yield* AiChat.fromPrompt({
-            prompt: result.history,
-            system: systemPrompt(result.thread)
-          })
+          chat = yield* Chat.fromPrompt(Prompt.merge(
+            Prompt.make([{
+              role: "system",
+              content: systemPrompt(result.thread)
+            }]),
+            result.history
+          ))
         }
         const response = yield* chat.generateText({ prompt: payload.message })
         return response.text

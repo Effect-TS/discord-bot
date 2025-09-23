@@ -1,7 +1,7 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { Messages } from "@chat/discord/Messages"
-import { AiInput, AiLanguageModel } from "@effect/ai"
+import { LanguageModel, Prompt } from "@effect/ai"
 import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
@@ -53,22 +53,28 @@ const make = Effect.gen(function*() {
     const input = chunk.pipe(
       Chunk.reverse,
       Chunk.map(
-        (msg): AiInput.Message =>
-          new AiInput.UserMessage({
-            parts: [new AiInput.TextPart({ text: msg.content })],
-            userName: msg.author.username
+        (msg): Prompt.Message =>
+          Prompt.makeMessage("user", {
+            content: [Prompt.makePart("text", {
+              text: `@${msg.author.username}: ${msg.content}`
+            })]
           })
       ),
-      AiInput.make
+      Prompt.make
     )
-    const summary = yield* AiLanguageModel.generateObject({
-      system:
-        `You are a helpful assistant that summarizes Discord threads into concise titles and summaries for Github issues.
+    const summary = yield* LanguageModel.generateObject({
+      prompt: Prompt.merge(
+        Prompt.make([{
+          role: "system",
+          content:
+            `You are a helpful assistant that summarizes Discord threads into concise titles and summaries for Github issues.
 
 In the summary, include some key takeaways or important points discussed in the thread.
 
-The title of this conversation is: "${channelName}"`,
-      prompt: input,
+The title of this conversation is: "${channelName}"`
+        }]),
+        input
+      ),
       schema: ThreadSummary
     }).pipe(
       Effect.provide(summaryModel)
