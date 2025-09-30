@@ -9,11 +9,11 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "@effect/ai": "^0.29.0",
-    "@effect/cluster": "^0.50.1",
+    "@effect/ai": "^0.29.1",
+    "@effect/cluster": "^0.50.2",
     "@effect/rpc": "^0.71.0",
     "@effect/sql": "^0.46.0",
-    "@effect/workflow": "^0.11.1",
+    "@effect/workflow": "^0.11.2",
     "effect": "^3.18.1"
   }
 }
