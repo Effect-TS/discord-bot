@@ -9,9 +9,9 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "@effect/platform": "^0.92.1",
-    "@effect/platform-node": "^0.98.2",
-    "dfx": "^0.126.0",
-    "effect": "^3.18.1"
+    "@effect/platform": "^0.93.2",
+    "@effect/platform-node": "^0.100.0",
+    "dfx": "^0.127.0",
+    "effect": "^3.19.3"
   }
 }
