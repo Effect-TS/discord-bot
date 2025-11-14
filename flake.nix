@@ -68,7 +68,7 @@
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             corepack
-            nodejs
+            nodejs_24
             pkgs-stable.flyctl
             postgresql
           ];
