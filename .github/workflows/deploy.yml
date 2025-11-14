@@ -9,19 +9,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-shard-manager:
-    name: Deploy shard-manager
-    runs-on: ubuntu-latest
-    concurrency: deploy-shard-manager
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only --config fly.shard-manager.toml
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
   deploy-runner:
     name: Deploy runner
     runs-on: ubuntu-latest
