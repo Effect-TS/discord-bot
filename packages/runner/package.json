@@ -10,18 +10,18 @@
     "@chat/discord": "workspace:*",
     "@chat/domain": "workspace:*",
     "@chat/shared": "workspace:*",
-    "@effect/ai": "^0.29.1",
-    "@effect/ai-openai": "^0.32.0",
-    "@effect/cluster": "^0.50.2",
-    "@effect/platform": "^0.92.1",
-    "@effect/platform-node": "^0.98.2",
-    "@effect/rpc": "^0.71.0",
-    "@effect/sql": "^0.46.0",
-    "@effect/sql-pg": "^0.47.0",
-    "dfx": "^0.126.0",
-    "effect": "^3.18.1"
+    "@effect/ai": "^0.32.1",
+    "@effect/ai-openai": "^0.35.0",
+    "@effect/cluster": "^0.52.9",
+    "@effect/platform": "^0.93.2",
+    "@effect/platform-node": "^0.100.0",
+    "@effect/rpc": "^0.72.1",
+    "@effect/sql": "^0.48.0",
+    "@effect/sql-pg": "^0.49.5",
+    "dfx": "^0.127.0",
+    "effect": "^3.19.3"
   },
   "dependencies": {
-    "@effect/workflow": "^0.11.2"
+    "@effect/workflow": "^0.12.5"
   }
 }

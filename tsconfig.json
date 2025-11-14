@@ -6,7 +6,6 @@
     { "path": "packages/discord" },
     { "path": "packages/domain" },
     { "path": "packages/runner" },
-    { "path": "packages/shard-manager" },
     { "path": "packages/shared" }
   ]
 }
