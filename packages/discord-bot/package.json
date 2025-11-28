@@ -12,22 +12,22 @@
     "@chat/shared": "workspace:*",
     "@effect/ai": "^0.32.1",
     "@effect/ai-openai": "^0.35.0",
-    "@effect/cluster": "^0.52.9",
-    "@effect/experimental": "^0.57.1",
-    "@effect/language-service": "^0.55.5",
+    "@effect/cluster": "^0.54.0",
+    "@effect/experimental": "^0.57.7",
+    "@effect/language-service": "^0.57.1",
     "@effect/opentelemetry": "^0.59.1",
-    "@effect/platform": "^0.93.2",
-    "@effect/platform-node": "^0.100.0",
+    "@effect/platform": "^0.93.5",
+    "@effect/platform-node": "^0.102.0",
     "@octokit/plugin-rest-endpoint-methods": "^17.0.0",
     "@octokit/types": "^16.0.0",
     "@types/node": "^24.10.1",
     "dfx": "^0.127.0",
-    "effect": "^3.19.3",
+    "effect": "^3.19.8",
     "fuzzysort": "^3.1.0",
     "html-entities": "^2.6.0",
     "octokit": "^5.0.5"
   },
   "dependencies": {
-    "@effect/workflow": "^0.12.5"
+    "@effect/workflow": "^0.14.0"
   }
 }
