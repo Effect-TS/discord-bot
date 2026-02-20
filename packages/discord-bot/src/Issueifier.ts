@@ -27,7 +27,8 @@ export class NotInThreadError extends Data.TaggedError(
 
 const githubRepos = [
   { label: "/effect", owner: "effect-ts", repo: "effect" },
-  { label: "/website", owner: "effect-ts", repo: "website" }
+  { label: "/website", owner: "effect-ts", repo: "website" },
+  { label: "/effect-smol", owner: "effect-ts", repo: "effect-smol" }
 ]
 type GithubRepo = (typeof githubRepos)[number]
 
