@@ -1,17 +1,12 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/25.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
     services-flake.url = "github:juspay/services-flake";
   };
-  outputs = inputs @ {
-    flake-parts,
-    nixpkgs-stable,
-    ...
-  }:
+  outputs = inputs @ {flake-parts, ...}:
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = import inputs.systems;
       imports = [
@@ -22,22 +17,11 @@
         pkgs,
         system,
         ...
-      }: let
-        pkgs-stable = import inputs.nixpkgs-stable {
-          inherit system;
-        };
-      in {
+      }: {
         process-compose."default" = {config, ...}: {
           imports = [
             inputs.services-flake.processComposeModules.default
           ];
-
-          services.postgres.pg = {
-            enable = true;
-            initialDatabases = [{name = "chat-cluster";}];
-            extensions = extensions: [extensions.pgvector];
-            socketDir = "/tmp";
-          };
 
           settings.processes.docker = {
             command = "docker compose up";
@@ -55,27 +39,17 @@
             };
           };
 
-          settings.processes.runner = {
-            command = "tsx --watch packages/runner/src/main.ts";
-          };
-
           settings.processes.discord-bot = {
             command = "tsx --watch packages/discord-bot/src/main.ts";
           };
-          settings.processes.discord-bot.depends_on.runner.condition = "process_started";
         };
 
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
-            corepack
+            corepack_24
             nodejs_24
-            pkgs-stable.flyctl
-            postgresql
+            flyctl
           ];
-
-          shellHook = ''
-            export DATABASE_URL=postgresql://localhost/chat-cluster
-          '';
         };
       };
     };

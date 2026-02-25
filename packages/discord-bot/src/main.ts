@@ -6,7 +6,6 @@ import { DadJokesLive } from "./DadJokes.ts"
 import { DocsLookupLive } from "./DocsLookup.ts"
 import { IssueifierLive } from "./Issueifier.ts"
 import { MentionsLive } from "./Mentions.ts"
-import { MessageLoggerLayer } from "./MessageLogger.ts"
 import { NoEmbedLive } from "./NoEmbed.ts"
 import { NotificationsLayer } from "./Notifications.ts"
 import { PlaygroundLive } from "./Playground.ts"
@@ -28,7 +27,6 @@ const MainLive = Layer.mergeAll(
   NoEmbedLive,
   DocsLookupLive,
   IssueifierLive,
-  MessageLoggerLayer,
   MentionsLive,
   NotificationsLayer,
   PlaygroundLive,
