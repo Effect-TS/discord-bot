@@ -99,14 +99,14 @@ importers:
   packages/discord:
     dependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.18
-        version: 4.0.0-beta.18(effect@4.0.0-beta.18)(ioredis@5.9.3)
+        specifier: https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2
+        version: https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)(ioredis@5.9.3)
       dfx:
         specifier: ^1.0.5
-        version: 1.0.5(effect@4.0.0-beta.18)
+        version: 1.0.5(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)
       effect:
-        specifier: 4.0.0-beta.18
-        version: 4.0.0-beta.18
+        specifier: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
+        version: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
 
   packages/discord-bot:
     devDependencies:
@@ -115,13 +115,13 @@ importers:
         version: link:../discord
       '@chat/shared':
         specifier: workspace:*
-        version: file:packages/shared(ioredis@5.9.3)
+        version: link:../shared
       '@effect/ai-openai':
-        specifier: 4.0.0-beta.18
-        version: 4.0.0-beta.18(effect@4.0.0-beta.18)
+        specifier: https://pkg.pr.new/Effect-TS/effect-smol/@effect/ai-openai@19984c2
+        version: https://pkg.pr.new/Effect-TS/effect-smol/@effect/ai-openai@19984c2(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)
       '@effect/platform-node':
-        specifier: 4.0.0-beta.18
-        version: 4.0.0-beta.18(effect@4.0.0-beta.18)(ioredis@5.9.3)
+        specifier: https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2
+        version: https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)(ioredis@5.9.3)
       '@octokit/plugin-rest-endpoint-methods':
         specifier: ^17.0.0
         version: 17.0.0(@octokit/core@7.0.6)
@@ -133,10 +133,10 @@ importers:
         version: 24.10.1
       dfx:
         specifier: ^1.0.5
-        version: 1.0.5(effect@4.0.0-beta.18)
+        version: 1.0.5(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)
       effect:
-        specifier: 4.0.0-beta.18
-        version: 4.0.0-beta.18
+        specifier: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
+        version: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
       fuzzysort:
         specifier: ^3.1.0
         version: 3.1.0
@@ -150,11 +150,11 @@ importers:
   packages/shared:
     dependencies:
       '@effect/platform-node':
-        specifier: 4.0.0-beta.18
-        version: 4.0.0-beta.18(effect@4.0.0-beta.18)(ioredis@5.9.3)
+        specifier: https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2
+        version: https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)(ioredis@5.9.3)
       effect:
-        specifier: 4.0.0-beta.18
-        version: 4.0.0-beta.18
+        specifier: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
+        version: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
 
 packages:
 
@@ -252,17 +252,15 @@ packages:
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
 
-  '@chat/shared@file:packages/shared':
-    resolution: {directory: packages/shared, type: directory}
-
   '@dprint/formatter@0.4.1':
     resolution: {integrity: sha512-IB/GXdlMOvi0UhQQ9mcY15Fxcrc2JPadmo6tqefCNV0bptFq7YBpggzpqYXldBXDa04CbKJ+rDwO2eNRPE2+/g==}
 
   '@dprint/typescript@0.91.8':
     resolution: {integrity: sha512-tuKn4leCPItox1O4uunHcQF0QllDCvPWklnNQIh2PiWWVtRAGltJJnM4Cwj5AciplosD1Hiz7vAY3ew3crLb3A==}
 
-  '@effect/ai-openai@4.0.0-beta.18':
-    resolution: {integrity: sha512-pkHfGGXj3KiGxaheMj3AyOd9yT9ltde6IcajZbBNyB1lxBkSAuRH6BcFr0xBIrfypgwMW+HFBRnfBucX6lx9lQ==}
+  '@effect/ai-openai@https://pkg.pr.new/Effect-TS/effect-smol/@effect/ai-openai@19984c2':
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect-smol/@effect/ai-openai@19984c2}
+    version: 4.0.0-beta.18
     peerDependencies:
       effect: ^4.0.0-beta.18
 
@@ -278,21 +276,16 @@ packages:
     resolution: {integrity: sha512-uWzYN+aHl4KfZHGmDxa3+OjV/mk9gMUycIyB8SYvyDiny3lXBtmRFdRVnw6TYL1P5EBfg4N09+lO/0ECRREVXQ==}
     hasBin: true
 
-  '@effect/platform-node-shared@4.0.0-beta.18':
-    resolution: {integrity: sha512-54tlyyIPOAATTPPzo/9NTSDEf9bRtIEJs9tfd8KzMNNGWepg1WoA+TsB3StsKHEG5tq5VmOONtd1mha+VXJ/Sg==}
+  '@effect/platform-node-shared@https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node-shared@19984c2c1b23ef06d69f9bbd4c4ad992a03c6860':
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node-shared@19984c2c1b23ef06d69f9bbd4c4ad992a03c6860}
+    version: 4.0.0-beta.18
     engines: {node: '>=18.0.0'}
     peerDependencies:
       effect: ^4.0.0-beta.18
 
-  '@effect/platform-node@4.0.0-beta.14':
-    resolution: {integrity: sha512-q+3DIPsetQ+qTJC68KAEy7MnRn+Utx/Voj/DYW+neuxi48rreA6YmTdQYALoV5YZrLhSRYBd+TsJAgkFu1gxCg==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      effect: ^4.0.0-beta.14
-      ioredis: ^5.7.0
-
-  '@effect/platform-node@4.0.0-beta.18':
-    resolution: {integrity: sha512-IDYXj+B9dWumEi3lLmPEJyvk3MGp6hl5eKV0iIhtH9NFVxgd8uXHjDApcEmtYng9fMmjtn/sLVUNYtPee6ar1A==}
+  '@effect/platform-node@https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2':
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2}
+    version: 4.0.0-beta.18
     engines: {node: '>=18.0.0'}
     peerDependencies:
       effect: ^4.0.0-beta.18
@@ -1379,6 +1372,7 @@ packages:
 
   dfx@1.0.5:
     resolution: {integrity: sha512-L2FlBk4GWOwRJHFJkfBwRm5Es20jjuE/+7YmbKb7xgb57Vl0iKVrlF7I1v5YM+kEMchhSKuHeOOiWGz+ReSJ4A==}
+    version: 1.0.5
     peerDependencies:
       effect: 4.0.0-beta.14
 
@@ -1389,11 +1383,9 @@ packages:
     resolution: {integrity: sha512-8qlrMROW8DhpzWWzgNq9kpeLDxKanWa4EDVoj/ASVv2nr+dSr4JPmu2tFSydf3hAGI/OIJTnZyD0JulMYIxx4w==}
     engines: {node: '>=16'}
 
-  effect@4.0.0-beta.14:
-    resolution: {integrity: sha512-3er8DIukOoOpJc2qCRqejpzBGoUdG1t8pXcvA9blttSP9nxs7Ue6BkOLSQBaq3yIXWUXmL5GPELnDARP5oMbfQ==}
-
-  effect@4.0.0-beta.18:
-    resolution: {integrity: sha512-VkQ1p4ZMYqFsyVbj8AuSZJPsFIWF0YOLYX8d8SF/aV1bAlTtuedc2cHganATrRUgcZz3pPEc1ntINhMH3ULw0g==}
+  effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2:
+    resolution: {tarball: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2}
+    version: 4.0.0-beta.18
 
   electron-to-chromium@1.5.262:
     resolution: {integrity: sha512-NlAsMteRHek05jRUxUR0a5jpjYq9ykk6+kO0yRaMi5moe7u0fVIOeQ3Y30A8dIiWFBNUoQGi1ljb1i5VtS9WQQ==}
@@ -2437,22 +2429,13 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@chat/shared@file:packages/shared(ioredis@5.9.3)':
-    dependencies:
-      '@effect/platform-node': 4.0.0-beta.14(effect@4.0.0-beta.14)(ioredis@5.9.3)
-      effect: 4.0.0-beta.14
-    transitivePeerDependencies:
-      - bufferutil
-      - ioredis
-      - utf-8-validate
-
   '@dprint/formatter@0.4.1': {}
 
   '@dprint/typescript@0.91.8': {}
 
-  '@effect/ai-openai@4.0.0-beta.18(effect@4.0.0-beta.18)':
+  '@effect/ai-openai@https://pkg.pr.new/Effect-TS/effect-smol/@effect/ai-openai@19984c2(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)':
     dependencies:
-      effect: 4.0.0-beta.18
+      effect: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
 
   '@effect/build-utils@0.8.9':
     dependencies:
@@ -2467,39 +2450,19 @@ snapshots:
 
   '@effect/language-service@0.57.1': {}
 
-  '@effect/platform-node-shared@4.0.0-beta.18(effect@4.0.0-beta.14)':
+  '@effect/platform-node-shared@https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node-shared@19984c2c1b23ef06d69f9bbd4c4ad992a03c6860(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)':
     dependencies:
       '@types/ws': 8.18.1
-      effect: 4.0.0-beta.14
+      effect: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
       ws: 8.19.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node-shared@4.0.0-beta.18(effect@4.0.0-beta.18)':
+  '@effect/platform-node@https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)(ioredis@5.9.3)':
     dependencies:
-      '@types/ws': 8.18.1
-      effect: 4.0.0-beta.18
-      ws: 8.19.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@effect/platform-node@4.0.0-beta.14(effect@4.0.0-beta.14)(ioredis@5.9.3)':
-    dependencies:
-      '@effect/platform-node-shared': 4.0.0-beta.18(effect@4.0.0-beta.14)
-      effect: 4.0.0-beta.14
-      ioredis: 5.9.3
-      mime: 4.1.0
-      undici: 7.22.0(patch_hash=06358c0e77ce8c48d325058497aa30a2407e7ad7b7b636c75e7db808386afa15)
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@effect/platform-node@4.0.0-beta.18(effect@4.0.0-beta.18)(ioredis@5.9.3)':
-    dependencies:
-      '@effect/platform-node-shared': 4.0.0-beta.18(effect@4.0.0-beta.18)
-      effect: 4.0.0-beta.18
+      '@effect/platform-node-shared': https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node-shared@19984c2c1b23ef06d69f9bbd4c4ad992a03c6860(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2)
+      effect: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
       ioredis: 5.9.3
       mime: 4.1.0
       undici: 7.22.0(patch_hash=06358c0e77ce8c48d325058497aa30a2407e7ad7b7b636c75e7db808386afa15)
@@ -3447,10 +3410,10 @@ snapshots:
   detect-libc@2.1.2:
     optional: true
 
-  dfx@1.0.5(effect@4.0.0-beta.18):
+  dfx@1.0.5(effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2):
     dependencies:
       discord-api-types: 0.38.40
-      effect: 4.0.0-beta.18
+      effect: https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2
     optionalDependencies:
       discord-verify: 1.2.0
 
@@ -3461,20 +3424,7 @@ snapshots:
       '@types/express': 4.17.25
     optional: true
 
-  effect@4.0.0-beta.14:
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      fast-check: 4.5.3
-      find-my-way-ts: 0.1.6
-      ini: 6.0.0
-      kubernetes-types: 1.30.0
-      msgpackr: 1.11.8
-      multipasta: 0.2.7
-      toml: 3.0.0
-      uuid: 13.0.0
-      yaml: 2.8.2
-
-  effect@4.0.0-beta.18:
+  effect@https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2:
     dependencies:
       '@standard-schema/spec': 1.1.0
       fast-check: 4.5.3
