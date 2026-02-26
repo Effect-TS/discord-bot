@@ -9,8 +9,8 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "@effect/platform-node": "4.0.0-beta.18",
+    "@effect/platform-node": "https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2",
     "dfx": "^1.0.5",
-    "effect": "4.0.0-beta.18"
+    "effect": "https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2"
   }
 }
