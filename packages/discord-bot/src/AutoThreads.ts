@@ -1,16 +1,7 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Discord, DiscordREST, Ix, Perms, UI } from "dfx"
 import { DiscordGateway, InteractionsRegistry } from "dfx/gateway"
-import {
-  Config,
-  ConfigProvider,
-  Data,
-  Effect,
-  Layer,
-  Option,
-  pipe,
-  Schema
-} from "effect"
+import { Config, ConfigProvider, Data, Effect, Layer, Option } from "effect"
 import { AiHelpers } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import * as Str from "./utils/String.ts"
@@ -28,7 +19,7 @@ export class PermissionsError extends Data.TaggedError("PermissionsError")<{
 
 const make = Effect.gen(function*() {
   const topicKeyword = yield* Config.string("keyword").pipe(
-    Config.withDefault("[threads]")
+    Config.withDefault(() => "[threads]")
   )
   const ai = yield* AiHelpers
   const gateway = yield* DiscordGateway
@@ -36,51 +27,47 @@ const make = Effect.gen(function*() {
   const channels = yield* ChannelsCache
   const registry = yield* InteractionsRegistry
 
-  const EligibleChannel = Schema.Struct({
-    id: Schema.String,
-    topic: Schema.String.pipe(Schema.includes(topicKeyword)),
-    type: Schema.Literal(Discord.ChannelTypes.GUILD_TEXT)
-  })
-    .annotations({ identifier: "EligibleChannel" })
-    .pipe(Schema.decodeUnknown)
+  const isEligibleChannel = (channel: Discord.GetChannel200) =>
+    channel?.type === Discord.ChannelTypes.GUILD_TEXT &&
+    typeof channel?.topic === "string" &&
+    channel.topic.includes(topicKeyword)
 
-  const EligibleMessage = Schema.Struct({
-    id: Schema.String,
-    channel_id: Schema.String,
-    type: Schema.Literal(Discord.MessageType.DEFAULT),
-    author: Schema.Struct({
-      bot: Schema.optional(Schema.Literal(false))
-    })
-  })
-    .annotations({ identifier: "EligibleMessage" })
-    .pipe(Schema.decodeUnknown)
+  const isEligibleMessage = (event: Discord.GatewayMessageCreateDispatchData) =>
+    event?.type === Discord.MessageType.DEFAULT &&
+    event?.author?.bot !== true &&
+    typeof event?.id === "string" &&
+    typeof event?.channel_id === "string"
 
   const handleMessages = gateway.handleDispatch(
     "MESSAGE_CREATE",
     Effect.fnUntraced(
       function*(event) {
-        const message = yield* EligibleMessage(event)
-        const channel = yield* channels
-          .get(event.guild_id!, event.channel_id)
-          .pipe(Effect.flatMap(EligibleChannel))
+        if (!isEligibleMessage(event)) {
+          return
+        }
+
+        const channel = yield* channels.get(event.guild_id!, event.channel_id)
+        if (!isEligibleChannel(channel)) {
+          return
+        }
 
         const title = yield* ai.generateTitle(event.content).pipe(
-          Effect.tapErrorCause(Effect.log),
+          Effect.tapCause(Effect.log),
           Effect.withSpan("AutoThreads.generateTitle"),
-          Effect.orElseSucceed(() =>
-            pipe(
-              Option.fromNullable(event.member?.nick),
-              Option.getOrElse(() => event.author.username),
-              (name) => `${name}'s thread`
+          Effect.orElseSucceed(() => {
+            const name = Option.getOrElse(
+              Option.fromNullishOr(event.member?.nick),
+              () => event.author.username
             )
-          )
+            return `${name}'s thread`
+          })
         )
 
         yield* Effect.annotateCurrentSpan({ title })
 
         const thread = yield* rest.createThreadFromMessage(
           channel.id,
-          message.id,
+          event.id,
           {
             name: Str.truncate(title, 100),
             auto_archive_duration: 1440
@@ -103,63 +90,58 @@ const make = Effect.gen(function*() {
           ])
         })
       },
-      Effect.catchTag("ParseError", Effect.logDebug),
       (effect, event) =>
         Effect.withSpan(effect, "AutoThreads.handleMessages", {
           attributes: {
             messageId: event.id
           }
         }),
-      Effect.catchAllCause(Effect.logError)
+      Effect.catchCause(Effect.logError)
     )
   )
 
   const hasManage = Perms.has(Discord.Permissions.ManageChannels)
 
-  const withEditPermissions = Effect.fnUntraced(
-    function*<R, E, A>(self: Effect.Effect<A, E, R>) {
-      const ix = yield* Ix.Interaction
-      const ctx = yield* Ix.MessageComponentData
-      const authorId = ctx.custom_id.split("_")[1]
-      const canEdit = authorId === ix.member?.user?.id ||
-        hasManage(ix.member!.permissions!)
+  const withEditPermissions = Effect.fnUntraced(function*<R, E, A>(
+    self: Effect.Effect<A, E, R>
+  ) {
+    const ix = yield* Ix.Interaction
+    const ctx = yield* Ix.MessageComponentData
+    const authorId = ctx.custom_id.split("_")[1]
+    const canEdit = authorId === ix.member?.user?.id ||
+      hasManage(ix.member!.permissions!)
 
-      if (!canEdit) {
-        return yield* new PermissionsError({
-          action: "edit",
-          subject: "thread"
-        })
-      }
-
-      return yield* self
+    if (!canEdit) {
+      return yield* new PermissionsError({
+        action: "edit",
+        subject: "thread"
+      })
     }
-  )
+
+    return yield* self
+  })
 
   const edit = Ix.messageComponent(
     Ix.idStartsWith("edit_"),
-    pipe(
-      Ix.Interaction,
-      Effect.flatMap((ix) => channels.get(ix.guild_id!, ix.channel!.id)),
-      Effect.map((channel) =>
-        Ix.response({
-          type: Discord.InteractionCallbackTypes.MODAL,
-          data: {
-            custom_id: "edit",
-            title: "Edit title",
-            components: UI.singleColumn([
-              UI.textInput({
-                custom_id: "title",
-                label: "New title",
-                max_length: 100,
-                value: "name" in channel ? channel.name! : ""
-              })
-            ])
-          }
-        })
-      ),
-      withEditPermissions,
-      Effect.withSpan("AutoThreads.edit")
-    )
+    Effect.gen(function*() {
+      const ix = yield* Ix.Interaction
+      const channel = yield* channels.get(ix.guild_id!, ix.channel!.id)
+      return Ix.response({
+        type: Discord.InteractionCallbackTypes.MODAL,
+        data: {
+          custom_id: "edit",
+          title: "Edit title",
+          components: UI.singleColumn([
+            UI.textInput({
+              custom_id: "title",
+              label: "New title",
+              max_length: 100,
+              value: "name" in channel ? channel.name! : ""
+            })
+          ])
+        }
+      })
+    }).pipe(withEditPermissions, Effect.withSpan("AutoThreads.edit"))
   )
 
   const editSubmit = Ix.modalSubmit(
@@ -176,19 +158,13 @@ const make = Effect.gen(function*() {
 
   const archive = Ix.messageComponent(
     Ix.idStartsWith("archive_"),
-    pipe(
-      Ix.Interaction,
-      Effect.tap((ix) =>
-        rest.updateChannel(ix.channel!.id, { archived: true })
-      ),
-      Effect.as(
-        Ix.response({
-          type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE
-        })
-      ),
-      withEditPermissions,
-      Effect.withSpan("AutoThreads.archive")
-    )
+    Effect.gen(function*() {
+      const ix = yield* Ix.Interaction
+      yield* rest.updateChannel(ix.channel!.id, { archived: true })
+      return Ix.response({
+        type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE
+      })
+    }).pipe(withEditPermissions, Effect.withSpan("AutoThreads.archive"))
   )
 
   const ix = Ix.builder
@@ -212,7 +188,8 @@ const make = Effect.gen(function*() {
   yield* Effect.forkScoped(handleMessages)
 }).pipe(
   Effect.annotateLogs({ service: "AutoThreads" }),
-  Effect.withConfigProvider(
+  Effect.provideService(
+    ConfigProvider.ConfigProvider,
     ConfigProvider.fromEnv().pipe(
       ConfigProvider.nested("autothreads"),
       ConfigProvider.constantCase
@@ -220,8 +197,8 @@ const make = Effect.gen(function*() {
   )
 )
 
-export const AutoThreadsLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(ChannelsCache.Default),
-  Layer.provide(AiHelpers.Default),
+export const AutoThreadsLive = Layer.effectDiscard(make).pipe(
+  Layer.provide(ChannelsCache.layer),
+  Layer.provide(AiHelpers.layer),
   Layer.provide(DiscordGatewayLayer)
 )

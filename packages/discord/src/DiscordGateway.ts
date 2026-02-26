@@ -12,5 +12,5 @@ const DiscordLayer = DiscordIxLive.pipe(
 
 export const DiscordGatewayLayer = Layer.merge(
   DiscordLayer,
-  DiscordApplication.Default
+  DiscordApplication.layer
 )

@@ -27,7 +27,10 @@ function copyFiles(pkg) {
 
       if (file.isDirectory()) {
         Fs.mkdirSync(destPath, { recursive: true })
-        handleFiles(Path.join(root, file.name), Fs.readdirSync(path, { withFileTypes: true }))
+        handleFiles(
+          Path.join(root, file.name),
+          Fs.readdirSync(path, { withFileTypes: true })
+        )
         continue
       }
 

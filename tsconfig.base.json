@@ -34,6 +34,7 @@
     "module": "NodeNext",
     "incremental": true,
     "removeComments": false,
+    "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
     "allowSyntheticDefaultImports": true,
     "plugins": [

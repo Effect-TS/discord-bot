@@ -40,7 +40,7 @@
           };
 
           settings.processes.discord-bot = {
-            command = "tsx --watch packages/discord-bot/src/main.ts";
+            command = "node packages/discord-bot/src/main.ts";
           };
         };
 

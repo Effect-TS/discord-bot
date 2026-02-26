@@ -9,7 +9,6 @@
   },
   "references": [
     { "path": "../discord/tsconfig.src.json" },
-    { "path": "../domain/tsconfig.src.json" },
     { "path": "../shared/tsconfig.src.json" }
   ]
 }

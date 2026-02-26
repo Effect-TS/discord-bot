@@ -1,12 +1,15 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Cache } from "dfx"
 import { CachePrelude } from "dfx/gateway"
-import { Effect } from "effect"
+import { Layer, ServiceMap } from "effect"
 
-export class RolesCache extends Effect.Service<RolesCache>()(
+export class RolesCache extends ServiceMap.Service<RolesCache>()(
   "app/RolesCache",
   {
-    scoped: CachePrelude.roles(Cache.memoryParentDriver()),
-    dependencies: [DiscordGatewayLayer]
+    make: CachePrelude.roles(Cache.memoryParentDriver())
   }
-) {}
+) {
+  static readonly layer = Layer.effect(this, this.make).pipe(
+    Layer.provide(DiscordGatewayLayer)
+  )
+}

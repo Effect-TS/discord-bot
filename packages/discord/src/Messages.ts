@@ -1,5 +1,5 @@
 import { Discord, DiscordREST } from "dfx"
-import { Chunk, Effect, Option, pipe, Stream } from "effect"
+import { Effect, Layer, Option, pipe, ServiceMap, Stream } from "effect"
 import { DiscordRestLayer } from "./DiscordRest.ts"
 import { MemberCache } from "./MemberCache.ts"
 
@@ -10,9 +10,8 @@ export const cleanupMarkdown = (content: string) =>
     .replace(/[^\n]```/gm, "\n\n```")
     .replace(/([^\n])\n```([^\n]*\n[^\n])/gm, "$1\n\n```$2")
 
-export class Messages extends Effect.Service<Messages>()("app/Messages", {
-  dependencies: [MemberCache.Default, DiscordRestLayer],
-  effect: Effect.gen(function*() {
+export class Messages extends ServiceMap.Service<Messages>()("app/Messages", {
+  make: Effect.gen(function*() {
     const rest = yield* DiscordREST
     const members = yield* MemberCache
 
@@ -43,7 +42,7 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
 
     const regularForChannel = (channelId: string) =>
       pipe(
-        Stream.paginateChunkEffect(Option.none<Discord.Snowflake>(), (before) =>
+        Stream.paginate(Option.none<Discord.Snowflake>(), (before) =>
           pipe(
             rest.listMessages(channelId, {
               limit: 100,
@@ -52,11 +51,11 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
             Effect.map((messages) =>
               messages.length < 100
                 ? ([
-                  Chunk.unsafeFromArray(messages),
+                  messages,
                   Option.none<Option.Option<Discord.Snowflake>>()
                 ] as const)
                 : ([
-                  Chunk.unsafeFromArray(messages),
+                  messages,
                   Option.some(Option.some(messages[messages.length - 1].id))
                 ] as const)
             )
@@ -65,9 +64,11 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
         Stream.flatMap(
           (msg) => {
             if (msg.type === Discord.MessageType.THREAD_STARTER_MESSAGE) {
-              return rest.getMessage(
-                msg.message_reference!.channel_id!,
-                msg.message_reference!.message_id!
+              return Stream.fromEffect(
+                rest.getMessage(
+                  msg.message_reference!.channel_id!,
+                  msg.message_reference!.message_id!
+                )
               )
             } else if (
               msg.content !== "" &&
@@ -111,4 +112,9 @@ export class Messages extends Effect.Service<Messages>()("app/Messages", {
       replaceMentions
     } as const
   })
-}) {}
+}) {
+  static readonly layer = Layer.effect(this, this.make).pipe(
+    Layer.provide(MemberCache.layer),
+    Layer.provide(DiscordRestLayer)
+  )
+}

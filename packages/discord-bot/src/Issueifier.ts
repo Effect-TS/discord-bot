@@ -1,14 +1,12 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { Messages } from "@chat/discord/Messages"
-import { LanguageModel, Prompt } from "@effect/ai"
 import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import {
   Array,
   Cause,
-  Chunk,
   Data,
   Effect,
   FiberMap,
@@ -17,6 +15,7 @@ import {
   Schema,
   Stream
 } from "effect"
+import { LanguageModel, Prompt } from "effect/unstable/ai"
 import { OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { Github } from "./Github.ts"
@@ -41,7 +40,7 @@ const make = Effect.gen(function*() {
   const fiberMap = yield* FiberMap.make<Discord.Snowflake>()
   const summaryModel = yield* OpenAiLanguageModel.model("gpt-4.1-mini")
 
-  const createGithubIssue = github.wrap((_) => _.issues.create)
+  const createGithubIssue = github.wrap((rest) => rest.issues.create)
 
   const application = yield* DiscordApplication
 
@@ -50,36 +49,39 @@ const make = Effect.gen(function*() {
     repo: GithubRepo
   ) {
     const channelName = channel.name
-    const chunk = yield* Stream.runCollect(messages.cleanForChannel(channel))
-    const input = chunk.pipe(
-      Chunk.reverse,
-      Chunk.map(
+    const collected = yield* Stream.runCollect(
+      messages.cleanForChannel(channel)
+    )
+    const input = Prompt.make(
+      [...collected].reverse().map(
         (msg): Prompt.Message =>
           Prompt.makeMessage("user", {
-            content: [Prompt.makePart("text", {
-              text: `@${msg.author.username}: ${msg.content}`
-            })]
+            content: [
+              Prompt.makePart("text", {
+                text: `@${msg.author.username}: ${msg.content}`
+              })
+            ]
           })
-      ),
-      Prompt.make
+      )
     )
     const summary = yield* LanguageModel.generateObject({
-      prompt: Prompt.merge(
-        Prompt.make([{
-          role: "system",
-          content:
-            `You are a helpful assistant that summarizes Discord threads into concise titles and summaries for Github issues.
+      prompt: Prompt.concat(
+        Prompt.make([
+          {
+            role: "system",
+            content:
+              `You are a helpful assistant that summarizes Discord threads into concise titles and summaries for Github issues.
 
 In the summary, include some key takeaways or important points discussed in the thread.
 
 The title of this conversation is: "${channelName}"`
-        }]),
+          }
+        ]),
         input
       ),
       schema: ThreadSummary
-    }).pipe(
-      Effect.provide(summaryModel)
-    )
+    }).pipe(Effect.provide(summaryModel))
+
     return yield* createGithubIssue({
       owner: repo.owner,
       repo: repo.repo,
@@ -108,8 +110,8 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           }
         })
       ),
-      Effect.tapErrorCause(Effect.logError),
-      Effect.catchAllCause((cause) =>
+      Effect.tapCause(Effect.logError),
+      Effect.catchCause((cause) =>
         rest
           .updateOriginalWebhookMessage(application.id, context.token, {
             payload: {
@@ -119,8 +121,8 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
             }
           })
           .pipe(
-            Effect.zipLeft(Effect.sleep("1 minutes")),
-            Effect.zipRight(
+            Effect.andThen(Effect.sleep("1 minutes")),
+            Effect.andThen(
               rest.deleteOriginalWebhookMessage(
                 application.id,
                 context.token,
@@ -194,22 +196,25 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
   yield* registry.register(ix)
 })
 
-export const IssueifierLive = Layer.scopedDiscard(make).pipe(
+export const IssueifierLive = Layer.effectDiscard(make).pipe(
   Layer.provide(OpenAiLive),
-  Layer.provide(ChannelsCache.Default),
+  Layer.provide(ChannelsCache.layer),
   Layer.provide(DiscordGatewayLayer),
-  Layer.provide(Messages.Default),
-  Layer.provide(Github.Default)
+  Layer.provide(Messages.layer),
+  Layer.provide(Github.layer)
 )
 
-class ThreadSummary extends Schema.Class<ThreadSummary>("ThreadSummary")({
-  title: Schema.String.annotations({
-    description: "A short title summarizing the messages"
-  }),
-  summary: Schema.String.annotations({
-    description:
-      "A summary of the messages for a Github issue bug report or feature request"
-  })
-}, {
-  description: "A summary of a Discord thread"
-}) {}
+class ThreadSummary extends Schema.Class<ThreadSummary>("ThreadSummary")(
+  {
+    title: Schema.String.annotate({
+      description: "A short title summarizing the messages"
+    }),
+    summary: Schema.String.annotate({
+      description:
+        "A summary of the messages for a Github issue bug report or feature request"
+    })
+  },
+  {
+    description: "A summary of a Discord thread"
+  }
+) {}
