@@ -9,13 +9,13 @@
   "devDependencies": {
     "@chat/discord": "workspace:*",
     "@chat/shared": "workspace:*",
-    "@effect/ai-openai": "4.0.0-beta.14",
-    "@effect/platform-node": "4.0.0-beta.14",
+    "@effect/ai-openai": "4.0.0-beta.18",
+    "@effect/platform-node": "4.0.0-beta.18",
     "@octokit/plugin-rest-endpoint-methods": "^17.0.0",
     "@octokit/types": "^16.0.0",
     "@types/node": "^24.10.1",
     "dfx": "^1.0.5",
-    "effect": "4.0.0-beta.14",
+    "effect": "4.0.0-beta.18",
     "fuzzysort": "^3.1.0",
     "html-entities": "^2.6.0",
     "octokit": "^5.0.5"
