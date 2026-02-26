@@ -9,19 +9,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-runner:
-    name: Deploy runner
-    runs-on: ubuntu-latest
-    concurrency: deploy-runner
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only --config fly.runner.toml
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
   deploy-discord-bot:
     name: Deploy discord-bot
     runs-on: ubuntu-latest
