@@ -17,25 +17,30 @@ export const NotificationsLayer = Effect.gen(function*() {
     )
   })
 
-  const message = Effect.fn("Notifications.message")(
-    function*(ix: Discord.APIInteraction, userRoles?: Array<string>) {
-      const guildId = ix.guild_id
-      if (!guildId) {
-        return UI.components([
-          UI.textDisplay("This command can only be used in a server.")
-        ], { ephemeral: true })
-      }
+  const message = Effect.fn("Notifications.message")(function*(
+    ix: Discord.APIInteraction,
+    userRoles?: Array<string>
+  ) {
+    const guildId = ix.guild_id
+    if (!guildId) {
+      return UI.components(
+        [UI.textDisplay("This command can only be used in a server.")],
+        { ephemeral: true }
+      )
+    }
 
-      const roles = yield* notificationRoles(guildId)
-      if (roles.length === 0) {
-        return UI.components([
-          UI.textDisplay("No notification roles found in this server.")
-        ], { ephemeral: true })
-      }
+    const roles = yield* notificationRoles(guildId)
+    if (roles.length === 0) {
+      return UI.components(
+        [UI.textDisplay("No notification roles found in this server.")],
+        { ephemeral: true }
+      )
+    }
 
-      userRoles = userRoles ?? ix.member!.roles
+    userRoles = userRoles ?? ix.member!.roles
 
-      return UI.components([
+    return UI.components(
+      [
         UI.textDisplay("Select the notifications you want to receive:"),
         UI.row([
           UI.select({
@@ -50,9 +55,10 @@ export const NotificationsLayer = Effect.gen(function*() {
             }))
           })
         ])
-      ], { ephemeral: true })
-    }
-  )
+      ],
+      { ephemeral: true }
+    )
+  })
 
   const command = Ix.global(
     {
@@ -86,11 +92,7 @@ export const NotificationsLayer = Effect.gen(function*() {
           userRoles.add(role.id)
           yield* FiberSet.run(
             fibers,
-            rest.addGuildMemberRole(
-              ix.guild_id!,
-              ix.member!.user.id,
-              role.id
-            )
+            rest.addGuildMemberRole(ix.guild_id!, ix.member!.user.id, role.id)
           )
         } else {
           userRoles.delete(role.id)
@@ -116,6 +118,6 @@ export const NotificationsLayer = Effect.gen(function*() {
     Ix.builder.add(command).add(select).catchAll(Effect.logError)
   )
 }).pipe(
-  Layer.scopedDiscard,
-  Layer.provide([RolesCache.Default, DiscordGatewayLayer])
+  Layer.effectDiscard,
+  Layer.provide([RolesCache.layer, DiscordGatewayLayer])
 )

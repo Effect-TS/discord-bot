@@ -41,7 +41,7 @@ export const PlaygroundLive = Effect.gen(function*() {
           }
         })
       },
-      Effect.catchTag("NoSuchElementException", () =>
+      Effect.catchTag("NoSuchElementError", () =>
         Effect.succeed(
           Ix.response({
             type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,

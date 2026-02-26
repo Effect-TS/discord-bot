@@ -1,9 +1,9 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
-import { LanguageModel, Prompt, Tokenizer } from "@effect/ai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, Layer } from "effect"
+import { LanguageModel, Prompt } from "effect/unstable/ai"
 import { AiHelpers, ChatModel, OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { NotInThreadError } from "./Summarizer.ts"
@@ -11,9 +11,7 @@ import { NotInThreadError } from "./Summarizer.ts"
 const systemInstruction =
   `You are Effect Bot, a helpful assistant for the Effect Discord community.
 
-Generate a light-hearted, comedic message to the user based on the included conversation indicating that, without a minimal reproduction of the described issue, the Effect team will not be able to further investigate.
-
-Your message should in no way be offensive to the user.`
+Generate a short funny message to the user that a minimal reproduction of the issue is required for further investigation.`
 
 const make = Effect.gen(function*() {
   const ai = yield* AiHelpers
@@ -55,16 +53,16 @@ const make = Effect.gen(function*() {
       context: Discord.APIInteraction
     ) {
       yield* Effect.annotateCurrentSpan({ channel: channel.id })
-      const tokenizer = yield* Tokenizer.Tokenizer
       const input = yield* ai.generateAiInput(channel)
-      const prompt = yield* tokenizer.truncate(input, 30_000)
       const response = yield* LanguageModel.generateText({
-        prompt: Prompt.merge(
-          Prompt.make([{
-            role: "system",
-            content: systemInstruction
-          }]),
-          prompt
+        prompt: Prompt.concat(
+          Prompt.make([
+            {
+              role: "system",
+              content: systemInstruction
+            }
+          ]),
+          input
         )
       }).pipe(Effect.annotateLogs({ thread: channel.id }))
       yield* discord.updateOriginalWebhookMessage(
@@ -73,7 +71,7 @@ const make = Effect.gen(function*() {
         { payload: { content: response.text } }
       )
     },
-    Effect.catchAllCause(Effect.log),
+    Effect.catchCause(Effect.log),
     Effect.provide(model)
   )
 
@@ -94,9 +92,9 @@ const make = Effect.gen(function*() {
   yield* registry.register(ix)
 })
 
-export const ReproRequesterLive = Layer.scopedDiscard(make).pipe(
-  Layer.provide(AiHelpers.Default),
-  Layer.provide(ChannelsCache.Default),
+export const ReproRequesterLive = Layer.effectDiscard(make).pipe(
+  Layer.provide(AiHelpers.layer),
+  Layer.provide(ChannelsCache.layer),
   Layer.provide(OpenAiLive),
   Layer.provide(DiscordGatewayLayer)
 )

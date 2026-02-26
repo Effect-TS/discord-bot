@@ -4,8 +4,6 @@
   "references": [
     { "path": "packages/discord-bot" },
     { "path": "packages/discord" },
-    { "path": "packages/domain" },
-    { "path": "packages/runner" },
     { "path": "packages/shared" }
   ]
 }

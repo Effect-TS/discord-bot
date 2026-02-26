@@ -8,7 +8,7 @@ import tseslint from "typescript-eslint"
 
 export default tseslint.config(
   {
-    ignores: ["**/dist", "**/build", "**/docs", "**/*.md"]
+    ignores: [".repos/", "**/dist", "**/build", "**/docs", "**/*.md"]
   },
   eslint.configs.recommended,
   tseslint.configs.strict,

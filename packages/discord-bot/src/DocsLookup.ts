@@ -1,5 +1,4 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
-import { HttpClient, HttpClientResponse } from "@effect/platform"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import {
@@ -13,6 +12,7 @@ import {
   Schema
 } from "effect"
 import type { Mutable } from "effect/Types"
+import { HttpClient, HttpClientResponse } from "effect/unstable/http"
 import fuzzysort from "fuzzysort"
 import * as Prettier from "prettier"
 
@@ -63,7 +63,7 @@ const make = Effect.gen(function*() {
   const search = (query: string) => {
     query = query.toLowerCase()
     return Effect.logDebug("searching").pipe(
-      Effect.zipRight(Resource.get(docs)),
+      Effect.andThen(Resource.get(docs)),
       Effect.map(({ forSearch }) =>
         fuzzysort.go(query, forSearch, { key: "term" }).map((x) => x.obj)
       ),
@@ -98,7 +98,7 @@ const make = Effect.gen(function*() {
         const key = ix.optionValue("query")
         const reveal = ix.optionValue("public")
         const { map } = yield* Resource.get(docs)
-        const entry = yield* Effect.fromNullable(map[key])
+        const entry = yield* Effect.fromNullishOr(map[key])
         yield* Effect.annotateCurrentSpan({
           entry: entry.nameWithModule,
           public: reveal
@@ -107,17 +107,17 @@ const make = Effect.gen(function*() {
         return Ix.response({
           type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            flags: reveal ? undefined as any : Discord.MessageFlags.Ephemeral,
+            flags: reveal ? undefined : Discord.MessageFlags.Ephemeral,
             embeds: [embed]
           }
         })
       },
       Effect.catchTags({
-        NoSuchElementException: () =>
+        NoSuchElementError: () =>
           Effect.succeed(
             Ix.response({
-              type:
-                Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+              type: Discord.InteractionCallbackTypes
+                .CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
                 flags: Discord.MessageFlags.Ephemeral,
                 content: `Sorry, that query could not be found.`
@@ -141,12 +141,10 @@ const make = Effect.gen(function*() {
         type: Discord.InteractionCallbackTypes
           .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
         data: {
-          choices: results.slice(0, 25).map(
-            ({ key, label }) => ({
-              name: label,
-              value: key
-            })
-          )
+          choices: results.slice(0, 25).map(({ key, label }) => ({
+            name: label,
+            value: key
+          }))
         }
       })
     }).pipe(
@@ -172,7 +170,7 @@ const make = Effect.gen(function*() {
   yield* registry.register(ix)
 })
 
-export const DocsLookupLive = Layer.scopedDiscard(make).pipe(
+export const DocsLookupLive = Layer.effectDiscard(make).pipe(
   Layer.provide(DiscordGatewayLayer)
 )
 
@@ -185,26 +183,17 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   }),
   project: Schema.String,
   name: Schema.String,
-  description: Schema.optionalWith(Schema.String, {
-    as: "Option",
-    nullable: true
-  }),
+  description: Schema.OptionFromOptional(Schema.String),
   deprecated: Schema.Boolean,
   examples: Schema.Array(Schema.String),
   since: Schema.String,
-  category: Schema.optionalWith(Schema.String, {
-    as: "Option",
-    nullable: true
-  }),
-  signature: Schema.optionalWith(Schema.String, {
-    as: "Option",
-    nullable: true
-  }),
+  category: Schema.OptionFromOptional(Schema.String),
+  signature: Schema.OptionFromOptional(Schema.String),
   sourceUrl: Schema.String
 }) {
   static readonly Array = Schema.Array(this)
-  static readonly decode = Schema.decodeUnknown(this)
-  static readonly decodeArray = Schema.decodeUnknown(this.Array)
+  static readonly decode = Schema.decodeUnknownEffect(this)
+  static readonly decodeArray = Schema.decodeUnknownEffect(this.Array)
 
   get url() {
     const project = this.project === "effect"
@@ -234,7 +223,7 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   )
 
   get embed(): Effect.Effect<Discord.RichEmbed> {
-    return Effect.gen(this, function*() {
+    return Effect.gen({ self: this }, function*() {
       const embed: Mutable<Discord.RichEmbed> = {
         author: {
           name: this.project

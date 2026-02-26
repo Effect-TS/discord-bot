@@ -2,7 +2,7 @@ import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import type { Discord } from "dfx"
 import { DiscordREST } from "dfx/DiscordREST"
 import { DiscordGateway } from "dfx/gateway"
-import { Cron, Data, Effect, FiberMap, Layer, Schedule } from "effect"
+import { Cron, Data, Effect, FiberMap, Layer, Result, Schedule } from "effect"
 
 class MissingTopic extends Data.TaggedError("MissingTopic") {}
 
@@ -13,16 +13,31 @@ class InvalidTopic extends Data.TaggedError("InvalidTopic")<{
 
 const parseTopic = (topic: string) =>
   Effect.partition(
-    topic.matchAll(/\[reminder:(.+?):(.+?)\]/g),
-    ([match, expression, message]) =>
-      parseExpression(match, expression, message)
+    Array.from(topic.matchAll(/\[reminder:(.+?):(.+?)\]/g)),
+    (matches) => {
+      const [match, expression, message] = matches
+      if (
+        match === undefined ||
+        expression === undefined ||
+        message === undefined
+      ) {
+        return Effect.fail(
+          new InvalidTopic({
+            reason: "invalid reminder format",
+            match: String(match)
+          })
+        )
+      }
+      return parseExpression(match, expression, message)
+    }
   )
 
 const parseExpression = (match: string, expression: string, message: string) =>
-  Cron.parse(expression.trim()).pipe(
-    Effect.map((cron) => [cron, message] as const),
-    Effect.mapError(() => new InvalidTopic({ reason: "invalid cron", match }))
-  )
+  Result.match(Cron.parse(expression.trim()), {
+    onFailure: () =>
+      Effect.fail(new InvalidTopic({ reason: "invalid cron", match })),
+    onSuccess: (cron) => Effect.succeed([cron, message] as const)
+  })
 
 const createThreadPolicy = Schedule.spaced("1 seconds").pipe(
   Schedule.compose(Schedule.recurs(3))
@@ -46,7 +61,7 @@ const make = Effect.gen(function*() {
       yield* Effect.log("scheduling reminders").pipe(
         Effect.annotateLogs(
           "messages",
-          matches.map((_) => _[1])
+          matches.map(([, message]) => message)
         )
       )
 
@@ -59,7 +74,7 @@ const make = Effect.gen(function*() {
           ),
         { discard: true, concurrency: "unbounded" }
       ).pipe(
-        Effect.catchAllCause(Effect.logError),
+        Effect.catchCause(Effect.logError),
         FiberMap.run(fibers, channel.id)
       )
     },
@@ -102,6 +117,6 @@ const make = Effect.gen(function*() {
     .pipe(Effect.forkScoped)
 }).pipe(Effect.annotateLogs({ service: "Reminders" }))
 
-export const RemindersLive = Layer.scopedDiscard(make).pipe(
+export const RemindersLive = Layer.effectDiscard(make).pipe(
   Layer.provide(DiscordGatewayLayer)
 )

@@ -1,13 +1,15 @@
 import type { Api } from "@octokit/plugin-rest-endpoint-methods"
 import type { OctokitResponse } from "@octokit/types"
 import {
-  Chunk,
   Config,
+  ConfigProvider,
   Data,
   Effect,
+  Layer,
   Option,
   pipe,
   Redacted,
+  ServiceMap,
   Stream
 } from "effect"
 import { Octokit } from "octokit"
@@ -17,8 +19,8 @@ export class GithubError extends Data.TaggedError("GithubError")<{
   readonly cause: unknown
 }> {}
 
-export class Github extends Effect.Service<Github>()("app/Github", {
-  effect: Effect.gen(function*() {
+export class Github extends ServiceMap.Service<Github>()("app/Github", {
+  make: Effect.gen(function*() {
     const token = yield* Config.redacted("token")
     const octokit = new Octokit({ auth: Redacted.value(token) })
 
@@ -27,7 +29,7 @@ export class Github extends Effect.Service<Github>()("app/Github", {
     const request = <A>(f: (_: Api["rest"]) => Promise<A>) =>
       Effect.withSpan(
         Effect.tryPromise({
-          try: () => f(rest as any),
+          try: () => f(rest),
           catch: (cause) => new GithubError({ cause })
         }),
         "Github.request"
@@ -39,7 +41,7 @@ export class Github extends Effect.Service<Github>()("app/Github", {
     (...args: Args) =>
       Effect.map(
         Effect.tryPromise({
-          try: () => f(rest as any)(...args),
+          try: () => f(rest)(...args),
           catch: (cause) => new GithubError({ cause })
         }),
         (_) => _.data
@@ -48,27 +50,31 @@ export class Github extends Effect.Service<Github>()("app/Github", {
     const stream = <A>(
       f: (_: Api["rest"], page: number) => Promise<OctokitResponse<Array<A>>>
     ) =>
-      Stream.paginateChunkEffect(0, (page) =>
+      Stream.paginate(0, (page) =>
         Effect.map(
           Effect.tryPromise({
-            try: () => f(rest as any, page),
+            try: () => f(rest, page),
             catch: (cause) => new GithubError({ cause })
           }),
-          (_) => [
-            Chunk.unsafeFromArray(_.data),
-            maybeNextPage(page, _.headers.link)
-          ]
+          (_) => [_.data, maybeNextPage(page, _.headers.link)] as const
         ))
 
     return { token, request, wrap, stream } as const
-  }).pipe(Effect.withConfigProvider(nestedConfigProvider("github")))
-}) {}
+  }).pipe(
+    Effect.provideService(
+      ConfigProvider.ConfigProvider,
+      nestedConfigProvider("github")
+    )
+  )
+}) {
+  static readonly layer = Layer.effect(this, this.make)
+}
 
 // == helpers
 
 const maybeNextPage = (page: number, linkHeader?: string) =>
   pipe(
-    Option.fromNullable(linkHeader),
+    Option.fromNullishOr(linkHeader),
     Option.filter((_) => _.includes(`rel="next"`)),
     Option.as(page + 1)
   )

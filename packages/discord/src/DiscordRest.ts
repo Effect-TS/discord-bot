@@ -1,6 +1,6 @@
 import { NodeHttpClient } from "@effect/platform-node"
 import { DiscordREST, DiscordRESTMemoryLive } from "dfx"
-import { Effect, Layer } from "effect"
+import { Effect, Layer, ServiceMap } from "effect"
 import { DiscordConfigLayer } from "./DiscordConfig.ts"
 
 const DiscordLayer = DiscordRESTMemoryLive.pipe(
@@ -8,18 +8,23 @@ const DiscordLayer = DiscordRESTMemoryLive.pipe(
   Layer.provide(DiscordConfigLayer)
 )
 
-export class DiscordApplication extends Effect.Service<DiscordApplication>()(
-  "app/DiscordApplication",
-  {
-    effect: DiscordREST.pipe(
-      Effect.flatMap((_) => _.getMyApplication()),
-      Effect.orDie
-    ),
-    dependencies: [DiscordLayer]
-  }
-) {}
+export class DiscordApplication
+  extends ServiceMap.Service<DiscordApplication>()(
+    "app/DiscordApplication",
+    {
+      make: Effect.gen(function*() {
+        const rest = yield* DiscordREST
+        return yield* rest.getMyApplication()
+      }).pipe(Effect.orDie)
+    }
+  )
+{
+  static readonly layer = Layer.effect(this, this.make).pipe(
+    Layer.provide(DiscordLayer)
+  )
+}
 
 export const DiscordRestLayer = Layer.merge(
   DiscordLayer,
-  DiscordApplication.Default
+  DiscordApplication.layer
 )

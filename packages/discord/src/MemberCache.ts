@@ -1,6 +1,6 @@
 import type { Discord } from "dfx"
 import { DiscordREST } from "dfx"
-import { Cache, Data, Duration, Effect } from "effect"
+import { Cache, Data, Duration, Effect, Layer, ServiceMap } from "effect"
 import { DiscordRestLayer } from "./DiscordRest.ts"
 
 export class GetMember extends Data.TaggedClass("GetMember")<{
@@ -8,11 +8,10 @@ export class GetMember extends Data.TaggedClass("GetMember")<{
   readonly userId: Discord.Snowflake
 }> {}
 
-export class MemberCache extends Effect.Service<MemberCache>()(
+export class MemberCache extends ServiceMap.Service<MemberCache>()(
   "discord/MemberCache",
   {
-    dependencies: [DiscordRestLayer],
-    effect: Effect.gen(function*() {
+    make: Effect.gen(function*() {
       const rest = yield* DiscordREST
 
       const cache = yield* Cache.make({
@@ -24,12 +23,14 @@ export class MemberCache extends Effect.Service<MemberCache>()(
 
       return {
         get: (guildId: Discord.Snowflake, userId: Discord.Snowflake) =>
-          cache
-            .get(new GetMember({ guildId, userId }))
-            .pipe(
-              Effect.withSpan("MemberCache.get", { attributes: { userId } })
-            )
+          Cache.get(cache, new GetMember({ guildId, userId })).pipe(
+            Effect.withSpan("MemberCache.get", { attributes: { userId } })
+          )
       } as const
     })
   }
-) {}
+) {
+  static readonly layer = Layer.effect(this, this.make).pipe(
+    Layer.provide(DiscordRestLayer)
+  )
+}
