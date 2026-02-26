@@ -7,7 +7,7 @@ app = 'effectful-discord-bot'
 primary_region = 'iad'
 
 [build]
-  dockerfile = 'discord-bot.Dockerfile'
+  dockerfile = 'Dockerfile'
 
 [[vm]]
   size = 'shared-cpu-1x'
