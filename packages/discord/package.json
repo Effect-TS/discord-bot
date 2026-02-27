@@ -9,8 +9,8 @@
     "./*": "./src/*.ts"
   },
   "dependencies": {
-    "@effect/platform-node": "https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@19984c2",
+    "@effect/platform-node": "https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@989d1cc",
     "dfx": "^1.0.5",
-    "effect": "https://pkg.pr.new/Effect-TS/effect-smol/effect@19984c2"
+    "effect": "https://pkg.pr.new/Effect-TS/effect-smol/effect@989d1cc"
   }
 }

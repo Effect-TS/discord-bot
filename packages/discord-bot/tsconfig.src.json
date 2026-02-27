@@ -5,7 +5,10 @@
     "types": ["node"],
     "outDir": "build/src",
     "tsBuildInfoFile": ".tsbuildinfo/src.tsbuildinfo",
-    "rootDir": "src"
+    "rootDir": "src",
+    "plugins": [{
+      "name": "@effect/language-service"
+    }]
   },
   "references": [
     { "path": "../discord/tsconfig.src.json" },
