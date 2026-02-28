@@ -39,6 +39,7 @@ export class Ripgrep extends ServiceMap.Service<
       readonly pattern: string
       readonly directory: string
       readonly glob?: string | undefined
+      readonly maxPerFile?: number | undefined
     }): Stream.Stream<RipgrepMatch, RipgrepError>
   }
 >()("discord-bot/Ripgrep") {
@@ -51,10 +52,14 @@ export class Ripgrep extends ServiceMap.Service<
         readonly pattern: string
         readonly directory: string
         readonly glob?: string | undefined
+        readonly maxPerFile?: number | undefined
       }) => {
         const args = ["--json", "--context", "3"]
         if (options.glob !== undefined) {
           args.push("--glob", options.glob)
+        }
+        if (options.maxPerFile !== undefined) {
+          args.push("--max-count", options.maxPerFile.toString())
         }
         args.push(options.pattern)
 
