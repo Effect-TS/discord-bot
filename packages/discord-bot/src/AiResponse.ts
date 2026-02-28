@@ -37,6 +37,9 @@ const Tools = Toolkit.make(
       glob: Schema.optionalKey(Schema.String).annotate({
         description:
           "An optional glob pattern to filter which files to search (e.g. '**/*.ts')"
+      }),
+      maxResults: Schema.Finite.annotate({
+        description: "The maximum number of matches to return"
       })
     }),
     failure: EffectRepoError,
@@ -62,8 +65,11 @@ const ToolsLayer = Tools.toLayer(Effect.gen(function*() {
       const content = yield* repo.readFileRange({ path, startLine, endLine })
       return content
     }),
-    ripgrep: Effect.fn(function*({ glob, pattern }) {
-      const matches = yield* Stream.runCollect(repo.search({ pattern, glob }))
+    ripgrep: Effect.fn(function*({ glob, maxResults, pattern }) {
+      const matches = yield* repo.search({ pattern, glob }).pipe(
+        Stream.take(maxResults),
+        Stream.runCollect
+      )
       return matches
     }),
     glob: Effect.fn(function*({ pattern }) {
