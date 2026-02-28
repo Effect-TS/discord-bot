@@ -85,9 +85,17 @@ export const AiResponse = Layer.effectDiscard(Effect.gen(function*() {
       name: "ai",
       description: "Request AI to respond in the thread",
       dm_permission: false,
-      default_member_permissions: Number(Discord.Permissions.ManageMessages)
+      default_member_permissions: Number(Discord.Permissions.ManageMessages),
+      options: [
+        {
+          type: Discord.ApplicationCommandOptionType.BOOLEAN,
+          name: "public",
+          description: "Make the results visible for everyone",
+          required: true
+        }
+      ]
     },
-    Effect.fnUntraced(function*(_) {
+    Effect.fnUntraced(function*(ix) {
       const context = yield* Ix.Interaction
       const channel = yield* channels.get(
         context.guild_id!,
@@ -128,6 +136,17 @@ ${llmsMd}`
       )
 
       yield* FiberMap.run(fiberMap, context.id, generate(context, history))
+
+      const isPublic = ix.optionValue("public")
+      if (!isPublic) {
+        return Ix.response({
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: "The clanker is thinking...",
+            flags: Discord.MessageFlags.Ephemeral
+          }
+        })
+      }
 
       return Ix.response({
         type:
