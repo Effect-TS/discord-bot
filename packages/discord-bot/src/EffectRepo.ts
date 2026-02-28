@@ -19,9 +19,7 @@ import { Ripgrep } from "./Ripgrep.ts"
 
 export class EffectRepoError extends Schema.TaggedErrorClass<EffectRepoError>()(
   "EffectRepoError",
-  {
-    cause: Schema.Defect
-  }
+  { cause: Schema.Defect }
 ) {}
 
 export class EffectRepo extends ServiceMap.Service<
