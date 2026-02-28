@@ -80,7 +80,7 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
               content:
                 `You are a helpful assistant for the Effect Typescript library Discord community.
 
-Create a short title summarizing the message. Do not include markdown in the title.`
+Create a short title summarizing the message. Do not include markdown in the title or prefix it with "Title:". The title should be concise and descriptive.`
             },
             { role: "user", content: [{ type: "text", text: prompt }] }
           ]

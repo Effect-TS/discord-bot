@@ -1,6 +1,7 @@
 import { TracerLayer } from "@chat/shared/Otel"
 import { NodeRuntime } from "@effect/platform-node"
 import { Config, Layer, References } from "effect"
+import { AiResponse } from "./AiResponse.ts"
 import { AutoThreadsLive } from "./AutoThreads.ts"
 import { DadJokesLive } from "./DadJokes.ts"
 import { DocsLookupLive } from "./DocsLookup.ts"
@@ -20,6 +21,7 @@ const LogLevelLive = Layer.effect(
 )
 
 const MainLive = Layer.mergeAll(
+  AiResponse,
   AutoThreadsLive,
   DadJokesLive,
   NoEmbedLive,

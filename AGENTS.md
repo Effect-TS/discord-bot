@@ -9,9 +9,9 @@ Do not use `as any` or `: any` anywhere.
 
 ## Learning more about the "effect" & "@effect/*" packages
 
-Read this first: `.repos/effect/LLMS.md`
-
-Also for v3 migration notes, see: `.repos/effect/MIGRATION.md`
+Use `.repos/effect/LLMS.md` as an authoritative source of information about the
+"effect" and "@effect/*" packages. Read this before looking elsewhere for
+information about these packages.
 
 ## Learning more about the "dfx" packages
 
