@@ -137,7 +137,7 @@ For example:
 
 [src/Effect.ts](https://github.com/Effect-TS/effect-smol/blob/main/src/Effect.ts#L123)
 
-Here is a copy of the LLMS.md document from the root of the effect repository, to help get you started:
+Here is a copy of the LLMS.md document from the root of the effect repository, investigate this document *and the linked examples *before** looking at rest of the codebase.
 
 ${llmsMd}`
         )
