@@ -3,12 +3,11 @@ import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Data, Effect, FiberMap, Layer, Schema, Stream } from "effect"
+import { Data, Effect, FiberMap, Layer, Ref, Schema, Stream } from "effect"
 import { Chat, Prompt, Tool, Toolkit } from "effect/unstable/ai"
 import { AiHelpers, OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { EffectRepo, EffectRepoError } from "./EffectRepo.ts"
-import { RipgrepMatch } from "./Ripgrep.ts"
 
 const Tools = Toolkit.make(
   Tool.make("read", {
@@ -28,22 +27,22 @@ const Tools = Toolkit.make(
     failure: EffectRepoError,
     success: Schema.String
   }),
-  Tool.make("ripgrep", {
-    description: "Search for a pattern in the effect repository",
+  Tool.make("rg", {
+    description: "Wrapper around the 'rg' command.",
     parameters: Schema.Struct({
       pattern: Schema.String.annotate({
-        description: "The regex pattern to search for"
+        description: "The pattern to pass to rg."
       }),
       glob: Schema.optionalKey(Schema.String).annotate({
-        description:
-          "An optional glob pattern to filter which files to search (e.g. '**/*.ts')"
+        description: "The --glob option to rg"
       }),
-      maxResults: Schema.Finite.annotate({
-        description: "The maximum number of matches to return"
+      maxLines: Schema.Finite.annotate({
+        description:
+          "The total maximum number of lines to return across all files"
       })
     }),
     failure: EffectRepoError,
-    success: Schema.Array(RipgrepMatch)
+    success: Schema.String
   }),
   Tool.make("glob", {
     description: "Find files in the effect repository matching a glob pattern",
@@ -53,7 +52,7 @@ const Tools = Toolkit.make(
       })
     }),
     failure: EffectRepoError,
-    success: Schema.Array(Schema.String)
+    success: Schema.String
   })
 )
 
@@ -65,20 +64,19 @@ const ToolsLayer = Tools.toLayer(Effect.gen(function*() {
       const content = yield* repo.readFileRange({ path, startLine, endLine })
       return content
     }),
-    ripgrep: Effect.fn(function*({ glob, maxResults, pattern }) {
+    rg: Effect.fn(function*({ glob, maxLines, pattern }) {
       const matches = yield* repo.search({
         pattern,
-        glob,
-        maxPerFile: 3
+        glob
       }).pipe(
-        Stream.take(maxResults),
+        Stream.take(maxLines),
         Stream.runCollect
       )
-      return matches
+      return matches.join("\n")
     }),
     glob: Effect.fn(function*({ pattern }) {
       const files = yield* repo.glob({ pattern })
-      return files
+      return files.join("\n")
     })
   })
 })).pipe(Layer.provide(EffectRepo.layer))
@@ -126,8 +124,8 @@ export const AiResponse = Layer.effectDiscard(Effect.gen(function*() {
         Prompt.setSystem(
           `You are an assistant for the Effect Discord server. Respond to the conversation, using the following tools when appropriate:
 
-- \`read\`: Read a file (or part of a file) from the effect repository. Use this to read documentation or source code that might be relevant to the conversation.
-- \`ripgrep\`: Search for a pattern in the effect repository, returning matching lines with context.
+- \`read\`: Read a file (or part of a file) from the effect repository.
+- \`rg\`: Use "rg" to find files in the effect repository. The pattern is passed directly to rg using child process apis, so adjust escaping accordingly.
 - \`glob\`: Find files in the effect repository matching a glob pattern.
 
 Do not use emojis or excessive formatting in your responses. Be concise and to the point.

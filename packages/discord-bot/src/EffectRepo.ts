@@ -14,7 +14,6 @@ import {
 } from "effect"
 import { glob } from "glob"
 import { Git } from "./Git.ts"
-import type { RipgrepMatch } from "./Ripgrep.ts"
 import { Ripgrep } from "./Ripgrep.ts"
 
 export class EffectRepoError extends Schema.TaggedErrorClass<EffectRepoError>()(
@@ -25,12 +24,12 @@ export class EffectRepoError extends Schema.TaggedErrorClass<EffectRepoError>()(
 export class EffectRepo extends ServiceMap.Service<
   EffectRepo,
   {
-    /** Search for content matching the given pattern, returning matches with context. */
+    /** Search for content matching the given pattern. */
     search(options: {
       readonly pattern: string
       readonly glob?: string | undefined
       readonly maxPerFile?: number | undefined
-    }): Stream.Stream<RipgrepMatch, EffectRepoError>
+    }): Stream.Stream<string, EffectRepoError>
 
     /** Read a range of lines from a file in the repo. */
     readFileRange(options: {
@@ -81,7 +80,7 @@ export class EffectRepo extends ServiceMap.Service<
       }) =>
         repo.pipe(
           Effect.map((repoPath) =>
-            rg.search({
+            rg.searchLines({
               directory: repoPath,
               pattern: options.pattern,
               glob: options.glob,
