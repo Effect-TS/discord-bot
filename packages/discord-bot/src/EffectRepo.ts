@@ -77,16 +77,19 @@ export class EffectRepo extends ServiceMap.Service<
         readonly pattern: string
         readonly glob?: string | undefined
       }) =>
-        Stream.unwrap(
-          Effect.map(repo, (repoPath) =>
+        repo.pipe(
+          Effect.map((repoPath) =>
             rg.search({
               directory: repoPath,
               pattern: options.pattern,
               glob: options.glob
-            }))
-        ).pipe(Stream.mapError((cause) => new EffectRepoError({ cause })))
+            })
+          ),
+          Stream.unwrap,
+          Stream.mapError((cause) => new EffectRepoError({ cause }))
+        )
 
-      const readFileRange = Effect.fn("EffectRepo.readFileRange")(
+      const readFileRange = Effect.fnUntraced(
         function*(options: {
           readonly path: string
           readonly startLine?: number | undefined
@@ -101,17 +104,29 @@ export class EffectRepo extends ServiceMap.Service<
           const end = options.endLine ?? lines.length
           return lines.slice(start, end).join("\n")
         },
-        Effect.mapError((cause) => new EffectRepoError({ cause }))
+        Effect.mapError((cause) => new EffectRepoError({ cause })),
+        Effect.withSpan("EffectRepo.readFileRange", (options) => ({
+          attributes: {
+            "file.path": options.path,
+            "file.startLine": options.startLine ?? 1,
+            "file.endLine": options.endLine ?? "EOF"
+          }
+        }))
       )
 
-      const globFiles = Effect.fn("EffectRepo.glob")(
+      const globFiles = Effect.fnUntraced(
         function*(options: { readonly pattern: string }) {
           const repoPath = yield* repo
           return yield* Effect.tryPromise(() =>
             glob(options.pattern, { cwd: repoPath })
           )
         },
-        Effect.mapError((cause) => new EffectRepoError({ cause }))
+        Effect.mapError((cause) => new EffectRepoError({ cause })),
+        Effect.withSpan("EffectRepo.glob", (options) => ({
+          attributes: {
+            "glob.pattern": options.pattern
+          }
+        }))
       )
 
       const llmsMd = yield* RcRef.make({
