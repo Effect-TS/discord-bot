@@ -167,7 +167,7 @@ ${llmsMd}`
 
   const application = yield* DiscordApplication
   const rest = yield* DiscordREST
-  const chatModel = yield* OpenAiLanguageModel.model("gpt-5.1")
+  const chatModel = yield* OpenAiLanguageModel.model("gpt-5.2")
   const generate = Effect.fn("AiResponse.generate")(
     function*(
       context: Discord.APIInteraction,
