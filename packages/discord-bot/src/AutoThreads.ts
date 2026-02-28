@@ -19,7 +19,7 @@ export class PermissionsError extends Data.TaggedError("PermissionsError")<{
 
 const make = Effect.gen(function*() {
   const topicKeyword = yield* Config.string("keyword").pipe(
-    Config.withDefault(() => "[threads]")
+    Config.withDefault("[threads]")
   )
   const ai = yield* AiHelpers
   const gateway = yield* DiscordGateway

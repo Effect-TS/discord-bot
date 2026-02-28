@@ -8,15 +8,15 @@ import { nestedConfigProvider } from "./utils/Config.ts"
 const make = Effect.gen(function*() {
   const topicKeyword = yield* Config.withDefault(
     Config.string("keyword"),
-    () => "[noembed]"
+    "[noembed]"
   )
   const urlWhitelist = yield* Config.withDefault(
     Config.string("urlWhitelist"),
-    () => "effect.website"
+    "effect.website"
   ).pipe(Config.map(toList))
   const urlExclude = yield* Config.withDefault(
     Config.string("urlExclude"),
-    () => "effect.website/play"
+    "effect.website/play"
   ).pipe(Config.map(toList))
 
   const gateway = yield* DiscordGateway
