@@ -13,7 +13,7 @@ export const TracerLayer = (serviceName: string): Layer.Layer<never> =>
         Config.option
       )
       const dataset = yield* Config.string("HONEYCOMB_DATASET").pipe(
-        Config.withDefault(() => serviceName)
+        Config.withDefault(serviceName)
       )
       if (Option.isNone(apiKey)) {
         return Otlp.layer({
