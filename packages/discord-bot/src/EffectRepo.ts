@@ -29,6 +29,7 @@ export class EffectRepo extends ServiceMap.Service<
     search(options: {
       readonly pattern: string
       readonly glob?: string | undefined
+      readonly maxPerFile?: number | undefined
     }): Stream.Stream<RipgrepMatch, EffectRepoError>
 
     /** Read a range of lines from a file in the repo. */
@@ -76,13 +77,15 @@ export class EffectRepo extends ServiceMap.Service<
       const search = (options: {
         readonly pattern: string
         readonly glob?: string | undefined
+        readonly maxPerFile?: number | undefined
       }) =>
         repo.pipe(
           Effect.map((repoPath) =>
             rg.search({
               directory: repoPath,
               pattern: options.pattern,
-              glob: options.glob
+              glob: options.glob,
+              maxPerFile: options.maxPerFile
             })
           ),
           Stream.unwrap,

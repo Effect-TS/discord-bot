@@ -66,7 +66,11 @@ const ToolsLayer = Tools.toLayer(Effect.gen(function*() {
       return content
     }),
     ripgrep: Effect.fn(function*({ glob, maxResults, pattern }) {
-      const matches = yield* repo.search({ pattern, glob }).pipe(
+      const matches = yield* repo.search({
+        pattern,
+        glob,
+        maxPerFile: 3
+      }).pipe(
         Stream.take(maxResults),
         Stream.runCollect
       )
