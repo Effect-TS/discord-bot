@@ -3,7 +3,7 @@ import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Data, Effect, FiberMap, Layer, Schema, Stream } from "effect"
+import { Data, Effect, FiberMap, Layer, Option, Schema, Stream } from "effect"
 import { Chat, Prompt, Tool, Toolkit } from "effect/unstable/ai"
 import { AiHelpers, OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
@@ -103,6 +103,13 @@ export const AiResponse = Layer.effectDiscard(
             description: "Make the results visible for everyone",
             required: true,
           },
+          {
+            type: Discord.ApplicationCommandOptionType.STRING,
+            name: "prompt",
+            description:
+              "Add a custom prompt in addition to the message history",
+            required: false,
+          },
         ],
       },
       Effect.fnUntraced(function* (ix) {
@@ -122,7 +129,7 @@ export const AiResponse = Layer.effectDiscard(
 
         const llmsMd = yield* repo.llmsMd
 
-        const history = (yield* ai.generateAiInput(channel)).pipe(
+        let history = (yield* ai.generateAiInput(channel)).pipe(
           Prompt.setSystem(
             `You are an assistant for the Effect Discord server. Respond to the conversation, using the following tools when appropriate:
 
@@ -144,6 +151,10 @@ Here is a copy of the LLMS.md document from the root of the effect repository, i
 ${llmsMd}`,
           ),
         )
+        const prompt = ix.optionValueOptional("prompt")
+        if (Option.isSome(prompt)) {
+          history = Prompt.concat(history, Prompt.make(prompt.value))
+        }
 
         yield* FiberMap.run(fiberMap, context.id, generate(context, history))
 
