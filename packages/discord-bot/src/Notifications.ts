@@ -5,27 +5,27 @@ import { InteractionsRegistry } from "dfx/gateway"
 import { Array, Effect, FiberSet, Layer } from "effect"
 import { RolesCache } from "./RolesCache.ts"
 
-export const NotificationsLayer = Effect.gen(function*() {
-  const ix = yield* InteractionsRegistry
+export const NotificationsLayer = Effect.gen(function* () {
+  const registry = yield* InteractionsRegistry
   const rolesCache = yield* RolesCache
   const rest = yield* DiscordREST
 
-  const notificationRoles = Effect.fnUntraced(function*(guildId: string) {
+  const notificationRoles = Effect.fnUntraced(function* (guildId: string) {
     const roles = yield* rolesCache.getForParent(guildId)
     return Array.fromIterable(roles.values()).filter((role) =>
-      role.name.startsWith("🔔 ")
+      role.name.startsWith("🔔 "),
     )
   })
 
-  const message = Effect.fn("Notifications.message")(function*(
+  const message = Effect.fn("Notifications.message")(function* (
     ix: Discord.APIInteraction,
-    userRoles?: Array<string>
+    userRoles?: Array<string>,
   ) {
     const guildId = ix.guild_id
     if (!guildId) {
       return UI.components(
         [UI.textDisplay("This command can only be used in a server.")],
-        { ephemeral: true }
+        { ephemeral: true },
       )
     }
 
@@ -33,7 +33,7 @@ export const NotificationsLayer = Effect.gen(function*() {
     if (roles.length === 0) {
       return UI.components(
         [UI.textDisplay("No notification roles found in this server.")],
-        { ephemeral: true }
+        { ephemeral: true },
       )
     }
 
@@ -51,31 +51,31 @@ export const NotificationsLayer = Effect.gen(function*() {
             options: roles.map((role) => ({
               label: role.name,
               value: role.id,
-              default: userRoles.includes(role.id)
-            }))
-          })
-        ])
+              default: userRoles.includes(role.id),
+            })),
+          }),
+        ]),
       ],
-      { ephemeral: true }
+      { ephemeral: true },
     )
   })
 
   const command = Ix.global(
     {
       name: "notifications",
-      description: "Choose which notifications you want to receive"
+      description: "Choose which notifications you want to receive",
     },
-    Effect.fn("Notifications.command")(function*(ix) {
+    Effect.fn("Notifications.command")(function* (ix) {
       return Ix.response({
         type: 4,
-        data: yield* message(ix.interaction)
+        data: yield* message(ix.interaction),
       })
-    })
+    }),
   )
 
   const select = Ix.messageComponent(
     Ix.id("notifications_role"),
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const ix = yield* Ix.Interaction
       const data = yield* Ix.MessageComponentData
       assert(data.component_type === 3)
@@ -92,7 +92,7 @@ export const NotificationsLayer = Effect.gen(function*() {
           userRoles.add(role.id)
           yield* FiberSet.run(
             fibers,
-            rest.addGuildMemberRole(ix.guild_id!, ix.member!.user.id, role.id)
+            rest.addGuildMemberRole(ix.guild_id!, ix.member!.user.id, role.id),
           )
         } else {
           userRoles.delete(role.id)
@@ -101,23 +101,23 @@ export const NotificationsLayer = Effect.gen(function*() {
             rest.deleteGuildMemberRole(
               ix.guild_id!,
               ix.member!.user.id,
-              role.id
-            )
+              role.id,
+            ),
           )
         }
       }
       yield* FiberSet.awaitEmpty(fibers)
       return Ix.response({
         type: Discord.InteractionCallbackTypes.UPDATE_MESSAGE,
-        data: yield* message(ix, Array.fromIterable(userRoles))
+        data: yield* message(ix, Array.fromIterable(userRoles)),
       })
-    })
+    }),
   )
 
-  yield* ix.register(
-    Ix.builder.add(command).add(select).catchAll(Effect.logError)
+  yield* registry.register(
+    Ix.builder.add(command).add(select).catchAll(Effect.logError),
   )
 }).pipe(
   Layer.effectDiscard,
-  Layer.provide([RolesCache.layer, DiscordGatewayLayer])
+  Layer.provide([RolesCache.layer, DiscordGatewayLayer]),
 )

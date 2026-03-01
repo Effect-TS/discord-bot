@@ -9,12 +9,12 @@ export class ChannelsCache extends ServiceMap.Service<ChannelsCache>()(
     make: CachePrelude.channels(
       Cache.memoryTTLParentDriver({
         ttl: Duration.minutes(30),
-        strategy: "activity"
-      })
-    )
-  }
+        strategy: "activity",
+      }),
+    ),
+  },
 ) {
   static readonly layer = Layer.effect(this, this.make).pipe(
-    Layer.provide(DiscordGatewayLayer)
+    Layer.provide(DiscordGatewayLayer),
   )
 }

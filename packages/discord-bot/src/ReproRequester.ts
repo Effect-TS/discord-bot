@@ -8,12 +8,11 @@ import { AiHelpers, ChatModel, OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { NotInThreadError } from "./Summarizer.ts"
 
-const systemInstruction =
-  `You are Effect Bot, a helpful assistant for the Effect Discord community.
+const systemInstruction = `You are Effect Bot, a helpful assistant for the Effect Discord community.
 
 Generate a short funny message to the user that a minimal reproduction of the issue is required for further investigation.`
 
-const make = Effect.gen(function*() {
+const make = Effect.gen(function* () {
   const ai = yield* AiHelpers
   const channels = yield* ChannelsCache
   const model = yield* ChatModel
@@ -25,14 +24,15 @@ const make = Effect.gen(function*() {
   const command = Ix.global(
     {
       name: "repro",
-      description: "Generate a message indicating that reproduction is required"
+      description:
+        "Generate a message indicating that reproduction is required",
     },
     Effect.fn("ReproRequester.command")(
-      function*(ix) {
+      function* (ix) {
         const context = ix.interaction
         const channel = yield* channels.get(
           context.guild_id!,
-          context.channel!.id
+          context.channel!.id,
         )
         if (channel.type !== Discord.ChannelTypes.PUBLIC_THREAD) {
           return yield* new NotInThreadError()
@@ -40,17 +40,17 @@ const make = Effect.gen(function*() {
         yield* respond(channel, context).pipe(Effect.forkIn(scope))
         return Ix.response({
           type: Discord.InteractionCallbackTypes
-            .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+            .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
         })
       },
-      Effect.annotateLogs("command", "repro")
-    )
+      Effect.annotateLogs("command", "repro"),
+    ),
   )
 
   const respond = Effect.fn("ReproRequester.respond")(
-    function*(
+    function* (
       channel: Discord.ThreadResponse,
-      context: Discord.APIInteraction
+      context: Discord.APIInteraction,
     ) {
       yield* Effect.annotateCurrentSpan({ channel: channel.id })
       const input = yield* ai.generateAiInput(channel)
@@ -59,20 +59,20 @@ const make = Effect.gen(function*() {
           Prompt.make([
             {
               role: "system",
-              content: systemInstruction
-            }
+              content: systemInstruction,
+            },
           ]),
-          input
-        )
+          input,
+        ),
       }).pipe(Effect.annotateLogs({ thread: channel.id }))
       yield* discord.updateOriginalWebhookMessage(
         application.id,
         context.token,
-        { payload: { content: response.text } }
+        { payload: { content: response.text } },
       )
     },
     Effect.catchCause(Effect.log),
-    Effect.provide(model)
+    Effect.provide(model),
   )
 
   const ix = Ix.builder
@@ -83,10 +83,11 @@ const make = Effect.gen(function*() {
           type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: "This command can only be used in a thread",
-            flags: Discord.MessageFlags.Ephemeral
-          }
-        })
-      ))
+            flags: Discord.MessageFlags.Ephemeral,
+          },
+        }),
+      ),
+    )
     .catchAllCause(Effect.logError)
 
   yield* registry.register(ix)
@@ -96,5 +97,5 @@ export const ReproRequesterLive = Layer.effectDiscard(make).pipe(
   Layer.provide(AiHelpers.layer),
   Layer.provide(ChannelsCache.layer),
   Layer.provide(OpenAiLive),
-  Layer.provide(DiscordGatewayLayer)
+  Layer.provide(DiscordGatewayLayer),
 )

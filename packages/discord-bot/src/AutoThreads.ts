@@ -7,7 +7,7 @@ import { ChannelsCache } from "./ChannelsCache.ts"
 import * as Str from "./utils/String.ts"
 
 export class NotValidMessageError extends Data.TaggedError(
-  "NotValidMessageError"
+  "NotValidMessageError",
 )<{
   readonly reason: "non-default" | "from-bot" | "non-text-channel" | "disabled"
 }> {}
@@ -17,9 +17,9 @@ export class PermissionsError extends Data.TaggedError("PermissionsError")<{
   readonly subject: string
 }> {}
 
-const make = Effect.gen(function*() {
+const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.string("keyword").pipe(
-    Config.withDefault("[threads]")
+    Config.withDefault("[threads]"),
   )
   const ai = yield* AiHelpers
   const gateway = yield* DiscordGateway
@@ -41,7 +41,7 @@ const make = Effect.gen(function*() {
   const handleMessages = gateway.handleDispatch(
     "MESSAGE_CREATE",
     Effect.fnUntraced(
-      function*(event) {
+      function* (event) {
         if (!isEligibleMessage(event)) {
           return
         }
@@ -57,10 +57,10 @@ const make = Effect.gen(function*() {
           Effect.orElseSucceed(() => {
             const name = Option.getOrElse(
               Option.fromNullishOr(event.member?.nick),
-              () => event.author.username
+              () => event.author.username,
             )
             return `${name}'s thread`
-          })
+          }),
         )
 
         yield* Effect.annotateCurrentSpan({ title })
@@ -70,8 +70,8 @@ const make = Effect.gen(function*() {
           event.id,
           {
             name: Str.truncate(title, 100),
-            auto_archive_duration: 1440
-          }
+            auto_archive_duration: 1440,
+          },
         )
 
         yield* rest.createMessage(thread.id, {
@@ -79,42 +79,42 @@ const make = Effect.gen(function*() {
             [
               UI.button({
                 custom_id: `edit_${event.author.id}`,
-                label: "Edit title"
+                label: "Edit title",
               }),
               UI.button({
                 custom_id: `archive_${event.author.id}`,
                 label: "Archive",
-                style: Discord.ButtonStyleTypes.SECONDARY
-              })
-            ]
-          ])
+                style: Discord.ButtonStyleTypes.SECONDARY,
+              }),
+            ],
+          ]),
         })
       },
       (effect, event) =>
         Effect.withSpan(effect, "AutoThreads.handleMessages", {
           attributes: {
-            messageId: event.id
-          }
+            messageId: event.id,
+          },
         }),
-      Effect.catchCause(Effect.logError)
-    )
+      Effect.catchCause(Effect.logError),
+    ),
   )
 
   const hasManage = Perms.has(Discord.Permissions.ManageChannels)
 
-  const withEditPermissions = Effect.fnUntraced(function*<R, E, A>(
-    self: Effect.Effect<A, E, R>
+  const withEditPermissions = Effect.fnUntraced(function* <R, E, A>(
+    self: Effect.Effect<A, E, R>,
   ) {
     const ix = yield* Ix.Interaction
     const ctx = yield* Ix.MessageComponentData
     const authorId = ctx.custom_id.split("_")[1]
-    const canEdit = authorId === ix.member?.user?.id ||
-      hasManage(ix.member!.permissions!)
+    const canEdit =
+      authorId === ix.member?.user?.id || hasManage(ix.member!.permissions!)
 
     if (!canEdit) {
       return yield* new PermissionsError({
         action: "edit",
-        subject: "thread"
+        subject: "thread",
       })
     }
 
@@ -123,7 +123,7 @@ const make = Effect.gen(function*() {
 
   const edit = Ix.messageComponent(
     Ix.idStartsWith("edit_"),
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const ix = yield* Ix.Interaction
       const channel = yield* channels.get(ix.guild_id!, ix.channel!.id)
       return Ix.response({
@@ -136,35 +136,35 @@ const make = Effect.gen(function*() {
               custom_id: "title",
               label: "New title",
               max_length: 100,
-              value: "name" in channel ? channel.name! : ""
-            })
-          ])
-        }
+              value: "name" in channel ? channel.name! : "",
+            }),
+          ]),
+        },
       })
-    }).pipe(withEditPermissions, Effect.withSpan("AutoThreads.edit"))
+    }).pipe(withEditPermissions, Effect.withSpan("AutoThreads.edit")),
   )
 
   const editSubmit = Ix.modalSubmit(
     Ix.id("edit"),
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const context = yield* Ix.Interaction
       const title = yield* Ix.modalValue("title")
       yield* rest.updateChannel(context.channel!.id, { name: title })
       return Ix.response({
-        type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE
+        type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE,
       })
-    }).pipe(Effect.withSpan("AutoThreads.editSubmit"))
+    }).pipe(Effect.withSpan("AutoThreads.editSubmit")),
   )
 
   const archive = Ix.messageComponent(
     Ix.idStartsWith("archive_"),
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const ix = yield* Ix.Interaction
       yield* rest.updateChannel(ix.channel!.id, { archived: true })
       return Ix.response({
-        type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE
+        type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE,
       })
-    }).pipe(withEditPermissions, Effect.withSpan("AutoThreads.archive"))
+    }).pipe(withEditPermissions, Effect.withSpan("AutoThreads.archive")),
   )
 
   const ix = Ix.builder
@@ -177,11 +177,11 @@ const make = Effect.gen(function*() {
           type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             flags: Discord.MessageFlags.Ephemeral,
-            content:
-              `You don't have permission to ${_.action} this ${_.subject}.`
-          }
-        })
-      ))
+            content: `You don't have permission to ${_.action} this ${_.subject}.`,
+          },
+        }),
+      ),
+    )
     .catchAllCause(Effect.logError)
 
   yield* registry.register(ix)
@@ -192,13 +192,13 @@ const make = Effect.gen(function*() {
     ConfigProvider.ConfigProvider,
     ConfigProvider.fromEnv().pipe(
       ConfigProvider.nested("autothreads"),
-      ConfigProvider.constantCase
-    )
-  )
+      ConfigProvider.constantCase,
+    ),
+  ),
 )
 
 export const AutoThreadsLive = Layer.effectDiscard(make).pipe(
   Layer.provide(ChannelsCache.layer),
   Layer.provide(AiHelpers.layer),
-  Layer.provide(DiscordGatewayLayer)
+  Layer.provide(DiscordGatewayLayer),
 )

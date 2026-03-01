@@ -6,14 +6,14 @@ import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
 export class RipgrepError extends Schema.TaggedErrorClass<RipgrepError>()(
   "RipgrepError",
   {
-    cause: Schema.Defect
-  }
+    cause: Schema.Defect,
+  },
 ) {}
 
 export class RipgrepMatch extends Schema.Class<RipgrepMatch>("RipgrepMatch")({
   path: Schema.String,
   lineNumber: Schema.Number,
-  line: Schema.String
+  line: Schema.String,
 }) {}
 
 const RgJsonMatch = Schema.Struct({
@@ -21,12 +21,12 @@ const RgJsonMatch = Schema.Struct({
   data: Schema.Struct({
     path: Schema.Struct({ text: Schema.String }),
     line_number: Schema.Number,
-    lines: Schema.Struct({ text: Schema.String })
-  })
+    lines: Schema.Struct({ text: Schema.String }),
+  }),
 })
 
 const RgJsonOther = Schema.Struct({
-  type: Schema.Literals(["begin", "end", "context", "summary"])
+  type: Schema.Literals(["begin", "end", "context", "summary"]),
 })
 
 const RgJsonLine = Schema.Union([RgJsonMatch, RgJsonOther])
@@ -53,7 +53,7 @@ export class Ripgrep extends ServiceMap.Service<
 >()("discord-bot/Ripgrep") {
   static readonly layer = Layer.effect(
     Ripgrep,
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const spawner = yield* ChildProcessSpawner.ChildProcessSpawner
 
       const command = (options: {
@@ -72,7 +72,7 @@ export class Ripgrep extends ServiceMap.Service<
         args.push(options.pattern)
         return ChildProcess.make("rg", args, {
           cwd: options.directory,
-          stdin: "ignore"
+          stdin: "ignore",
         })
       }
 
@@ -82,18 +82,20 @@ export class Ripgrep extends ServiceMap.Service<
         readonly glob?: string | undefined
         readonly maxPerFile?: number | undefined
       }) => {
-        return spawner.streamLines(command(options), {
-          includeStderr: true
-        }).pipe(
-          Stream.mapError((cause) => new RipgrepError({ cause })),
-          Stream.withSpan("Ripgrep.searchLines", {
-            attributes: {
-              "pattern": options.pattern,
-              "directory": options.directory,
-              "glob": options.glob
-            }
+        return spawner
+          .streamLines(command(options), {
+            includeStderr: true,
           })
-        )
+          .pipe(
+            Stream.mapError((cause) => new RipgrepError({ cause })),
+            Stream.withSpan("Ripgrep.searchLines", {
+              attributes: {
+                pattern: options.pattern,
+                directory: options.directory,
+                glob: options.glob,
+              },
+            }),
+          )
       }
 
       const search = (options: {
@@ -105,32 +107,32 @@ export class Ripgrep extends ServiceMap.Service<
         return spawner.streamString(command(options)).pipe(
           Stream.pipeThroughChannel(
             Ndjson.decodeSchemaString(RgJsonLine)({
-              ignoreEmptyLines: true
-            })
+              ignoreEmptyLines: true,
+            }),
           ),
           Stream.filterMap((line) =>
             line.type === "match"
               ? Result.succeed(
-                new RipgrepMatch({
-                  path: line.data.path.text,
-                  lineNumber: line.data.line_number,
-                  line: line.data.lines.text.trimEnd()
-                })
-              )
-              : Result.failVoid
+                  new RipgrepMatch({
+                    path: line.data.path.text,
+                    lineNumber: line.data.line_number,
+                    line: line.data.lines.text.trimEnd(),
+                  }),
+                )
+              : Result.failVoid,
           ),
           Stream.mapError((cause) => new RipgrepError({ cause })),
           Stream.withSpan("Ripgrep.search", {
             attributes: {
-              "pattern": options.pattern,
-              "directory": options.directory,
-              "glob": options.glob
-            }
-          })
+              pattern: options.pattern,
+              directory: options.directory,
+              glob: options.glob,
+            },
+          }),
         )
       }
 
       return Ripgrep.of({ search, searchLines })
-    })
+    }),
   ).pipe(Layer.provide(NodeServices.layer))
 }

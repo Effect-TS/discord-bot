@@ -2,14 +2,16 @@ import * as Fs from "node:fs"
 import * as Path from "node:path"
 
 function packages() {
-  return Fs.readdirSync("packages")
-    // .concat(Fs.readdirSync("packages/ai").map((dir) => Path.join("ai", dir)))
-    .filter((_) => Fs.existsSync(Path.join("packages", _, "docs/modules")))
+  return (
+    Fs.readdirSync("packages")
+      // .concat(Fs.readdirSync("packages/ai").map((dir) => Path.join("ai", dir)))
+      .filter((_) => Fs.existsSync(Path.join("packages", _, "docs/modules")))
+  )
 }
 
 function pkgName(pkg) {
   const packageJson = Fs.readFileSync(
-    Path.join("packages", pkg, "package.json")
+    Path.join("packages", pkg, "package.json"),
   )
   return JSON.parse(packageJson).name
 }
@@ -18,7 +20,7 @@ function copyFiles(pkg) {
   const name = pkgName(pkg)
   const docs = Path.join("packages", pkg, "docs/modules")
   const dest = Path.join("docs", pkg)
-  const files = Fs.readdirSync(docs, { withFileTypes: true })
+  const topFiles = Fs.readdirSync(docs, { withFileTypes: true })
 
   function handleFiles(root, files) {
     for (const file of files) {
@@ -29,14 +31,14 @@ function copyFiles(pkg) {
         Fs.mkdirSync(destPath, { recursive: true })
         handleFiles(
           Path.join(root, file.name),
-          Fs.readdirSync(path, { withFileTypes: true })
+          Fs.readdirSync(path, { withFileTypes: true }),
         )
         continue
       }
 
       const content = Fs.readFileSync(path, "utf8").replace(
         /^parent: Modules$/m,
-        `parent: "${name}"`
+        `parent: "${name}"`,
       )
       Fs.writeFileSync(destPath, content)
     }
@@ -44,7 +46,7 @@ function copyFiles(pkg) {
 
   Fs.rmSync(dest, { recursive: true, force: true })
   Fs.mkdirSync(dest, { recursive: true })
-  handleFiles("", files)
+  handleFiles("", topFiles)
 }
 
 function generateIndex(pkg, order) {
