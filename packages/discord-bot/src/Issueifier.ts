@@ -13,7 +13,7 @@ import {
   Layer,
   pipe,
   Schema,
-  Stream
+  Stream,
 } from "effect"
 import { LanguageModel, Prompt } from "effect/unstable/ai"
 import { OpenAiLive } from "./Ai.ts"
@@ -21,17 +21,17 @@ import { ChannelsCache } from "./ChannelsCache.ts"
 import { Github } from "./Github.ts"
 
 export class NotInThreadError extends Data.TaggedError(
-  "NotInThreadError"
+  "NotInThreadError",
 )<{}> {}
 
 const githubRepos = [
   { label: "/effect", owner: "effect-ts", repo: "effect" },
   { label: "/website", owner: "effect-ts", repo: "website" },
-  { label: "/effect-smol", owner: "effect-ts", repo: "effect-smol" }
+  { label: "/effect-smol", owner: "effect-ts", repo: "effect-smol" },
 ]
 type GithubRepo = (typeof githubRepos)[number]
 
-const make = Effect.gen(function*() {
+const make = Effect.gen(function* () {
   const rest = yield* DiscordREST
   const channels = yield* ChannelsCache
   const messages = yield* Messages
@@ -40,46 +40,45 @@ const make = Effect.gen(function*() {
   const fiberMap = yield* FiberMap.make<Discord.Snowflake>()
   const summaryModel = yield* OpenAiLanguageModel.model("gpt-4.1-mini")
 
-  const createGithubIssue = github.wrap((rest) => rest.issues.create)
+  const createGithubIssue = github.wrap((_) => _.issues.create)
 
   const application = yield* DiscordApplication
 
-  const createIssue = Effect.fn("Issueifier.createIssue")(function*(
+  const createIssue = Effect.fn("Issueifier.createIssue")(function* (
     channel: Discord.ThreadResponse,
-    repo: GithubRepo
+    repo: GithubRepo,
   ) {
     const channelName = channel.name
     const collected = yield* Stream.runCollect(
-      messages.cleanForChannel(channel)
+      messages.cleanForChannel(channel),
     )
     const input = Prompt.make(
-      [...collected].reverse().map(
+      [...collected].toReversed().map(
         (msg): Prompt.Message =>
           Prompt.makeMessage("user", {
             content: [
               Prompt.makePart("text", {
-                text: `@${msg.author.username}: ${msg.content}`
-              })
-            ]
-          })
-      )
+                text: `@${msg.author.username}: ${msg.content}`,
+              }),
+            ],
+          }),
+      ),
     )
     const summary = yield* LanguageModel.generateObject({
       prompt: Prompt.concat(
         Prompt.make([
           {
             role: "system",
-            content:
-              `You are a helpful assistant that summarizes Discord threads into concise titles and summaries for Github issues.
+            content: `You are a helpful assistant that summarizes Discord threads into concise titles and summaries for Github issues.
 
 In the summary, include some key takeaways or important points discussed in the thread.
 
-The title of this conversation is: "${channelName}"`
-          }
+The title of this conversation is: "${channelName}"`,
+          },
         ]),
-        input
+        input,
       ),
-      schema: ThreadSummary
+      schema: ThreadSummary,
     }).pipe(Effect.provide(summaryModel))
 
     return yield* createGithubIssue({
@@ -92,33 +91,34 @@ ${summary.value.summary}
 # Discord thread
 
 https://discord.com/channels/${channel.guild_id}/${channel.id}
-`
+`,
     })
   })
 
   const followUp = (
     context: Discord.APIInteraction,
     channel: Discord.ThreadResponse,
-    repo: GithubRepo
+    repo: GithubRepo,
   ) =>
     pipe(
       createIssue(channel, repo),
       Effect.tap((issue) =>
         rest.updateOriginalWebhookMessage(application.id, context.token, {
           payload: {
-            content: `Created Github issue for thread: ${issue.html_url}`
-          }
-        })
+            content: `Created Github issue for thread: ${issue.html_url}`,
+          },
+        }),
       ),
       Effect.tapCause(Effect.logError),
       Effect.catchCause((cause) =>
         rest
           .updateOriginalWebhookMessage(application.id, context.token, {
             payload: {
-              content: "Failed to create Github issue:\n\n```\n" +
+              content:
+                "Failed to create Github issue:\n\n```\n" +
                 Cause.pretty(cause) +
-                "\n```"
-            }
+                "\n```",
+            },
           })
           .pipe(
             Effect.andThen(Effect.sleep("1 minutes")),
@@ -126,12 +126,12 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
               rest.deleteOriginalWebhookMessage(
                 application.id,
                 context.token,
-                {}
-              )
-            )
-          )
+                {},
+              ),
+            ),
+          ),
       ),
-      Effect.withSpan("Issueifier.followUp")
+      Effect.withSpan("Issueifier.followUp"),
     )
 
   const command = Ix.global(
@@ -146,21 +146,21 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           description: "What repository to create the issue in.",
           choices: Array.map(githubRepos, ({ label }, value) => ({
             name: label,
-            value
+            value,
           })),
-          required: true
-        }
-      ]
+          required: true,
+        },
+      ],
     },
     Effect.fn("Issueifier.command")(
-      function*(ix) {
+      function* (ix) {
         const context = yield* Ix.Interaction
         const repoIndex = ix.optionValue("repository")
         const repo = githubRepos[repoIndex]
         yield* Effect.annotateCurrentSpan({ repo: repo.label })
         const channel = yield* channels.get(
           context.guild_id!,
-          context.channel!.id
+          context.channel!.id,
         )
         if (channel.type !== Discord.ChannelTypes.PUBLIC_THREAD) {
           return yield* new NotInThreadError()
@@ -168,15 +168,15 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
         yield* followUp(context, channel, repo).pipe(
           Effect.annotateLogs("repo", repo.label),
           Effect.annotateLogs("thread", channel.id),
-          FiberMap.run(fiberMap, context.id)
+          FiberMap.run(fiberMap, context.id),
         )
         return Ix.response({
           type: Discord.InteractionCallbackTypes
-            .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+            .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
         })
       },
-      Effect.annotateLogs("command", "issueify")
-    )
+      Effect.annotateLogs("command", "issueify"),
+    ),
   )
 
   const ix = Ix.builder
@@ -187,10 +187,11 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
           type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: "This command can only be used in a thread",
-            flags: Discord.MessageFlags.Ephemeral
-          }
-        })
-      ))
+            flags: Discord.MessageFlags.Ephemeral,
+          },
+        }),
+      ),
+    )
     .catchAllCause(Effect.logError)
 
   yield* registry.register(ix)
@@ -201,20 +202,20 @@ export const IssueifierLive = Layer.effectDiscard(make).pipe(
   Layer.provide(ChannelsCache.layer),
   Layer.provide(DiscordGatewayLayer),
   Layer.provide(Messages.layer),
-  Layer.provide(Github.layer)
+  Layer.provide(Github.layer),
 )
 
 class ThreadSummary extends Schema.Class<ThreadSummary>("ThreadSummary")(
   {
     title: Schema.String.annotate({
-      description: "A short title summarizing the messages"
+      description: "A short title summarizing the messages",
     }),
     summary: Schema.String.annotate({
       description:
-        "A summary of the messages for a Github issue bug report or feature request"
-    })
+        "A summary of the messages for a Github issue bug report or feature request",
+    }),
   },
   {
-    description: "A summary of a Discord thread"
-  }
+    description: "A summary of a Discord thread",
+  },
 ) {}

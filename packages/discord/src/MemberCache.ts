@@ -11,26 +11,26 @@ export class GetMember extends Data.TaggedClass("GetMember")<{
 export class MemberCache extends ServiceMap.Service<MemberCache>()(
   "discord/MemberCache",
   {
-    make: Effect.gen(function*() {
+    make: Effect.gen(function* () {
       const rest = yield* DiscordREST
 
       const cache = yield* Cache.make({
         capacity: 1000,
         timeToLive: Duration.days(1),
         lookup: ({ guildId, userId }: GetMember) =>
-          rest.getGuildMember(guildId, userId)
+          rest.getGuildMember(guildId, userId),
       })
 
       return {
         get: (guildId: Discord.Snowflake, userId: Discord.Snowflake) =>
           Cache.get(cache, new GetMember({ guildId, userId })).pipe(
-            Effect.withSpan("MemberCache.get", { attributes: { userId } })
-          )
+            Effect.withSpan("MemberCache.get", { attributes: { userId } }),
+          ),
       } as const
-    })
-  }
+    }),
+  },
 ) {
   static readonly layer = Layer.effect(this, this.make).pipe(
-    Layer.provide(DiscordRestLayer)
+    Layer.provide(DiscordRestLayer),
   )
 }

@@ -5,18 +5,18 @@ import { Config, ConfigProvider, Effect, Layer, Option, Schedule } from "effect"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { nestedConfigProvider } from "./utils/Config.ts"
 
-const make = Effect.gen(function*() {
+const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.withDefault(
     Config.string("keyword"),
-    "[noembed]"
+    "[noembed]",
   )
   const urlWhitelist = yield* Config.withDefault(
     Config.string("urlWhitelist"),
-    "effect.website"
+    "effect.website",
   ).pipe(Config.map(toList))
   const urlExclude = yield* Config.withDefault(
     Config.string("urlExclude"),
-    "effect.website/play"
+    "effect.website/play",
   ).pipe(Config.map(toList))
 
   const gateway = yield* DiscordGateway
@@ -28,16 +28,14 @@ const make = Effect.gen(function*() {
     !urlExclude.some((_) => url.includes(_))
 
   const getChannel = (guildId: string, id: string) =>
-    Effect.flatMap(
-      channels.get(guildId, id),
-      (channel) =>
-        channel.type === Discord.ChannelTypes.PUBLIC_THREAD
-          ? channels.get(guildId, channel.parent_id!)
-          : Effect.succeed(channel)
+    Effect.flatMap(channels.get(guildId, id), (channel) =>
+      channel.type === Discord.ChannelTypes.PUBLIC_THREAD
+        ? channels.get(guildId, channel.parent_id!)
+        : Effect.succeed(channel),
     )
 
   const handleMessage = Effect.fnUntraced(
-    function*(event: Discord.GatewayMessageCreateDispatchData) {
+    function* (event: Discord.GatewayMessageCreateDispatchData) {
       const channel = yield* getChannel(event.guild_id!, event.channel_id)
       if (!isEligibleChannel(channel, topicKeyword)) {
         return
@@ -52,11 +50,11 @@ const make = Effect.gen(function*() {
       }
 
       yield* rest.updateMessage(message.value.channel_id, message.value.id, {
-        flags: message.value.flags | Discord.MessageFlags.SuppressEmbeds
+        flags: message.value.flags | Discord.MessageFlags.SuppressEmbeds,
       })
     },
     Effect.withSpan("NoEmbed.handleMessage"),
-    Effect.catchCause(Effect.logDebug)
+    Effect.catchCause(Effect.logDebug),
   )
 
   yield* gateway
@@ -70,13 +68,13 @@ const make = Effect.gen(function*() {
   Effect.annotateLogs({ service: "NoEmbed" }),
   Effect.provideService(
     ConfigProvider.ConfigProvider,
-    nestedConfigProvider("noembed")
-  )
+    nestedConfigProvider("noembed"),
+  ),
 )
 
 export const NoEmbedLive = Layer.effectDiscard(make).pipe(
   Layer.provide(ChannelsCache.layer),
-  Layer.provide(DiscordGatewayLayer)
+  Layer.provide(DiscordGatewayLayer),
 )
 
 const toList = (value: string) =>
@@ -87,7 +85,7 @@ const toList = (value: string) =>
 
 const isEligibleChannel = (
   channel: Discord.GetChannel200,
-  topicKeyword: string
+  topicKeyword: string,
 ) =>
   "topic" in channel &&
   typeof channel.topic === "string" &&
@@ -95,7 +93,7 @@ const isEligibleChannel = (
 
 const toEligibleMessage = (
   event: Discord.MessageResponse,
-  validUrl: (_: string) => boolean
+  validUrl: (_: string) => boolean,
 ) => {
   if (typeof event?.id !== "string" || typeof event?.channel_id !== "string") {
     return Option.none()
@@ -121,6 +119,6 @@ const toEligibleMessage = (
   return Option.some({
     id: event.id,
     channel_id: event.channel_id,
-    flags: typeof event.flags === "number" ? event.flags : 0
+    flags: typeof event.flags === "number" ? event.flags : 0,
   })
 }

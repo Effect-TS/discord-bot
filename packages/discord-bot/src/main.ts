@@ -15,9 +15,9 @@ import { Summarizer } from "./Summarizer.ts"
 
 const LogLevelLive = Layer.effect(
   References.MinimumLogLevel,
-  Config.withDefault(Config.boolean("DEBUG"), false).pipe(
-    Config.map((debug) => (debug ? "All" : "Info"))
-  ).asEffect()
+  Config.withDefault(Config.boolean("DEBUG"), false)
+    .pipe(Config.map((debug) => (debug ? "All" : "Info")))
+    .asEffect(),
 )
 
 const MainLive = Layer.mergeAll(
@@ -31,7 +31,7 @@ const MainLive = Layer.mergeAll(
   PlaygroundLive,
   RemindersLive,
   ReproRequesterLive,
-  Summarizer.layer
+  Summarizer.layer,
 ).pipe(Layer.provide(TracerLayer("discord-bot")), Layer.provide(LogLevelLive))
 
 NodeRuntime.runMain(Layer.launch(MainLive))

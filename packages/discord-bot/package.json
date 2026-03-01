@@ -9,16 +9,17 @@
   "devDependencies": {
     "@chat/discord": "workspace:*",
     "@chat/shared": "workspace:*",
-    "@effect/ai-openai": "https://pkg.pr.new/Effect-TS/effect-smol/@effect/ai-openai@e691909",
-    "@effect/platform-node": "https://pkg.pr.new/Effect-TS/effect-smol/@effect/platform-node@e691909",
+    "@effect/ai-openai": "catalog:",
+    "@effect/platform-node": "catalog:",
     "@octokit/plugin-rest-endpoint-methods": "^17.0.0",
     "@octokit/types": "^16.0.0",
-    "@types/node": "^24.10.1",
-    "dfx": "^1.0.5",
-    "effect": "https://pkg.pr.new/Effect-TS/effect-smol/effect@e691909",
+    "@types/node": "^25.3.3",
+    "dfx": "catalog:",
+    "effect": "catalog:",
     "fuzzysort": "^3.1.0",
     "glob": "^13.0.6",
     "html-entities": "^2.6.0",
-    "octokit": "^5.0.5"
+    "octokit": "^5.0.5",
+    "prettier": "^3.8.1"
   }
 }

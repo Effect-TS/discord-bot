@@ -11,32 +11,32 @@ export const cleanupMarkdown = (content: string) =>
     .replace(/([^\n])\n```([^\n]*\n[^\n])/gm, "$1\n\n```$2")
 
 export class Messages extends ServiceMap.Service<Messages>()("app/Messages", {
-  make: Effect.gen(function*() {
+  make: Effect.gen(function* () {
     const rest = yield* DiscordREST
     const members = yield* MemberCache
 
-    const replaceMentions = Effect.fnUntraced(function*(
+    const replaceMentions = Effect.fnUntraced(function* (
       guildId: Discord.Snowflake,
-      content: string
+      message: string,
     ) {
       const mentions = yield* Effect.forEach(
-        content.matchAll(/<@(\d+)>/g),
+        message.matchAll(/<@(\d+)>/g),
         ([, userId]) =>
           Effect.option(members.get(guildId, userId as Discord.Snowflake)),
-        { concurrency: "unbounded" }
+        { concurrency: "unbounded" },
       )
 
       return mentions.reduce(
-        (content, member) =>
-          Option.match(member, {
+        (content, omember) =>
+          Option.match(omember, {
             onNone: () => content,
             onSome: (member) =>
               content.replace(
                 new RegExp(`<@${member.user!.id}>`, "g"),
-                `**@${member.nick ?? member.user!.username}**`
-              )
+                `**@${member.nick ?? member.user!.username}**`,
+              ),
           }),
-        content
+        message,
       )
     })
 
@@ -46,20 +46,21 @@ export class Messages extends ServiceMap.Service<Messages>()("app/Messages", {
           pipe(
             rest.listMessages(channelId, {
               limit: 100,
-              before: Option.getOrUndefined(before)!
+              before: Option.getOrUndefined(before)!,
             }),
             Effect.map((messages) =>
               messages.length < 100
                 ? ([
-                  messages,
-                  Option.none<Option.Option<Discord.Snowflake>>()
-                ] as const)
+                    messages,
+                    Option.none<Option.Option<Discord.Snowflake>>(),
+                  ] as const)
                 : ([
-                  messages,
-                  Option.some(Option.some(messages[messages.length - 1].id))
-                ] as const)
-            )
-          )),
+                    messages,
+                    Option.some(Option.some(messages[messages.length - 1].id)),
+                  ] as const),
+            ),
+          ),
+        ),
         // only include normal messages
         Stream.flatMap(
           (msg) => {
@@ -67,8 +68,8 @@ export class Messages extends ServiceMap.Service<Messages>()("app/Messages", {
               return Stream.fromEffect(
                 rest.getMessage(
                   msg.message_reference!.channel_id!,
-                  msg.message_reference!.message_id!
-                )
+                  msg.message_reference!.message_id!,
+                ),
               )
             } else if (
               msg.content !== "" &&
@@ -80,18 +81,18 @@ export class Messages extends ServiceMap.Service<Messages>()("app/Messages", {
 
             return Stream.empty
           },
-          { concurrency: "unbounded" }
-        )
+          { concurrency: "unbounded" },
+        ),
       )
 
     const cleanForChannel = (
-      channel: Discord.ThreadResponse | Discord.GuildChannelResponse
+      channel: Discord.ThreadResponse | Discord.GuildChannelResponse,
     ) =>
       pipe(
         regularForChannel(channel.id),
         Stream.map((msg) => ({
           ...msg,
-          content: cleanupMarkdown(msg.content)
+          content: cleanupMarkdown(msg.content),
         })),
         Stream.mapEffect(
           (msg) =>
@@ -99,22 +100,22 @@ export class Messages extends ServiceMap.Service<Messages>()("app/Messages", {
               replaceMentions(channel.guild_id, msg.content),
               (content): Discord.MessageResponse => ({
                 ...msg,
-                content
-              })
+                content,
+              }),
             ),
-          { concurrency: "unbounded" }
-        )
+          { concurrency: "unbounded" },
+        ),
       )
 
     return {
       regularForChannel,
       cleanForChannel,
-      replaceMentions
+      replaceMentions,
     } as const
-  })
+  }),
 }) {
   static readonly layer = Layer.effect(this, this.make).pipe(
     Layer.provide(MemberCache.layer),
-    Layer.provide(DiscordRestLayer)
+    Layer.provide(DiscordRestLayer),
   )
 }

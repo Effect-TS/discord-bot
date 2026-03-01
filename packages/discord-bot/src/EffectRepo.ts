@@ -10,7 +10,7 @@ import {
   Schedule,
   Schema,
   ServiceMap,
-  Stream
+  Stream,
 } from "effect"
 import { glob } from "glob"
 import { Git } from "./Git.ts"
@@ -18,7 +18,7 @@ import { Ripgrep } from "./Ripgrep.ts"
 
 export class EffectRepoError extends Schema.TaggedErrorClass<EffectRepoError>()(
   "EffectRepoError",
-  { cause: Schema.Defect }
+  { cause: Schema.Defect },
 ) {}
 
 export class EffectRepo extends ServiceMap.Service<
@@ -48,7 +48,7 @@ export class EffectRepo extends ServiceMap.Service<
 >()("discord-bot/EffectRepo") {
   static readonly layer = Layer.effect(
     EffectRepo,
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const git = yield* Git
       const rg = yield* Ripgrep
       const fs = yield* FileSystem.FileSystem
@@ -56,22 +56,19 @@ export class EffectRepo extends ServiceMap.Service<
 
       const repo = Fiber.join(
         yield* Effect.forkScoped(
-          git.clone("https://github.com/effect-ts/effect-smol.git")
-        )
+          git.clone("https://github.com/effect-ts/effect-smol.git"),
+        ),
       )
 
       // Pull the repo every 15 minutes to keep it up to date
-      yield* Effect.gen(function*() {
+      yield* Effect.gen(function* () {
         const repoPath = yield* repo
         while (true) {
           yield* Effect.sleep("15 minutes")
           yield* git.pull(repoPath)
           yield* RcRef.invalidate(llmsMd)
         }
-      }).pipe(
-        Effect.retry(Schedule.forever),
-        Effect.forkScoped
-      )
+      }).pipe(Effect.retry(Schedule.forever), Effect.forkScoped)
 
       const search = (options: {
         readonly pattern: string
@@ -84,22 +81,22 @@ export class EffectRepo extends ServiceMap.Service<
               directory: repoPath,
               pattern: options.pattern,
               glob: options.glob,
-              maxPerFile: options.maxPerFile
-            })
+              maxPerFile: options.maxPerFile,
+            }),
           ),
           Stream.unwrap,
-          Stream.mapError((cause) => new EffectRepoError({ cause }))
+          Stream.mapError((cause) => new EffectRepoError({ cause })),
         )
 
       const readFileRange = Effect.fnUntraced(
-        function*(options: {
+        function* (options: {
           readonly path: string
           readonly startLine?: number | undefined
           readonly endLine?: number | undefined
         }) {
           const repoPath = yield* repo
           const content = yield* fs.readFileString(
-            path.join(repoPath, options.path)
+            path.join(repoPath, options.path),
           )
           const lines = content.split("\n")
           const start = Math.max(0, (options.startLine ?? 1) - 1)
@@ -111,39 +108,39 @@ export class EffectRepo extends ServiceMap.Service<
           attributes: {
             "file.path": options.path,
             "file.startLine": options.startLine ?? 1,
-            "file.endLine": options.endLine ?? "EOF"
-          }
-        }))
+            "file.endLine": options.endLine ?? "EOF",
+          },
+        })),
       )
 
       const globFiles = Effect.fnUntraced(
-        function*(options: { readonly pattern: string }) {
+        function* (options: { readonly pattern: string }) {
           const repoPath = yield* repo
           return yield* Effect.tryPromise(() =>
-            glob(options.pattern, { cwd: repoPath })
+            glob(options.pattern, { cwd: repoPath }),
           )
         },
         Effect.mapError((cause) => new EffectRepoError({ cause })),
         Effect.withSpan("EffectRepo.glob", (options) => ({
           attributes: {
-            "glob.pattern": options.pattern
-          }
-        }))
+            "glob.pattern": options.pattern,
+          },
+        })),
       )
 
       const llmsMd = yield* RcRef.make({
         acquire: readFileRange({
-          path: "LLMS.md"
+          path: "LLMS.md",
         }),
-        idleTimeToLive: Duration.infinity
+        idleTimeToLive: Duration.infinity,
       })
 
       return EffectRepo.of({
         search,
         readFileRange,
         glob: globFiles,
-        llmsMd: Effect.scoped(RcRef.get(llmsMd))
+        llmsMd: Effect.scoped(RcRef.get(llmsMd)),
       })
-    })
+    }),
   ).pipe(Layer.provide([Git.layer, Ripgrep.layer, NodeServices.layer]))
 }

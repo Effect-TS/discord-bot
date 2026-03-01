@@ -11,8 +11,8 @@ export const OpenAiLive = OpenAiClient.layerConfig({
   apiKey: Config.redacted("OPENAI_API_KEY"),
   transformClient: HttpClient.retryTransient({
     times: 3,
-    schedule: Schedule.exponential(500)
-  })
+    schedule: Schedule.exponential(500),
+  }),
 }).pipe(Layer.provide(NodeHttpClient.layerUndici))
 
 export const ChatModel = OpenAiLanguageModel.model("gpt-5.2")
@@ -20,7 +20,7 @@ export const ChatModel = OpenAiLanguageModel.model("gpt-5.2")
 export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
   "app/AiHelpers",
   {
-    make: Effect.gen(function*() {
+    make: Effect.gen(function* () {
       const rest = yield* DiscordREST
       const model = yield* ChatModel
 
@@ -29,7 +29,7 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
 
       const generateAiInput = (
         thread: Discord.ThreadResponse,
-        message?: Discord.MessageResponse
+        message?: Discord.MessageResponse,
       ) =>
         pipe(
           Effect.all(
@@ -37,39 +37,39 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
               openingMessage: rest.getMessage(thread.parent_id!, thread.id),
               messages: rest.listMessages(thread.id, {
                 before: message?.id,
-                limit: 10
-              })
+                limit: 10,
+              }),
             },
-            { concurrency: "unbounded" }
+            { concurrency: "unbounded" },
           ),
           Effect.map(({ messages, openingMessage }) =>
             Prompt.make(
               [...(message ? [message] : []), ...messages, openingMessage]
-                .reverse()
+                .toReversed()
                 .filter(
                   (msg) =>
                     msg.type === Discord.MessageType.DEFAULT ||
-                    msg.type === Discord.MessageType.REPLY
+                    msg.type === Discord.MessageType.REPLY,
                 )
                 .filter((msg) => msg.content.trim().length > 0)
                 .map(
                   (msg): Prompt.Message =>
                     msg.author.id === botUser.id
                       ? Prompt.makeMessage("assistant", {
-                        content: [
-                          Prompt.makePart("text", { text: msg.content })
-                        ]
-                      })
+                          content: [
+                            Prompt.makePart("text", { text: msg.content }),
+                          ],
+                        })
                       : Prompt.makeMessage("user", {
-                        content: [
-                          Prompt.makePart("text", {
-                            text: `<@${msg.author.id}>: ${msg.content}`
-                          })
-                        ]
-                      })
-                )
-            )
-          )
+                          content: [
+                            Prompt.makePart("text", {
+                              text: `<@${msg.author.id}>: ${msg.content}`,
+                            }),
+                          ],
+                        }),
+                ),
+            ),
+          ),
         )
 
       const generateTitle = (prompt: string) =>
@@ -77,29 +77,27 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
           prompt: [
             {
               role: "system",
-              content:
-                `You are a helpful assistant for the Effect Typescript library Discord community.
+              content: `You are a helpful assistant for the Effect Typescript library Discord community.
 
-Create a short title summarizing the message. Do not include markdown in the title or prefix it with "Title:". The title should be concise and descriptive.`
+Create a short title summarizing the message. Do not include markdown in the title or prefix it with "Title:". The title should be concise and descriptive.`,
             },
-            { role: "user", content: [{ type: "text", text: prompt }] }
-          ]
+            { role: "user", content: [{ type: "text", text: prompt }] },
+          ],
         }).pipe(
           Effect.provide(model),
           OpenAiLanguageModel.withConfigOverride({
-            temperature: 0.25
+            temperature: 0.25,
             // TODO
             // max_tokens: 64
           }),
           Effect.map((_) => cleanTitle(_.text)),
-          Effect.withSpan("Ai.generateTitle", { attributes: { prompt } })
+          Effect.withSpan("Ai.generateTitle", { attributes: { prompt } }),
         )
 
-      const generateDocs = Effect.fn("AiHelpers.generateDocs")(function*(
+      const generateDocs = Effect.fn("AiHelpers.generateDocs")(function* (
         title: string,
         messages: Prompt.Prompt,
-        instruction =
-          "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate."
+        instruction = "Create a documentation article from the above chat messages. The article should be written in markdown and should contain code examples where appropiate.",
       ) {
         const prompt = Prompt.concat(messages, Prompt.make(instruction))
         const response = yield* LanguageModel.generateText({
@@ -107,14 +105,13 @@ Create a short title summarizing the message. Do not include markdown in the tit
             Prompt.make([
               {
                 role: "system",
-                content:
-                  `You are a helpful assistant for the Effect Typescript library Discord community.
+                content: `You are a helpful assistant for the Effect Typescript library Discord community.
 
-The title of this chat is "${title}".`
-              }
+The title of this chat is "${title}".`,
+              },
             ]),
-            prompt
-          )
+            prompt,
+          ),
         })
         return response.text
       }, Effect.provide(model))
@@ -123,20 +120,20 @@ The title of this chat is "${title}".`
         generateDocs(
           title,
           messages,
-          "Summarize the above messages. Also include some key takeaways."
+          "Summarize the above messages. Also include some key takeaways.",
         )
 
       return {
         generateTitle,
         generateDocs,
         generateSummary,
-        generateAiInput
+        generateAiInput,
       } as const
-    })
-  }
+    }),
+  },
 ) {
   static readonly layer = Layer.effect(this, this.make).pipe(
-    Layer.provide(OpenAiLive)
+    Layer.provide(OpenAiLive),
   )
 }
 

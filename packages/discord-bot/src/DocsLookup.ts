@@ -9,7 +9,7 @@ import {
   Option,
   Resource,
   Schedule,
-  Schema
+  Schema,
 } from "effect"
 import type { Mutable } from "effect/Types"
 import { HttpClient, HttpClientResponse } from "effect/unstable/http"
@@ -17,26 +17,26 @@ import fuzzysort from "fuzzysort"
 import * as Prettier from "prettier"
 
 const docUrls = [
-  "https://raw.githubusercontent.com/tim-smart/effect-io-ai/refs/heads/main/json/_all.json"
+  "https://raw.githubusercontent.com/tim-smart/effect-io-ai/refs/heads/main/json/_all.json",
 ]
 
-const make = Effect.gen(function*() {
+const make = Effect.gen(function* () {
   const registry = yield* InteractionsRegistry
 
   const docsClient = (yield* HttpClient.HttpClient).pipe(
     HttpClient.filterStatusOk,
-    HttpClient.retry(retryPolicy)
+    HttpClient.retry(retryPolicy),
   )
 
   const loadDocs = (url: string) =>
     Effect.flatMap(
       docsClient.get(url),
-      HttpClientResponse.schemaBodyJson(DocEntry.Array)
+      HttpClientResponse.schemaBodyJson(DocEntry.Array),
     )
 
   const docs = yield* Resource.auto(
     Effect.forEach(docUrls, loadDocs, {
-      concurrency: docUrls.length
+      concurrency: docUrls.length,
     }).pipe(
       Effect.map((_) =>
         _.flat().reduce(
@@ -44,20 +44,20 @@ const make = Effect.gen(function*() {
             acc[entry.searchTerm] = entry
             return acc
           },
-          {} as Record<string, DocEntry>
-        )
+          {} as Record<string, DocEntry>,
+        ),
       ),
       Effect.map((map) => ({
         forSearch: Object.entries(map).map(([key, entry]) => ({
           term: entry.preparedFuzzySearch,
           key,
           label: `${entry.nameWithModule} (${entry._tag}) (${entry.project})`,
-          entry
+          entry,
         })),
-        map
-      }))
+        map,
+      })),
     ),
-    Schedule.spaced(Duration.hours(3))
+    Schedule.spaced(Duration.hours(3)),
   )
 
   const search = (query: string) => {
@@ -65,11 +65,11 @@ const make = Effect.gen(function*() {
     return Effect.logDebug("searching").pipe(
       Effect.andThen(Resource.get(docs)),
       Effect.map(({ forSearch }) =>
-        fuzzysort.go(query, forSearch, { key: "term" }).map((x) => x.obj)
+        fuzzysort.go(query, forSearch, { key: "term" }).map((x) => x.obj),
       ),
       Effect.annotateLogs("module", "DocsLookup"),
       Effect.annotateLogs("query", query),
-      Effect.withSpan("DocsLookup.search", { attributes: { query } })
+      Effect.withSpan("DocsLookup.search", { attributes: { query } }),
     )
   }
 
@@ -83,33 +83,33 @@ const make = Effect.gen(function*() {
           name: "query",
           description: "The query to search for",
           required: true,
-          autocomplete: true
+          autocomplete: true,
         },
         {
           type: Discord.ApplicationCommandOptionType.BOOLEAN,
           name: "public",
           description: "Make the results visible for everyone",
-          required: true
-        }
-      ]
+          required: true,
+        },
+      ],
     },
     Effect.fn("DocsLookup.command")(
-      function*(ix) {
+      function* (ix) {
         const key = ix.optionValue("query")
         const reveal = ix.optionValue("public")
         const { map } = yield* Resource.get(docs)
         const entry = yield* Effect.fromNullishOr(map[key])
         yield* Effect.annotateCurrentSpan({
           entry: entry.nameWithModule,
-          public: reveal
+          public: reveal,
         })
         const embed = yield* entry.embed
         return Ix.response({
           type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             flags: reveal ? undefined : Discord.MessageFlags.Ephemeral,
-            embeds: [embed]
-          }
+            embeds: [embed],
+          },
         })
       },
       Effect.catchTags({
@@ -120,17 +120,17 @@ const make = Effect.gen(function*() {
                 .CHANNEL_MESSAGE_WITH_SOURCE,
               data: {
                 flags: Discord.MessageFlags.Ephemeral,
-                content: `Sorry, that query could not be found.`
-              }
-            })
-          )
-      })
-    )
+                content: `Sorry, that query could not be found.`,
+              },
+            }),
+          ),
+      }),
+    ),
   )
 
   const autocomplete = Ix.autocomplete(
     Ix.option("docs", "query"),
-    Effect.gen(function*() {
+    Effect.gen(function* () {
       const query = String(yield* Ix.focusedOptionValue)
       yield* Effect.annotateCurrentSpan("query", query)
       if (query.length < 3) {
@@ -143,9 +143,9 @@ const make = Effect.gen(function*() {
         data: {
           choices: results.slice(0, 25).map(({ key, label }) => ({
             name: label,
-            value: key
-          }))
-        }
+            value: key,
+          })),
+        },
       })
     }).pipe(
       Effect.catchTags({
@@ -154,12 +154,12 @@ const make = Effect.gen(function*() {
             Ix.response({
               type: Discord.InteractionCallbackTypes
                 .APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-              data: { choices: [] }
-            })
-          )
+              data: { choices: [] },
+            }),
+          ),
       }),
-      Effect.withSpan("DocsLookup.autocomplete")
-    )
+      Effect.withSpan("DocsLookup.autocomplete"),
+    ),
   )
 
   const ix = Ix.builder
@@ -171,7 +171,7 @@ const make = Effect.gen(function*() {
 })
 
 export const DocsLookupLive = Layer.effectDiscard(make).pipe(
-  Layer.provide(DiscordGatewayLayer)
+  Layer.provide(DiscordGatewayLayer),
 )
 
 // schema
@@ -179,7 +179,7 @@ export const DocsLookupLive = Layer.effectDiscard(make).pipe(
 class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   _tag: Schema.String,
   module: Schema.Struct({
-    name: Schema.String
+    name: Schema.String,
   }),
   project: Schema.String,
   name: Schema.String,
@@ -189,16 +189,17 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   since: Schema.String,
   category: Schema.OptionFromOptional(Schema.String),
   signature: Schema.OptionFromOptional(Schema.String),
-  sourceUrl: Schema.String
+  sourceUrl: Schema.String,
 }) {
   static readonly Array = Schema.Array(this)
   static readonly decode = Schema.decodeUnknownEffect(this)
   static readonly decodeArray = Schema.decodeUnknownEffect(this.Array)
 
   get url() {
-    const project = this.project === "effect"
-      ? "effect/effect"
-      : this.project.replace(/^@/g, "")
+    const project =
+      this.project === "effect"
+        ? "effect/effect"
+        : this.project.replace(/^@/g, "")
     return `https://effect-ts.github.io/${project}/${this.module.name}.html#${this.name.toLowerCase()}`
   }
 
@@ -219,14 +220,14 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   }
 
   readonly preparedFuzzySearch = fuzzysort.prepare(
-    `${this.moduleTitle}.${this.name}`
+    `${this.moduleTitle}.${this.name}`,
   )
 
   get embed(): Effect.Effect<Discord.RichEmbed> {
-    return Effect.gen({ self: this }, function*() {
+    return Effect.gen({ self: this }, function* () {
       const embed: Mutable<Discord.RichEmbed> = {
         author: {
-          name: this.project
+          name: this.project,
         },
         title: this.nameWithModule,
         color: 0x882ecb,
@@ -235,17 +236,17 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
         fields: [
           {
             name: " ",
-            value: `[View source](${this.sourceUrl})`
-          }
+            value: `[View source](${this.sourceUrl})`,
+          },
         ],
         footer: {
-          text: `Added in v${this.since}`
-        }
+          text: `Added in v${this.since}`,
+        },
       }
 
       if (Option.isSome(this.signature)) {
-        embed.description += "\n\n```ts\n" +
-          (yield* prettify(this.signature.value)) + "\n```"
+        embed.description +=
+          "\n\n```ts\n" + (yield* prettify(this.signature.value)) + "\n```"
       }
 
       if (this.examples.length > 0) {
@@ -266,8 +267,8 @@ const prettify = (code: string) =>
   Effect.tryPromise(() =>
     Prettier.format(code, {
       parser: "typescript",
-      semi: false
-    })
+      semi: false,
+    }),
   ).pipe(Effect.orElseSucceed(() => code))
 
 // errors

@@ -7,10 +7,10 @@ import { DiscordApplication } from "./DiscordRest.ts"
 const DiscordLayer = DiscordIxLive.pipe(
   Layer.provideMerge(NodeHttpClient.layerUndici),
   Layer.provide(NodeSocket.layerWebSocketConstructor),
-  Layer.provide(DiscordConfigLayer)
+  Layer.provide(DiscordConfigLayer),
 )
 
 export const DiscordGatewayLayer = Layer.merge(
   DiscordLayer,
-  DiscordApplication.layer
+  DiscordApplication.layer,
 )

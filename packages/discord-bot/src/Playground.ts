@@ -3,7 +3,7 @@ import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, Encoding, Layer, Option } from "effect"
 
-export const PlaygroundLive = Effect.gen(function*() {
+export const PlaygroundLive = Effect.gen(function* () {
   const registry = yield* InteractionsRegistry
 
   const linkFromCode = (code: string) =>
@@ -15,10 +15,10 @@ export const PlaygroundLive = Effect.gen(function*() {
   const menu = Ix.global(
     {
       type: Discord.ApplicationCommandType.MESSAGE,
-      name: "Open in playground"
+      name: "Open in playground",
     },
     Effect.fn("Playground.command")(
-      function*(ix) {
+      function* (ix) {
         const code = yield* extractCode(ix.target.content)
         const url = yield* linkFromCode(code)
 
@@ -28,17 +28,16 @@ export const PlaygroundLive = Effect.gen(function*() {
             type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
               flags: Discord.MessageFlags.Ephemeral,
-              content:
-                `The code snippet is too long to be displayed in a single message.`
-            }
+              content: `The code snippet is too long to be displayed in a single message.`,
+            },
           })
         }
         return Ix.response({
           type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             flags: Discord.MessageFlags.Ephemeral,
-            content: `Here is your [playground link](${url}).`
-          }
+            content: `Here is your [playground link](${url}).`,
+          },
         })
       },
       Effect.catchTag("NoSuchElementError", () =>
@@ -47,11 +46,12 @@ export const PlaygroundLive = Effect.gen(function*() {
             type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
               flags: Discord.MessageFlags.Ephemeral,
-              content: "No code snippets were found in the message."
-            }
-          })
-        ))
-    )
+              content: "No code snippets were found in the message.",
+            },
+          }),
+        ),
+      ),
+    ),
   )
 
   const ix = Ix.builder.add(menu).catchAllCause(Effect.logError)

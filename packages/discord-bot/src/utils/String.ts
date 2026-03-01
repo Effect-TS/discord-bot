@@ -3,7 +3,7 @@ import { Option, pipe } from "effect"
 export const firstParagraph = (str: string) => str.trim().split("\n")[0].trim()
 
 export const removeQuotes = (str: string) =>
-  str.startsWith("\"") && str.endsWith("\"") ? str.slice(1, -1) : str
+  str.startsWith('"') && str.endsWith('"') ? str.slice(1, -1) : str
 
 export const removePeriod = (str: string) =>
   str.endsWith(".") ? str.slice(0, -1) : str
@@ -12,7 +12,7 @@ export const nonEmpty = (str: string | undefined) =>
   pipe(
     Option.fromNullishOr(str),
     Option.map((_) => _.trim()),
-    Option.filter((_) => _.length > 0)
+    Option.filter((_) => _.length > 0),
   )
 
 export const truncateWords = (str: string, nWords: number, suffix = "...") => {
