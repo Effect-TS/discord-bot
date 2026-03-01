@@ -14,8 +14,8 @@ catalogs:
       specifier: 4.0.0-beta.21
       version: 4.0.0-beta.21
     dfx:
-      specifier: ^1.0.7
-      version: 1.0.7
+      specifier: ^1.0.8
+      version: 1.0.8
     effect:
       specifier: 4.0.0-beta.21
       version: 4.0.0-beta.21
@@ -68,7 +68,7 @@ importers:
         version: 4.0.0-beta.21(effect@4.0.0-beta.21)(ioredis@5.9.3)
       dfx:
         specifier: 'catalog:'
-        version: 1.0.7(effect@4.0.0-beta.21)
+        version: 1.0.8(effect@4.0.0-beta.21)
       effect:
         specifier: 'catalog:'
         version: 4.0.0-beta.21
@@ -98,7 +98,7 @@ importers:
         version: 25.3.3
       dfx:
         specifier: 'catalog:'
-        version: 1.0.7(effect@4.0.0-beta.21)
+        version: 1.0.8(effect@4.0.0-beta.21)
       effect:
         specifier: 'catalog:'
         version: 4.0.0-beta.21
@@ -1378,8 +1378,8 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  dfx@1.0.7:
-    resolution: {integrity: sha512-EPwPxmL5WVNEPSn9tdpyQS+f6zd+1UkJj4vFIU+OpvVl3C50PAuFYVopmmXqWAzMdqS+3OsfehPllXZoVR9x4Q==}
+  dfx@1.0.8:
+    resolution: {integrity: sha512-RQwMudGwMeEVaqxDyLHnrDCk2upzxXozFpkk1FZs4oV8HwUB1TPr6It7SPn/Rh5OYAsXfsQs4lZbBeegJZ2AOw==}
     peerDependencies:
       effect: 4.0.0-beta.21
 
@@ -2912,7 +2912,7 @@ snapshots:
   detect-libc@2.1.2:
     optional: true
 
-  dfx@1.0.7(effect@4.0.0-beta.21):
+  dfx@1.0.8(effect@4.0.0-beta.21):
     dependencies:
       discord-api-types: 0.38.40
       effect: 4.0.0-beta.21
