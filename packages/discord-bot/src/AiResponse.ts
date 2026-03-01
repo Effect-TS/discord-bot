@@ -164,7 +164,9 @@ ${llmsMd}`,
             type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
             data: {
               content: "The clanker is thinking...",
-              flags: Discord.MessageFlags.Ephemeral,
+              flags:
+                Discord.MessageFlags.Ephemeral |
+                Discord.MessageFlags.SuppressEmbeds,
             },
           })
         }
@@ -197,6 +199,7 @@ ${llmsMd}`,
             {
               payload: {
                 content: response.text,
+                flags: Discord.MessageFlags.SuppressEmbeds,
               },
             },
           )
