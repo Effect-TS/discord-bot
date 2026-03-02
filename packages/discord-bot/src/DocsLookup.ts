@@ -20,7 +20,15 @@ const docUrls = [
   "https://raw.githubusercontent.com/tim-smart/effect-io-ai/refs/heads/main/json/_all.json",
 ]
 
-const make = Effect.gen(function* () {
+const docV4Urls = [
+  "https://raw.githubusercontent.com/tim-smart/effect-io-ai/refs/heads/main/json/effect-smol/_all.json",
+]
+
+const make = Effect.fn(function* (options: {
+  readonly docUrls: ReadonlyArray<string>
+  readonly name: string
+  readonly description: string
+}) {
   const registry = yield* InteractionsRegistry
 
   const docsClient = (yield* HttpClient.HttpClient).pipe(
@@ -35,7 +43,7 @@ const make = Effect.gen(function* () {
     )
 
   const docs = yield* Resource.auto(
-    Effect.forEach(docUrls, loadDocs, {
+    Effect.forEach(options.docUrls, loadDocs, {
       concurrency: docUrls.length,
     }).pipe(
       Effect.map((_) =>
@@ -69,14 +77,19 @@ const make = Effect.gen(function* () {
       ),
       Effect.annotateLogs("module", "DocsLookup"),
       Effect.annotateLogs("query", query),
-      Effect.withSpan("DocsLookup.search", { attributes: { query } }),
+      Effect.withSpan("DocsLookup.search", {
+        attributes: {
+          name: options.name,
+          query,
+        },
+      }),
     )
   }
 
   const command = Ix.global(
     {
-      name: "docs",
-      description: "Search the Effect reference docs",
+      name: options.name,
+      description: options.description,
       options: [
         {
           type: Discord.ApplicationCommandOptionType.STRING,
@@ -100,6 +113,7 @@ const make = Effect.gen(function* () {
         const { map } = yield* Resource.get(docs)
         const entry = yield* Effect.fromNullishOr(map[key])
         yield* Effect.annotateCurrentSpan({
+          name: options.name,
           entry: entry.nameWithModule,
           public: reveal,
         })
@@ -129,7 +143,7 @@ const make = Effect.gen(function* () {
   )
 
   const autocomplete = Ix.autocomplete(
-    Ix.option("docs", "query"),
+    Ix.option(options.name, "query"),
     Effect.gen(function* () {
       const query = String(yield* Ix.focusedOptionValue)
       yield* Effect.annotateCurrentSpan("query", query)
@@ -170,9 +184,22 @@ const make = Effect.gen(function* () {
   yield* registry.register(ix)
 })
 
-export const DocsLookupLive = Layer.effectDiscard(make).pipe(
-  Layer.provide(DiscordGatewayLayer),
-)
+export const DocsLookupLive = Layer.merge(
+  Layer.effectDiscard(
+    make({
+      name: "docs",
+      description: "Lookup documentation for Effect modules and functions",
+      docUrls,
+    }),
+  ),
+  Layer.effectDiscard(
+    make({
+      name: "docs-v4",
+      description: "Lookup documentation for Effect v4 modules and functions",
+      docUrls: docV4Urls,
+    }),
+  ),
+).pipe(Layer.provide(DiscordGatewayLayer))
 
 // schema
 
@@ -196,6 +223,9 @@ class DocEntry extends Schema.Class<DocEntry>("DocEntry")({
   static readonly decodeArray = Schema.decodeUnknownEffect(this.Array)
 
   get url() {
+    if (this.sourceUrl.includes("effect-smol")) {
+      return this.sourceUrl
+    }
     const project =
       this.project === "effect"
         ? "effect/effect"
