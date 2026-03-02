@@ -134,7 +134,7 @@ export const AiResponse = Layer.effectDiscard(
             `You are an assistant for the Effect Discord server. Respond to the conversation, using the following tools when appropriate:
 
 - \`read\`: Read a file (or part of a file) from the effect repository.
-- \`rg\`: Use "rg" to find files in the effect repository. The pattern is passed directly to rg using child process apis, so adjust escaping accordingly.
+- \`rg\`: Use "rg" to find files in the effect repository.
 - \`glob\`: Find files in the effect repository matching a glob pattern.
 
 Do not use emojis or excessive formatting in your responses. Be concise and to the point.
@@ -180,7 +180,7 @@ ${llmsMd}`,
 
     const application = yield* DiscordApplication
     const rest = yield* DiscordREST
-    const chatModel = yield* OpenAiLanguageModel.model("gpt-5.2")
+    const chatModel = yield* OpenAiLanguageModel.model("gpt-5.2-codex")
     const generate = Effect.fn("AiResponse.generate")(
       function* (context: Discord.APIInteraction, prompt: Prompt.Prompt) {
         const chat = yield* Chat.fromPrompt(prompt)
