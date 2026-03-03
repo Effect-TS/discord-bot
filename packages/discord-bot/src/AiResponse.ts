@@ -1,7 +1,7 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { OpenAiLanguageModel } from "@effect/ai-openai"
-import { Discord, DiscordREST, Ix } from "dfx"
+import { Discord, DiscordREST, Ix, UI } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Data, Effect, FiberMap, Layer, Option, Schema, Stream } from "effect"
 import { Chat, Prompt, Tool, Toolkit } from "effect/unstable/ai"
@@ -98,12 +98,6 @@ export const AiResponse = Layer.effectDiscard(
         default_member_permissions: Number(Discord.Permissions.ManageMessages),
         options: [
           {
-            type: Discord.ApplicationCommandOptionType.BOOLEAN,
-            name: "public",
-            description: "Make the results visible for everyone",
-            required: true,
-          },
-          {
             type: Discord.ApplicationCommandOptionType.STRING,
             name: "prompt",
             description:
@@ -158,22 +152,23 @@ ${llmsMd}`,
 
         yield* FiberMap.run(fiberMap, context.id, generate(context, history))
 
-        const isPublic = ix.optionValue("public")
-        if (!isPublic) {
-          return Ix.response({
-            type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              content: "The clanker is thinking...",
-              flags:
-                Discord.MessageFlags.Ephemeral |
-                Discord.MessageFlags.SuppressEmbeds,
-            },
-          })
-        }
-
         return Ix.response({
-          type: Discord.InteractionCallbackTypes
-            .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: "The clanker is thinking...",
+            flags:
+              Discord.MessageFlags.Ephemeral |
+              Discord.MessageFlags.SuppressEmbeds,
+            components: UI.grid([
+              [
+                UI.button({
+                  custom_id: `ai_cancel_${context.id}`,
+                  label: "Cancel",
+                  style: Discord.ButtonStyleTypes.DANGER,
+                }),
+              ],
+            ]),
+          },
         })
       }),
     )
@@ -183,7 +178,7 @@ ${llmsMd}`,
     const chatModel = yield* OpenAiLanguageModel.model("gpt-5.2-codex", {
       reasoning: {
         effort: "medium",
-      }
+      },
     })
     const generate = Effect.fn("AiResponse.generate")(
       function* (context: Discord.APIInteraction, prompt: Prompt.Prompt) {
@@ -203,7 +198,18 @@ ${llmsMd}`,
             {
               payload: {
                 content: response.text,
-                flags: Discord.MessageFlags.SuppressEmbeds,
+                flags:
+                  Discord.MessageFlags.Ephemeral |
+                  Discord.MessageFlags.SuppressEmbeds,
+                components: UI.grid([
+                  [
+                    UI.button({
+                      custom_id: "ai_accept",
+                      label: "Accept",
+                      style: Discord.ButtonStyleTypes.SUCCESS,
+                    }),
+                  ],
+                ]),
               },
             },
           )
@@ -220,9 +226,50 @@ ${llmsMd}`,
         ),
     )
 
+    const cancel = Ix.messageComponent(
+      Ix.idStartsWith("ai_cancel_"),
+      Effect.gen(function* () {
+        const data = yield* Ix.MessageComponentData
+        const requestId = data.custom_id.slice("ai_cancel_".length)
+
+        yield* FiberMap.remove(fiberMap, requestId)
+
+        return Ix.response({
+          type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE,
+        })
+      }),
+    )
+
+    const accept = Ix.messageComponent(
+      Ix.id("ai_accept"),
+      Effect.gen(function* () {
+        const ix = yield* Ix.Interaction
+        const content = ix.message?.content?.trim()
+
+        if (!content) {
+          return Ix.response({
+            type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE,
+          })
+        }
+
+        yield* rest.createMessage(ix.channel!.id, { content })
+        yield* rest
+          .deleteOriginalWebhookMessage(application.id, ix.token, {})
+          .pipe(Effect.orElseSucceed(() => undefined))
+
+        return Ix.response({
+          type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE,
+        })
+      }),
+    )
+
     const registry = yield* InteractionsRegistry
     yield* registry.register(
-      Ix.builder.add(command).catchAllCause(Effect.logError),
+      Ix.builder
+        .add(command)
+        .add(cancel)
+        .add(accept)
+        .catchAllCause(Effect.logError),
     )
   }),
 ).pipe(
