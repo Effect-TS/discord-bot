@@ -182,7 +182,7 @@ ${llmsMd}`,
     const rest = yield* DiscordREST
     const chatModel = yield* OpenAiLanguageModel.model("gpt-5.2-codex", {
       reasoning: {
-        effort: "high"
+        effort: "medium",
       }
     })
     const generate = Effect.fn("AiResponse.generate")(
