@@ -7,7 +7,7 @@
     "clean": "node scripts/clean.mjs",
     "build": "pnpm --recursive --parallel --filter \"./packages/**/*\" run build",
     "test": "vitest",
-    "check": "concurrently \"pnpm tsgo -b tsconfig.json\" \"pnpm oxlint -c .oxlintrc.json\"",
+    "check": "oxlint -c .oxlintrc.json --fix && tsgo -b tsconfig.json",
     "lint-fix": "oxlint -c .oxlintrc.json --fix"
   },
   "devDependencies": {
