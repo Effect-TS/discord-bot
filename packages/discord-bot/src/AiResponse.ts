@@ -1,9 +1,19 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { OpenAiLanguageModel } from "@effect/ai-openai"
-import { Discord, DiscordREST, Ix } from "dfx"
+import { Discord, DiscordREST, Ix, UI } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Data, Effect, FiberMap, Layer, Option, Schema, Stream } from "effect"
+import {
+  Data,
+  Effect,
+  FiberMap,
+  Iterable,
+  Layer,
+  Option,
+  pipe,
+  Schema,
+  Stream,
+} from "effect"
 import { Chat, Prompt, Tool, Toolkit } from "effect/unstable/ai"
 import { AiHelpers, OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
@@ -89,6 +99,9 @@ export const AiResponse = Layer.effectDiscard(
     const channels = yield* ChannelsCache
     const ai = yield* AiHelpers
     const fiberMap = yield* FiberMap.make<Discord.Snowflake>()
+    const scope = yield* Effect.scope
+
+    const ixTokens = new Map<Discord.Snowflake, string>()
 
     const command = Ix.global(
       {
@@ -98,16 +111,31 @@ export const AiResponse = Layer.effectDiscard(
         default_member_permissions: Number(Discord.Permissions.ManageMessages),
         options: [
           {
-            type: Discord.ApplicationCommandOptionType.BOOLEAN,
-            name: "public",
-            description: "Make the results visible for everyone",
-            required: true,
-          },
-          {
             type: Discord.ApplicationCommandOptionType.STRING,
             name: "prompt",
             description:
               "Add a custom prompt in addition to the message history",
+            required: false,
+          },
+          {
+            type: Discord.ApplicationCommandOptionType.STRING,
+            name: "reasoning",
+            description:
+              "Specify the reasoning effort for the AI (e.g. 'low', 'medium', 'high')",
+            choices: [
+              {
+                name: "Low",
+                value: "low",
+              },
+              {
+                name: "Medium",
+                value: "medium",
+              },
+              {
+                name: "High",
+                value: "high",
+              },
+            ],
             required: false,
           },
         ],
@@ -137,7 +165,9 @@ export const AiResponse = Layer.effectDiscard(
 - \`rg\`: Use "rg" to find files in the effect repository.
 - \`glob\`: Find files in the effect repository matching a glob pattern.
 
-Do not use emojis or excessive formatting in your responses. Be concise and to the point.
+Do not use emojis or excessive formatting in your responses.
+Include code examples when relevant.
+Be concise and to the point.
 **You must** keep responses under 1500 characters.
 
 The effect repository can be found at: https://github.com/Effect-TS/effect-smol
@@ -156,45 +186,81 @@ ${llmsMd}`,
           history = Prompt.concat(history, Prompt.make(prompt.value))
         }
 
-        yield* FiberMap.run(fiberMap, context.id, generate(context, history))
-
-        const isPublic = ix.optionValue("public")
-        if (!isPublic) {
-          return Ix.response({
-            type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-              content: "The clanker is thinking...",
-              flags:
-                Discord.MessageFlags.Ephemeral |
-                Discord.MessageFlags.SuppressEmbeds,
-            },
-          })
+        ixTokens.set(context.id, context.token)
+        if (ixTokens.size > 100) {
+          const head = Iterable.headUnsafe(ixTokens.keys())
+          ixTokens.delete(head)
         }
 
+        yield* FiberMap.run(
+          fiberMap,
+          context.id,
+          generate(
+            context,
+            history,
+            pipe(
+              ix.optionValueOptional("reasoning"),
+              Option.getOrElse(() => "medium" as const),
+            ),
+          ),
+        )
+
         return Ix.response({
-          type: Discord.InteractionCallbackTypes
-            .DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+          type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: "The clanker is thinking...",
+            flags:
+              Discord.MessageFlags.Ephemeral |
+              Discord.MessageFlags.SuppressEmbeds,
+            components: UI.grid([
+              [
+                UI.button({
+                  custom_id: `ai_cancel`,
+                  label: "Cancel",
+                  style: Discord.ButtonStyleTypes.SECONDARY,
+                }),
+              ],
+            ]),
+          },
         })
       }),
     )
 
     const application = yield* DiscordApplication
     const rest = yield* DiscordREST
-    const chatModel = yield* OpenAiLanguageModel.model("gpt-5.2-codex", {
-      reasoning: {
-        effort: "medium",
-      }
-    })
+    const chatModel = yield* OpenAiLanguageModel.model("gpt-5.2-codex")
     const generate = Effect.fn("AiResponse.generate")(
-      function* (context: Discord.APIInteraction, prompt: Prompt.Prompt) {
+      function* (
+        context: Discord.APIInteraction,
+        prompt: Prompt.Prompt,
+        reasoning: string,
+      ) {
         const chat = yield* Chat.fromPrompt(prompt)
+        let toolCalls = 0
 
         while (true) {
-          const response = yield* chat.generateText({
-            toolkit: tools,
-            prompt: [],
-          })
+          const response = yield* chat
+            .generateText({
+              toolkit: tools,
+              prompt: [],
+            })
+            .pipe(
+              OpenAiLanguageModel.withConfigOverride({
+                reasoning: {
+                  effort: reasoning as any,
+                },
+              }),
+            )
+          toolCalls += response.toolCalls.length
           if (response.toolCalls.length > 0 || response.text.length === 0) {
+            yield* pipe(
+              rest.updateOriginalWebhookMessage(application.id, context.token, {
+                payload: {
+                  content: `The clanker is thinking... (tool calls: ${toolCalls})`,
+                },
+              }),
+              Effect.forkChild,
+            )
             continue
           }
           yield* rest.updateOriginalWebhookMessage(
@@ -203,26 +269,93 @@ ${llmsMd}`,
             {
               payload: {
                 content: response.text,
-                flags: Discord.MessageFlags.SuppressEmbeds,
+                components: UI.grid([
+                  [
+                    UI.button({
+                      custom_id: "ai_accept",
+                      label: "Accept",
+                      style: Discord.ButtonStyleTypes.PRIMARY,
+                    }),
+                  ],
+                ]),
               },
             },
           )
           break
         }
       },
+      Effect.scoped,
       Effect.provide(chatModel),
       Effect.withSpan("AiResponse.generate (inner)"),
       (effect, context) =>
         Effect.onError(effect, (_) =>
-          rest
-            .deleteOriginalWebhookMessage(application.id, context.token, {})
-            .pipe(Effect.retry({ times: 3 }), Effect.orDie),
+          pipe(
+            rest.deleteOriginalWebhookMessage(
+              application.id,
+              context.token,
+              {},
+            ),
+            Effect.retry({ times: 3 }),
+            Effect.orDie,
+          ),
         ),
+    )
+
+    const cancel = Ix.messageComponent(
+      Ix.id("ai_cancel"),
+      Effect.gen(function* () {
+        const context = yield* Ix.Interaction
+        const interactionId = context.message!.interaction_metadata!.id
+
+        yield* Effect.annotateCurrentSpan({
+          interactionId,
+        })
+
+        yield* FiberMap.remove(fiberMap, interactionId)
+
+        return Ix.response({
+          type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE,
+        })
+      }).pipe(Effect.withSpan("AiResponse.cancel")),
+    )
+
+    const accept = Ix.messageComponent(
+      Ix.id("ai_accept"),
+      Effect.gen(function* () {
+        const ix = yield* Ix.Interaction
+        const interactionId = ix.message!.interaction_metadata!.id
+        const content = ix.message!.content.trim()
+
+        yield* Effect.annotateCurrentSpan({
+          interactionId,
+        })
+
+        const token = ixTokens.get(interactionId)
+        if (token) {
+          yield* pipe(
+            rest.deleteOriginalWebhookMessage(application.id, token, {}),
+            Effect.forkIn(scope),
+          )
+        }
+
+        yield* rest.createMessage(ix.channel!.id, {
+          flags: Discord.MessageFlags.SuppressEmbeds,
+          content,
+        })
+
+        return Ix.response({
+          type: Discord.InteractionCallbackTypes.DEFERRED_UPDATE_MESSAGE,
+        })
+      }).pipe(Effect.withSpan("AiResponse.accept")),
     )
 
     const registry = yield* InteractionsRegistry
     yield* registry.register(
-      Ix.builder.add(command).catchAllCause(Effect.logError),
+      Ix.builder
+        .add(command)
+        .add(cancel)
+        .add(accept)
+        .catchAllCause(Effect.logError),
     )
   }),
 ).pipe(
