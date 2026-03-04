@@ -149,7 +149,7 @@ export const AiResponse = Layer.effectDiscard(
           },
         ],
       },
-      Effect.fnUntraced(function* (ix) {
+      Effect.fn("AiResponse.command")(function* (ix) {
         const context = yield* Ix.Interaction
         const channel = yield* channels.get(
           context.guild_id!,
