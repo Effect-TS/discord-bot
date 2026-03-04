@@ -4,7 +4,6 @@ import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST, Ix, UI } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import {
-  Data,
   Effect,
   FiberMap,
   Iterable,
@@ -161,7 +160,13 @@ export const AiResponse = Layer.effectDiscard(
         })
 
         if (!isThreadChannel(channel)) {
-          return yield* new NotInThreadError()
+          return Ix.response({
+            type: Discord.InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+              content: "This command can only be used in a thread",
+              flags: Discord.MessageFlags.Ephemeral,
+            },
+          })
         }
 
         const llmsMd = yield* repo.llmsMd
@@ -381,5 +386,3 @@ ${llmsMd}`,
   ]),
   Layer.provide(DiscordGatewayLayer),
 )
-
-export class NotInThreadError extends Data.TaggedError("NotInThreadError") {}
