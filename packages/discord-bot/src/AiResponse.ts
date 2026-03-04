@@ -19,6 +19,15 @@ import { AiHelpers, OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { EffectRepo, EffectRepoError } from "./EffectRepo.ts"
 
+type ReasoningEffort = "low" | "medium" | "high"
+
+const isThreadChannel = (
+  channel: Discord.GetChannel200,
+): channel is Discord.ThreadResponse =>
+  channel.type === Discord.ChannelTypes.ANNOUNCEMENT_THREAD ||
+  channel.type === Discord.ChannelTypes.PUBLIC_THREAD ||
+  channel.type === Discord.ChannelTypes.PRIVATE_THREAD
+
 const Tools = Toolkit.make(
   Tool.make("read", {
     description: "Read a file from the effect repository",
@@ -151,7 +160,7 @@ export const AiResponse = Layer.effectDiscard(
           channelId: channel.id,
         })
 
-        if (channel.type !== Discord.ChannelTypes.PUBLIC_THREAD) {
+        if (!isThreadChannel(channel)) {
           return yield* new NotInThreadError()
         }
 
@@ -200,7 +209,11 @@ ${llmsMd}`,
             history,
             pipe(
               ix.optionValueOptional("reasoning"),
-              Option.getOrElse(() => "medium" as const),
+              Option.filter(
+                (value): value is ReasoningEffort =>
+                  value === "low" || value === "medium" || value === "high",
+              ),
+              Option.getOrElse((): ReasoningEffort => "medium"),
             ),
           ),
         )
@@ -233,7 +246,7 @@ ${llmsMd}`,
       function* (
         context: Discord.APIInteraction,
         prompt: Prompt.Prompt,
-        reasoning: string,
+        reasoning: ReasoningEffort,
       ) {
         const chat = yield* Chat.fromPrompt(prompt)
         let toolCalls = 0
@@ -247,7 +260,7 @@ ${llmsMd}`,
             .pipe(
               OpenAiLanguageModel.withConfigOverride({
                 reasoning: {
-                  effort: reasoning as any,
+                  effort: reasoning,
                 },
               }),
             )

@@ -28,7 +28,9 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
       const botUser = application.bot!
 
       const getOpeningMessage = Effect.fn("AiHelpers.getOpeningMessage")(
-        function* (thread: Discord.ThreadResponse) {
+        function* (
+          thread: Discord.GuildChannelResponse | Discord.ThreadResponse,
+        ) {
           if (thread.parent_id == null) {
             return yield* rest.getMessage(thread.id, thread.id)
           }
@@ -40,7 +42,7 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
       )
 
       const generateAiInput = (
-        thread: Discord.ThreadResponse,
+        thread: Discord.GuildChannelResponse | Discord.ThreadResponse,
         message?: Discord.MessageResponse,
       ) =>
         pipe(
