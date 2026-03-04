@@ -27,6 +27,18 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
       const application = yield* DiscordApplication
       const botUser = application.bot!
 
+      const getOpeningMessage = Effect.fn("AiHelpers.getOpeningMessage")(
+        function* (thread: Discord.ThreadResponse) {
+          if (thread.parent_id == null) {
+            return yield* rest.getMessage(thread.id, thread.id)
+          }
+
+          return yield* rest
+            .getMessage(thread.parent_id, thread.id)
+            .pipe(Effect.catch(() => rest.getMessage(thread.id, thread.id)))
+        },
+      )
+
       const generateAiInput = (
         thread: Discord.ThreadResponse,
         message?: Discord.MessageResponse,
@@ -34,7 +46,7 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
         pipe(
           Effect.all(
             {
-              openingMessage: rest.getMessage(thread.parent_id!, thread.id),
+              openingMessage: getOpeningMessage(thread),
               messages: rest.listMessages(thread.id, {
                 before: message?.id,
                 limit: 10,
