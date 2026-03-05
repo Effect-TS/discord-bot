@@ -36,6 +36,7 @@ const Tools = Toolkit.make(
     }),
     failure: EffectRepoError,
     success: Schema.String,
+    failureMode: "return",
   }),
   Tool.make("rg", {
     description: "Wrapper around the 'rg' command.",
@@ -53,6 +54,7 @@ const Tools = Toolkit.make(
     }),
     failure: EffectRepoError,
     success: Schema.String,
+    failureMode: "return",
   }),
   Tool.make("glob", {
     description: "Find files in the effect repository matching a glob pattern",
@@ -63,6 +65,7 @@ const Tools = Toolkit.make(
     }),
     failure: EffectRepoError,
     success: Schema.String,
+    failureMode: "return",
   }),
 )
 
