@@ -69,9 +69,7 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
               [
                 ...(message ? [message] : []),
                 ...messages,
-                ...(Option.isSome(openingMessage)
-                  ? [openingMessage.value]
-                  : []),
+                ...Option.toArray(openingMessage),
               ]
                 .toReversed()
                 .filter(
