@@ -4,6 +4,7 @@ import { OpenAiLanguageModel } from "@effect/ai-openai"
 import { Discord, DiscordREST, Ix, UI } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import {
+  Cause,
   Effect,
   FiberMap,
   Iterable,
@@ -16,7 +17,7 @@ import {
 import { Chat, Prompt, Tool, Toolkit } from "effect/unstable/ai"
 import { AiHelpers, OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
-import { EffectRepo, EffectRepoError } from "./EffectRepo.ts"
+import { EffectRepo } from "./EffectRepo.ts"
 
 type ReasoningEffort = "low" | "medium" | "high"
 
@@ -42,9 +43,7 @@ const Tools = Toolkit.make(
         description: "The line number to stop reading at (exclusive)",
       }),
     }),
-    failure: EffectRepoError,
     success: Schema.String,
-    failureMode: "return",
   }),
   Tool.make("rg", {
     description: "Wrapper around the 'rg' command.",
@@ -60,9 +59,7 @@ const Tools = Toolkit.make(
           "The total maximum number of lines to return across all files",
       }),
     }),
-    failure: EffectRepoError,
     success: Schema.String,
-    failureMode: "return",
   }),
   Tool.make("glob", {
     description: "Find files in the effect repository matching a glob pattern",
@@ -71,9 +68,7 @@ const Tools = Toolkit.make(
         description: "The glob pattern to match files against (e.g. '**/*.ts')",
       }),
     }),
-    failure: EffectRepoError,
     success: Schema.String,
-    failureMode: "return",
   }),
 )
 
@@ -82,23 +77,43 @@ const ToolsLayer = Tools.toLayer(
     const repo = yield* EffectRepo
 
     return Tools.of({
-      read: Effect.fn(function* ({ endLine, path, startLine }) {
-        const content = yield* repo.readFileRange({ path, startLine, endLine })
-        return content
-      }),
-      rg: Effect.fn(function* ({ glob, maxLines, pattern }) {
-        const matches = yield* repo
-          .search({
-            pattern,
-            glob,
+      read: Effect.fn(
+        function* ({ endLine, path, startLine }) {
+          const content = yield* repo.readFileRange({
+            path,
+            startLine,
+            endLine,
           })
-          .pipe(Stream.take(maxLines), Stream.runCollect)
-        return matches.join("\n")
-      }),
-      glob: Effect.fn(function* ({ pattern }) {
-        const files = yield* repo.glob({ pattern })
-        return files.join("\n")
-      }),
+          return content
+        },
+        Effect.catchCause((cause) =>
+          Effect.succeed(`There was an error: ${Cause.pretty(cause)}`),
+        ),
+      ),
+      rg: Effect.fn(
+        function* ({ glob, maxLines, pattern }) {
+          const matches = yield* repo
+            .search({
+              pattern,
+              glob,
+            })
+            .pipe(Stream.take(maxLines), Stream.runCollect)
+          return matches.join("\n")
+        },
+        Effect.catchCause((cause) =>
+          Effect.succeed(`There was an error: ${Cause.pretty(cause)}`),
+        ),
+      ),
+      glob: Effect.fn(
+        function* ({ pattern }) {
+          const files = yield* repo.glob({ pattern })
+          return files.join("\n")
+        },
+
+        Effect.catchCause((cause) =>
+          Effect.succeed(`There was an error: ${Cause.pretty(cause)}`),
+        ),
+      ),
     })
   }),
 ).pipe(Layer.provide(EffectRepo.layer))
