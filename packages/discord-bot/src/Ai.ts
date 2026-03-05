@@ -2,7 +2,15 @@ import { DiscordApplication } from "@chat/discord/DiscordRest"
 import { OpenAiClient, OpenAiLanguageModel } from "@effect/ai-openai"
 import { NodeHttpClient } from "@effect/platform-node"
 import { Discord, DiscordREST } from "dfx"
-import { Config, Effect, Layer, pipe, Schedule, ServiceMap } from "effect"
+import {
+  Config,
+  Effect,
+  Layer,
+  Option,
+  pipe,
+  Schedule,
+  ServiceMap,
+} from "effect"
 import { LanguageModel, Prompt } from "effect/unstable/ai"
 import { HttpClient } from "effect/unstable/http"
 import * as Str from "./utils/String.ts"
@@ -48,7 +56,7 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
         pipe(
           Effect.all(
             {
-              openingMessage: getOpeningMessage(thread),
+              openingMessage: getOpeningMessage(thread).pipe(Effect.option),
               messages: rest.listMessages(thread.id, {
                 before: message?.id,
                 limit: 10,
@@ -58,7 +66,13 @@ export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
           ),
           Effect.map(({ messages, openingMessage }) =>
             Prompt.make(
-              [...(message ? [message] : []), ...messages, openingMessage]
+              [
+                ...(message ? [message] : []),
+                ...messages,
+                ...(Option.isSome(openingMessage)
+                  ? [openingMessage.value]
+                  : []),
+              ]
                 .toReversed()
                 .filter(
                   (msg) =>
