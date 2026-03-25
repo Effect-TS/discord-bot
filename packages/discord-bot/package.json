@@ -13,7 +13,7 @@
     "@effect/platform-node": "catalog:",
     "@octokit/plugin-rest-endpoint-methods": "^17.0.0",
     "@octokit/types": "^16.0.0",
-    "@types/node": "^25.3.3",
+    "@types/node": "^25.5.0",
     "dfx": "catalog:",
     "effect": "catalog:",
     "fuzzysort": "^3.1.0",

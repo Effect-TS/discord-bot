@@ -11,18 +11,18 @@
     "lint-fix": "oxlint -c .oxlintrc.json --fix"
   },
   "devDependencies": {
-    "@effect/language-service": "^0.77.0",
-    "@types/node": "^25.3.3",
-    "@typescript/native-preview": "7.0.0-dev.20260301.1",
+    "@effect/language-service": "^0.83.1",
+    "@types/node": "^25.5.0",
+    "@typescript/native-preview": "7.0.0-dev.20260324.1",
     "concurrently": "^9.2.1",
     "glob": "^13.0.6",
     "husky": "^9.1.7",
-    "lint-staged": "^16.3.0",
-    "oxlint": "^1.50.0",
+    "lint-staged": "^16.4.0",
+    "oxlint": "^1.57.0",
     "prettier": "^3.8.1",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.1"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
