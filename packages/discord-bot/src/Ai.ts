@@ -23,7 +23,7 @@ export const OpenAiLive = OpenAiClient.layerConfig({
   }),
 }).pipe(Layer.provide(NodeHttpClient.layerUndici))
 
-export const ChatModel = OpenAiLanguageModel.model("gpt-5.2")
+export const ChatModel = OpenAiLanguageModel.model("gpt-5.4-mini")
 
 export class AiHelpers extends ServiceMap.Service<AiHelpers>()(
   "app/AiHelpers",
