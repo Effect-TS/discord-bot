@@ -129,6 +129,7 @@ export const AiResponse = Layer.effectDiscard(
 
     const ixTokens = new Map<Discord.Snowflake, string>()
 
+    // @effect-diagnostics-next-line effectFnImplicitAny:off
     const command = Ix.global(
       {
         name: "ai",
@@ -264,7 +265,7 @@ ${llmsMd}`,
 
     const application = yield* DiscordApplication
     const rest = yield* DiscordREST
-    const chatModel = yield* OpenAiLanguageModel.model("gpt-5.2-codex")
+    const chatModel = yield* OpenAiLanguageModel.model("gpt-5.4")
     const generate = Effect.fn("AiResponse.generate")(
       function* (
         context: Discord.APIInteraction,
