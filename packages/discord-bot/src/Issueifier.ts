@@ -134,6 +134,7 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       Effect.withSpan("Issueifier.followUp"),
     )
 
+  // @effect-diagnostics-next-line effectFnImplicitAny:off
   const command = Ix.global(
     {
       name: "issueify",
@@ -205,17 +206,14 @@ export const IssueifierLive = Layer.effectDiscard(make).pipe(
   Layer.provide(Github.layer),
 )
 
-class ThreadSummary extends Schema.Class<ThreadSummary>("ThreadSummary")(
-  {
-    title: Schema.String.annotate({
-      description: "A short title summarizing the messages",
-    }),
-    summary: Schema.String.annotate({
-      description:
-        "A summary of the messages for a Github issue bug report or feature request",
-    }),
-  },
-  {
-    description: "A summary of a Discord thread",
-  },
-) {}
+const ThreadSummary = Schema.Struct({
+  title: Schema.String.annotate({
+    description: "A short title summarizing the messages",
+  }),
+  summary: Schema.String.annotate({
+    description:
+      "A summary of the messages for a Github issue bug report or feature request",
+  }),
+}).annotate({
+  description: "A summary of a Discord thread",
+})
