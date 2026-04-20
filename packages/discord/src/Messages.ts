@@ -1,5 +1,5 @@
 import { Discord, DiscordREST } from "dfx"
-import { Effect, Layer, Option, pipe, ServiceMap, Stream } from "effect"
+import { Effect, Layer, Option, pipe, Context, Stream } from "effect"
 import { DiscordRestLayer } from "./DiscordRest.ts"
 import { MemberCache } from "./MemberCache.ts"
 
@@ -10,7 +10,7 @@ export const cleanupMarkdown = (content: string) =>
     .replace(/[^\n]```/gm, "\n\n```")
     .replace(/([^\n])\n```([^\n]*\n[^\n])/gm, "$1\n\n```$2")
 
-export class Messages extends ServiceMap.Service<Messages>()("app/Messages", {
+export class Messages extends Context.Service<Messages>()("app/Messages", {
   make: Effect.gen(function* () {
     const rest = yield* DiscordREST
     const members = yield* MemberCache

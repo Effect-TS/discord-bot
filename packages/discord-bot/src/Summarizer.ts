@@ -11,7 +11,7 @@ import {
   Layer,
   Option,
   pipe,
-  ServiceMap,
+  Context,
   Stream,
 } from "effect"
 import { constTrue } from "effect/Function"
@@ -21,7 +21,7 @@ export class NotInThreadError extends Data.TaggedError(
   "NotInThreadError",
 )<{}> {}
 
-export class Summarizer extends ServiceMap.Service<Summarizer>()(
+export class Summarizer extends Context.Service<Summarizer>()(
   "app/Summarizer",
   {
     make: Effect.gen(function* () {

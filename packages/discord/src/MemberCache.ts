@@ -1,6 +1,6 @@
 import type { Discord } from "dfx"
 import { DiscordREST } from "dfx"
-import { Cache, Data, Duration, Effect, Layer, ServiceMap } from "effect"
+import { Cache, Data, Duration, Effect, Layer, Context } from "effect"
 import { DiscordRestLayer } from "./DiscordRest.ts"
 
 export class GetMember extends Data.TaggedClass("GetMember")<{
@@ -8,7 +8,7 @@ export class GetMember extends Data.TaggedClass("GetMember")<{
   readonly userId: Discord.Snowflake
 }> {}
 
-export class MemberCache extends ServiceMap.Service<MemberCache>()(
+export class MemberCache extends Context.Service<MemberCache>()(
   "discord/MemberCache",
   {
     make: Effect.gen(function* () {
