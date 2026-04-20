@@ -1,6 +1,6 @@
 import { NodeHttpClient } from "@effect/platform-node"
 import { DiscordREST, DiscordRESTMemoryLive } from "dfx"
-import { Effect, Layer, ServiceMap } from "effect"
+import { Effect, Layer, Context } from "effect"
 import { DiscordConfigLayer } from "./DiscordConfig.ts"
 
 const DiscordLayer = DiscordRESTMemoryLive.pipe(
@@ -8,7 +8,7 @@ const DiscordLayer = DiscordRESTMemoryLive.pipe(
   Layer.provide(DiscordConfigLayer),
 )
 
-export class DiscordApplication extends ServiceMap.Service<DiscordApplication>()(
+export class DiscordApplication extends Context.Service<DiscordApplication>()(
   "app/DiscordApplication",
   {
     make: Effect.gen(function* () {

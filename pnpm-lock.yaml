@@ -8,17 +8,17 @@ settings:
 catalogs:
   default:
     '@effect/ai-openai':
-      specifier: 4.0.0-beta.40
-      version: 4.0.0-beta.40
+      specifier: 4.0.0-beta.52
+      version: 4.0.0-beta.52
     '@effect/platform-node':
-      specifier: 4.0.0-beta.40
-      version: 4.0.0-beta.40
+      specifier: 4.0.0-beta.52
+      version: 4.0.0-beta.52
     dfx:
-      specifier: ^1.0.11
-      version: 1.0.11
+      specifier: ^1.0.12
+      version: 1.0.12
     effect:
-      specifier: 4.0.0-beta.40
-      version: 4.0.0-beta.40
+      specifier: 4.0.0-beta.52
+      version: 4.0.0-beta.52
 
 importers:
 
@@ -65,13 +65,13 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-beta.40(effect@4.0.0-beta.40)(ioredis@5.9.3)
+        version: 4.0.0-beta.52(effect@4.0.0-beta.52)(ioredis@5.9.3)
       dfx:
         specifier: 'catalog:'
-        version: 1.0.11(effect@4.0.0-beta.40)
+        version: 1.0.12(effect@4.0.0-beta.52)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-beta.40
+        version: 4.0.0-beta.52
 
   packages/discord-bot:
     devDependencies:
@@ -83,10 +83,10 @@ importers:
         version: link:../shared
       '@effect/ai-openai':
         specifier: 'catalog:'
-        version: 4.0.0-beta.40(effect@4.0.0-beta.40)
+        version: 4.0.0-beta.52(effect@4.0.0-beta.52)
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-beta.40(effect@4.0.0-beta.40)(ioredis@5.9.3)
+        version: 4.0.0-beta.52(effect@4.0.0-beta.52)(ioredis@5.9.3)
       '@octokit/plugin-rest-endpoint-methods':
         specifier: ^17.0.0
         version: 17.0.0(@octokit/core@7.0.6)
@@ -98,10 +98,10 @@ importers:
         version: 25.5.0
       dfx:
         specifier: 'catalog:'
-        version: 1.0.11(effect@4.0.0-beta.40)
+        version: 1.0.12(effect@4.0.0-beta.52)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-beta.40
+        version: 4.0.0-beta.52
       fuzzysort:
         specifier: ^3.1.0
         version: 3.1.0
@@ -122,33 +122,33 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-beta.40(effect@4.0.0-beta.40)(ioredis@5.9.3)
+        version: 4.0.0-beta.52(effect@4.0.0-beta.52)(ioredis@5.9.3)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-beta.40
+        version: 4.0.0-beta.52
 
 packages:
 
-  '@effect/ai-openai@4.0.0-beta.40':
-    resolution: {integrity: sha512-ArJsKFO2Uri2zNlGxtpShg27Ke/v+fEO/eHWOslHgbE46UJvTtBlV7atZbCrvlDIHb0Ho+WUs+Pd+VzTWh8plw==}
+  '@effect/ai-openai@4.0.0-beta.52':
+    resolution: {integrity: sha512-0MzhiQEZrsGuddVYfJG98cKlP17XEsuUIX9rvIIkMoLf33l9m3C0RkueKeMJmczroCyqu7zD2qPR74WcD/lggA==}
     peerDependencies:
-      effect: ^4.0.0-beta.40
+      effect: ^4.0.0-beta.52
 
   '@effect/language-service@0.83.1':
     resolution: {integrity: sha512-cBQ7yg/P4+kAp+JFX+9Bk5bc1jG3UMVq8pgtW5VAWBl/yiTjWlCGMKC4UxX2KlpREvjTkvS8BKi1wYw0phWmAQ==}
     hasBin: true
 
-  '@effect/platform-node-shared@4.0.0-beta.40':
-    resolution: {integrity: sha512-WMRVG7T8ZDALKCOacsx2ZZj3Ccaoq8YGeD9q7ZL4q8RwQv8Nmrl+4+KZl95/zHCqXzgK9oUJOlBfQ7CZr6PQOQ==}
+  '@effect/platform-node-shared@4.0.0-beta.52':
+    resolution: {integrity: sha512-f4e0LD/VSlIWBRkjtaJ+zFDRZsdD4Fs3zPhvnkHn+N8qpAJ+HQ00oN5Zye7KJONPEI1JHUt2HwtbHeGCdnBFAw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.40
+      effect: ^4.0.0-beta.52
 
-  '@effect/platform-node@4.0.0-beta.40':
-    resolution: {integrity: sha512-IRBlYErAdImh0Pv92PppgFK2wnNAv48Bib6FHjp+89tjzfZ0LHv5TQvEeCXo8ZgHJDyxiPJ5/ugV+jnzpZCG5Q==}
+  '@effect/platform-node@4.0.0-beta.52':
+    resolution: {integrity: sha512-IFloMd95ot9SACJXPSVG060evsKSnGXlMqwQdyhSmsi7zMwiwbioItw1Up+EK5gJj7m3TRHO6b7fErqVgsN2kQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.40
+      effect: ^4.0.0-beta.52
       ioredis: ^5.7.0
 
   '@esbuild/aix-ppc64@0.25.12':
@@ -1377,10 +1377,10 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  dfx@1.0.11:
-    resolution: {integrity: sha512-KlY8BqHhMYK+KksNx9PdJDjJkiLYUb0tCh9fxYRJDf/G2txHRygwCrB5POvOXxuI75Q0bwQVdd3CwTz/cTGlRw==}
+  dfx@1.0.12:
+    resolution: {integrity: sha512-YvH//a94XXdfsQjcyL4OG7E9qm//6c93NyoSQaqAEIHEiTVJjugyhF3mjBBSa6+oSIsRlnPq2+giTfGyb/mETQ==}
     peerDependencies:
-      effect: 4.0.0-beta.40
+      effect: 4.0.0-beta.52
 
   discord-api-types@0.38.40:
     resolution: {integrity: sha512-P/His8cotqZgQqrt+hzrocp9L8RhQQz1GkrCnC9TMJ8Uw2q0tg8YyqJyGULxhXn/8kxHETN4IppmOv+P2m82lQ==}
@@ -1389,8 +1389,8 @@ packages:
     resolution: {integrity: sha512-8qlrMROW8DhpzWWzgNq9kpeLDxKanWa4EDVoj/ASVv2nr+dSr4JPmu2tFSydf3hAGI/OIJTnZyD0JulMYIxx4w==}
     engines: {node: '>=16'}
 
-  effect@4.0.0-beta.40:
-    resolution: {integrity: sha512-GA7Q1TglPIrEjg/Dtj3AvXbyh00A4sAXgu3JGDUHRPZ4hxMRC5CMAsCzCH0140zetRMpe7LOH8uVi5gb4t/8oQ==}
+  effect@4.0.0-beta.52:
+    resolution: {integrity: sha512-Aa9T5CEV3pCoSDM8sOnalwYieJi5olb7vn8TbgMB3U1YGEOG9ypogng33qMFLKswZM2UimwrXL9Ri1x9Jo9z6w==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -1434,8 +1434,8 @@ packages:
     resolution: {integrity: sha512-knvyeauYhqjOYvQ66MznSMs83wmHrCycNEN6Ao+2AeYEfxUIkuiVxdEa1qlGEPK+We3n0THiDciYSsCcgW/DoA==}
     engines: {node: '>=12.0.0'}
 
-  fast-check@4.5.3:
-    resolution: {integrity: sha512-IE9csY7lnhxBnA8g/WI5eg/hygA6MGWJMSNfFRrBlXUciADEhS1EDB0SIsMSvzubzIlOBbVITSsypCsW717poA==}
+  fast-check@4.7.0:
+    resolution: {integrity: sha512-NsZRtqvSSoCP0HbNjUD+r1JH8zqZalyp6gLY9e7OYs7NK9b6AHOs2baBFeBG7bVNsuoukh89x2Yg3rPsul8ziQ==}
     engines: {node: '>=12.17.0'}
 
   fast-content-type-parse@3.0.0:
@@ -1578,8 +1578,8 @@ packages:
     resolution: {integrity: sha512-P0efT1C9jIdVRefqjzOQ9Xml57zpOXnIuS+csaB4MdZbTdmGDLo8XhzBG1N7aO11gKDDkJvBLULeFTo46wwreA==}
     hasBin: true
 
-  msgpackr@1.11.8:
-    resolution: {integrity: sha512-bC4UGzHhVvgDNS7kn9tV8fAucIYUBuGojcaLiz7v+P63Lmtm0Xeji8B/8tYKddALXxJLpwIeBmUN3u64C4YkRA==}
+  msgpackr@1.11.10:
+    resolution: {integrity: sha512-iCZNq+HszvF+fC3anCm4nBmWEnbeIAfpDs6IStAEKhQ2YSgkjzVG2FF9XJqwwQh5bH3N9OUTUt4QwVN6MLMLtA==}
 
   multipasta@0.2.7:
     resolution: {integrity: sha512-KPA58d68KgGil15oDqXjkUBEBYc00XvbPj5/X+dyzeo/lWm9Nc25pQRlf1D+gv4OpK7NM0J1odrbu9JNNGvynA==}
@@ -1673,8 +1673,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  pure-rand@7.0.1:
-    resolution: {integrity: sha512-oTUZM/NAZS8p7ANR3SHh30kXB+zK2r2BPcEn/awJIbOvq82WoMN4p62AWWp3Hhw50G0xMsw1mhIBLqHw64EcNQ==}
+  pure-rand@8.4.0:
+    resolution: {integrity: sha512-IoM8YF/jY0hiugFo/wOWqfmarlE6J0wc6fDK1PhftMk7MGhVZl88sZimmqBBFomLOCSmcCCpsfj7wXASCpvK9A==}
 
   readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
@@ -1821,8 +1821,9 @@ packages:
     resolution: {integrity: sha512-/m8M+2BJUpoJdgAHoG+baCwBT+tf2VraSfkBgl0Y00qIWt41DJ8R5B8nsEw0I58YwF5IZH6z24/2TobDKnqSWw==}
     engines: {node: '>=12'}
 
-  toml@3.0.0:
-    resolution: {integrity: sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==}
+  toml@4.1.1:
+    resolution: {integrity: sha512-EBJnVBr3dTXdA89WVFoAIPUqkBjxPMwRqsfuo1r240tKFHXv3zgca4+NJib/h6TyvGF7vOawz0jGuryJCdNHrw==}
+    engines: {node: '>=20'}
 
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
@@ -1869,9 +1870,9 @@ packages:
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
-  undici@7.24.5:
-    resolution: {integrity: sha512-3IWdCpjgxp15CbJnsi/Y9TCDE7HWVN19j1hmzVhoAkY/+CJx449tVxT5wZc1Gwg8J+P0LWvzlBzxYRnHJ+1i7Q==}
-    engines: {node: '>=20.18.1'}
+  undici@8.1.0:
+    resolution: {integrity: sha512-E9MkTS4xXLnRPYqxH2e6Hr2/49e7WFDKczKcCaFH4VaZs2iNvHMqeIkyUAD9vM8kujy9TjVrRlQ5KkdEJxB2pw==}
+    engines: {node: '>=22.19.0'}
 
   universal-github-app-jwt@2.2.2:
     resolution: {integrity: sha512-dcmbeSrOdTnsjGjUfAlqNDJrhxXizjAz94ija9Qw8YkZ1uu0d+GoZzyH+Jb9tIIqvGsadUfwg+22k5aDqqwzbw==}
@@ -1971,8 +1972,8 @@ packages:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
 
-  ws@8.19.0:
-    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
+  ws@8.20.0:
+    resolution: {integrity: sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1986,11 +1987,6 @@ packages:
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
     engines: {node: '>=10'}
-
-  yaml@2.8.2:
-    resolution: {integrity: sha512-mplynKqc1C2hTVYxd0PU2xQAc22TI1vShAYGksCCfxbn/dFwnHTNi1bvYsBTkhdUNtGIf5xNOg938rrSSYvS9A==}
-    engines: {node: '>= 14.6'}
-    hasBin: true
 
   yaml@2.8.3:
     resolution: {integrity: sha512-AvbaCLOO2Otw/lW5bmh9d/WEdcDFdQp2Z2ZUH3pX9U2ihyUY0nvLv7J6TrWowklRGPYbB/IuIMfYgxaCPg5Bpg==}
@@ -2007,28 +2003,28 @@ packages:
 
 snapshots:
 
-  '@effect/ai-openai@4.0.0-beta.40(effect@4.0.0-beta.40)':
+  '@effect/ai-openai@4.0.0-beta.52(effect@4.0.0-beta.52)':
     dependencies:
-      effect: 4.0.0-beta.40
+      effect: 4.0.0-beta.52
 
   '@effect/language-service@0.83.1': {}
 
-  '@effect/platform-node-shared@4.0.0-beta.40(effect@4.0.0-beta.40)':
+  '@effect/platform-node-shared@4.0.0-beta.52(effect@4.0.0-beta.52)':
     dependencies:
       '@types/ws': 8.18.1
-      effect: 4.0.0-beta.40
-      ws: 8.19.0
+      effect: 4.0.0-beta.52
+      ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0-beta.40(effect@4.0.0-beta.40)(ioredis@5.9.3)':
+  '@effect/platform-node@4.0.0-beta.52(effect@4.0.0-beta.52)(ioredis@5.9.3)':
     dependencies:
-      '@effect/platform-node-shared': 4.0.0-beta.40(effect@4.0.0-beta.40)
-      effect: 4.0.0-beta.40
+      '@effect/platform-node-shared': 4.0.0-beta.52(effect@4.0.0-beta.52)
+      effect: 4.0.0-beta.52
       ioredis: 5.9.3
       mime: 4.1.0
-      undici: 7.24.5
+      undici: 8.1.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -2897,10 +2893,10 @@ snapshots:
   detect-libc@2.1.2:
     optional: true
 
-  dfx@1.0.11(effect@4.0.0-beta.40):
+  dfx@1.0.12(effect@4.0.0-beta.52):
     dependencies:
       discord-api-types: 0.38.40
-      effect: 4.0.0-beta.40
+      effect: 4.0.0-beta.52
     optionalDependencies:
       discord-verify: 1.2.0
 
@@ -2911,18 +2907,18 @@ snapshots:
       '@types/express': 4.17.25
     optional: true
 
-  effect@4.0.0-beta.40:
+  effect@4.0.0-beta.52:
     dependencies:
       '@standard-schema/spec': 1.1.0
-      fast-check: 4.5.3
+      fast-check: 4.7.0
       find-my-way-ts: 0.1.6
       ini: 6.0.0
       kubernetes-types: 1.30.0
-      msgpackr: 1.11.8
+      msgpackr: 1.11.10
       multipasta: 0.2.7
-      toml: 3.0.0
+      toml: 4.1.1
       uuid: 13.0.0
-      yaml: 2.8.2
+      yaml: 2.8.3
 
   emoji-regex@10.6.0: {}
 
@@ -3030,9 +3026,9 @@ snapshots:
 
   expect-type@1.3.0: {}
 
-  fast-check@4.5.3:
+  fast-check@4.7.0:
     dependencies:
-      pure-rand: 7.0.1
+      pure-rand: 8.4.0
 
   fast-content-type-parse@3.0.0: {}
 
@@ -3177,7 +3173,7 @@ snapshots:
       '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.3
     optional: true
 
-  msgpackr@1.11.8:
+  msgpackr@1.11.10:
     optionalDependencies:
       msgpackr-extract: 3.0.3
 
@@ -3277,7 +3273,7 @@ snapshots:
 
   prettier@3.8.1: {}
 
-  pure-rand@7.0.1: {}
+  pure-rand@8.4.0: {}
 
   readdirp@4.1.2: {}
 
@@ -3458,7 +3454,7 @@ snapshots:
 
   toad-cache@3.7.0: {}
 
-  toml@3.0.0: {}
+  toml@4.1.1: {}
 
   tree-kill@1.2.2: {}
 
@@ -3508,7 +3504,7 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  undici@7.24.5: {}
+  undici@8.1.0: {}
 
   universal-github-app-jwt@2.2.2: {}
 
@@ -3574,11 +3570,9 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  ws@8.19.0: {}
+  ws@8.20.0: {}
 
   y18n@5.0.8: {}
-
-  yaml@2.8.2: {}
 
   yaml@2.8.3: {}
 

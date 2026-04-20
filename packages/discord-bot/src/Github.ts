@@ -9,7 +9,7 @@ import {
   Option,
   pipe,
   Redacted,
-  ServiceMap,
+  Context,
   Stream,
 } from "effect"
 import { Octokit } from "octokit"
@@ -35,7 +35,7 @@ export interface GithubService {
   ) => Stream.Stream<A, GithubError, never>
 }
 
-export class Github extends ServiceMap.Service<Github, GithubService>()(
+export class Github extends Context.Service<Github, GithubService>()(
   "app/Github",
   {
     make: Effect.gen(function* () {

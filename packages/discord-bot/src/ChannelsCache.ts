@@ -1,9 +1,9 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Cache } from "dfx"
 import { CachePrelude } from "dfx/gateway"
-import { Duration, Layer, ServiceMap } from "effect"
+import { Duration, Layer, Context } from "effect"
 
-export class ChannelsCache extends ServiceMap.Service<ChannelsCache>()(
+export class ChannelsCache extends Context.Service<ChannelsCache>()(
   "app/ChannelsCache",
   {
     make: CachePrelude.channels(

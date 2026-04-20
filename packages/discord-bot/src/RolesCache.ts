@@ -1,9 +1,9 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Cache } from "dfx"
 import { CachePrelude } from "dfx/gateway"
-import { Layer, ServiceMap } from "effect"
+import { Layer, Context } from "effect"
 
-export class RolesCache extends ServiceMap.Service<RolesCache>()(
+export class RolesCache extends Context.Service<RolesCache>()(
   "app/RolesCache",
   {
     make: CachePrelude.roles(Cache.memoryParentDriver()),

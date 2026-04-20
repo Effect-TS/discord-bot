@@ -1,13 +1,13 @@
 import { NodeServices } from "@effect/platform-node"
 import type { Scope } from "effect"
-import { Effect, FileSystem, Layer, Schema, ServiceMap } from "effect"
+import { Effect, FileSystem, Layer, Schema, Context } from "effect"
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
 
 export class GitError extends Schema.TaggedErrorClass<GitError>()("GitError", {
   cause: Schema.Defect,
 }) {}
 
-export class Git extends ServiceMap.Service<
+export class Git extends Context.Service<
   Git,
   {
     /** Clone a repository into a scoped temporary directory. */

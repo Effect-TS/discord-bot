@@ -9,7 +9,7 @@ import {
   RcRef,
   Schedule,
   Schema,
-  ServiceMap,
+  Context,
   Stream,
 } from "effect"
 import { glob } from "glob"
@@ -21,7 +21,7 @@ export class EffectRepoError extends Schema.TaggedErrorClass<EffectRepoError>()(
   { cause: Schema.Defect },
 ) {}
 
-export class EffectRepo extends ServiceMap.Service<
+export class EffectRepo extends Context.Service<
   EffectRepo,
   {
     /** Search for content matching the given pattern. */

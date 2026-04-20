@@ -1,5 +1,5 @@
 import { NodeServices } from "@effect/platform-node"
-import { Effect, Layer, Result, Schema, ServiceMap, Stream } from "effect"
+import { Effect, Layer, Result, Schema, Context, Stream } from "effect"
 import { Ndjson } from "effect/unstable/encoding"
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
 
@@ -31,7 +31,7 @@ const RgJsonOther = Schema.Struct({
 
 const RgJsonLine = Schema.Union([RgJsonMatch, RgJsonOther])
 
-export class Ripgrep extends ServiceMap.Service<
+export class Ripgrep extends Context.Service<
   Ripgrep,
   {
     /** Search for content matching the given pattern, returning matches with context. */
