@@ -13,13 +13,13 @@
     "@effect/platform-node": "catalog:",
     "@octokit/plugin-rest-endpoint-methods": "^17.0.0",
     "@octokit/types": "^16.0.0",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.6.0",
     "dfx": "catalog:",
     "effect": "catalog:",
     "fuzzysort": "^3.1.0",
     "glob": "^13.0.6",
     "html-entities": "^2.6.0",
     "octokit": "^5.0.5",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.3"
   }
 }

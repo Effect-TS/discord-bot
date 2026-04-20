@@ -4,7 +4,6 @@
     "exactOptionalPropertyTypes": true,
     "moduleDetection": "force",
     "composite": true,
-    "downlevelIteration": true,
     "resolveJsonModule": true,
     "declaration": true,
     "skipLibCheck": true,
