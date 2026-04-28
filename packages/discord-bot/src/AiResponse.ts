@@ -286,7 +286,7 @@ ${llmsMd}`,
                 reasoning: {
                   effort: reasoning,
                 },
-              } as any),
+              }),
             )
           toolCalls += response.toolCalls.length
           if (response.toolCalls.length > 0 || response.text.length === 0) {
