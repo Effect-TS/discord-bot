@@ -265,7 +265,7 @@ ${llmsMd}`,
 
     const application = yield* DiscordApplication
     const rest = yield* DiscordREST
-    const chatModel = yield* OpenAiLanguageModel.model("gpt-5.4")
+    const chatModel = yield* OpenAiLanguageModel.model("gpt-5.5")
     const generate = Effect.fn("AiResponse.generate")(
       function* (
         context: Discord.APIInteraction,
@@ -286,7 +286,7 @@ ${llmsMd}`,
                 reasoning: {
                   effort: reasoning,
                 },
-              }),
+              } as any),
             )
           toolCalls += response.toolCalls.length
           if (response.toolCalls.length > 0 || response.text.length === 0) {
