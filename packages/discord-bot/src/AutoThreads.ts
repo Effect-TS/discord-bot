@@ -32,6 +32,7 @@ const make = Effect.gen(function* () {
     typeof channel?.topic === "string" &&
     channel.topic.includes(topicKeyword)
 
+  // oxlint-disable-next-line unicorn/consistent-function-scoping
   const isEligibleMessage = (event: Discord.GatewayMessageCreateDispatchData) =>
     event?.type === Discord.MessageType.DEFAULT &&
     event?.author?.bot !== true &&

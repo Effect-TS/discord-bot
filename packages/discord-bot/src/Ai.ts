@@ -20,7 +20,7 @@ export const ChatModel = OpenAiLanguageModel.model("gpt-5.4-mini")
 export class AiHelpers extends Context.Service<AiHelpers>()("app/AiHelpers", {
   make: Effect.gen(function* () {
     const rest = yield* DiscordREST
-    const model = yield* ChatModel
+    const model = yield* ChatModel.captureRequirements
 
     const application = yield* DiscordApplication
     const botUser = application.bot!
