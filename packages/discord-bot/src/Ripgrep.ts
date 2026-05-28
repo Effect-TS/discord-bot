@@ -56,6 +56,7 @@ export class Ripgrep extends Context.Service<
     Effect.gen(function* () {
       const spawner = yield* ChildProcessSpawner.ChildProcessSpawner
 
+      // oxlint-disable-next-line unicorn/consistent-function-scoping
       const command = (options: {
         readonly pattern: string
         readonly directory: string

@@ -15,7 +15,7 @@ Generate a short funny message to the user that a minimal reproduction of the is
 const make = Effect.gen(function* () {
   const ai = yield* AiHelpers
   const channels = yield* ChannelsCache
-  const model = yield* ChatModel
+  const model = yield* ChatModel.captureRequirements
   const registry = yield* InteractionsRegistry
   const discord = yield* DiscordREST
   const application = yield* DiscordApplication

@@ -15,9 +15,9 @@ import { Summarizer } from "./Summarizer.ts"
 
 const LogLevelLive = Layer.effect(
   References.MinimumLogLevel,
-  Config.withDefault(Config.boolean("DEBUG"), false)
-    .pipe(Config.map((debug) => (debug ? "All" : "Info")))
-    .asEffect(),
+  Config.withDefault(Config.boolean("DEBUG"), false).pipe(
+    Config.map((debug) => (debug ? "All" : "Info")),
+  ),
 )
 
 const MainLive = Layer.mergeAll(

@@ -6,6 +6,7 @@ import { Effect, Encoding, Layer, Option } from "effect"
 export const PlaygroundLive = Effect.gen(function* () {
   const registry = yield* InteractionsRegistry
 
+  // oxlint-disable-next-line unicorn/consistent-function-scoping
   const linkFromCode = (code: string) =>
     Effect.sync(() => {
       const encoded = Encoding.encodeBase64Url(code)
@@ -19,7 +20,7 @@ export const PlaygroundLive = Effect.gen(function* () {
     },
     Effect.fn("Playground.command")(
       function* (ix) {
-        const code = yield* extractCode(ix.target.content)
+        const code = yield* Effect.fromOption(extractCode(ix.target.content))
         const url = yield* linkFromCode(code)
 
         const response = `Here is your [playground link](${url}).`
