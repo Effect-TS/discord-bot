@@ -188,32 +188,7 @@ export const AiResponse = Layer.effectDiscard(
           })
         }
 
-        const llmsMd = yield* repo.llmsMd
-
-        let history = (yield* ai.generateAiInput(channel)).pipe(
-          Prompt.setSystem(
-            `You are an assistant for the Effect Discord server. Respond to the conversation, using the following tools when appropriate:
-
-- \`read\`: Read a file (or part of a file) from the effect repository.
-- \`rg\`: Use "rg" to find files in the effect repository.
-- \`glob\`: Find files in the effect repository matching a glob pattern.
-
-Do not use emojis or excessive formatting in your responses.
-Include code examples when relevant.
-Be concise and to the point.
-**You must** keep responses under 1500 characters.
-
-The effect repository can be found at: https://github.com/Effect-TS/effect-smol
-If mentioning files from the repository, create a github link to the file or lines in the repository.
-For example:
-
-[src/Effect.ts](https://github.com/Effect-TS/effect-smol/blob/main/src/Effect.ts#L123)
-
-Here is a copy of the LLMS.md document from the root of the effect repository, investigate this document *and the linked examples *before** looking at rest of the codebase.
-
-${llmsMd}`,
-          ),
-        )
+        let history = yield* ai.generateAiInput(channel)
         const prompt = ix.optionValueOptional("prompt")
         if (Option.isSome(prompt)) {
           history = Prompt.concat(history, Prompt.make(prompt.value))
@@ -276,6 +251,29 @@ ${llmsMd}`,
         const chat = yield* Chat.fromPrompt(prompt)
         let toolCalls = 0
 
+        const llmsMd = yield* repo.llmsMd
+        const instructions = `You are an assistant for the Effect Discord server. Respond to the conversation, using the following tools when appropriate:
+
+- \`read\`: Read a file (or part of a file) from the effect repository.
+- \`rg\`: Use "rg" to find files in the effect repository.
+- \`glob\`: Find files in the effect repository matching a glob pattern.
+
+Do not use emojis or excessive formatting in your responses.
+Include code examples when relevant.
+Be concise and to the point.
+
+**YOU MUST** keep responses under 1000 characters.
+
+The effect repository can be found at: https://github.com/Effect-TS/effect-smol
+If mentioning files from the repository, create a github link to the file or lines in the repository.
+For example:
+
+[src/Effect.ts](https://github.com/Effect-TS/effect-smol/blob/main/src/Effect.ts#L123)
+
+Here is a copy of the LLMS.md document from the root of the effect repository, investigate this document *and the linked examples *before** looking at rest of the codebase.
+
+${llmsMd}`
+
         while (true) {
           const response = yield* chat
             .generateText({
@@ -284,9 +282,11 @@ ${llmsMd}`,
             })
             .pipe(
               OpenAiLanguageModel.withConfigOverride({
+                instructions,
                 reasoning: {
                   effort: reasoning,
                 },
+                store: false,
               }),
             )
           toolCalls += response.toolCalls.length
