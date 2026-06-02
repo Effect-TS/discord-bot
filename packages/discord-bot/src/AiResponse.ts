@@ -287,6 +287,7 @@ ${llmsMd}`,
                 reasoning: {
                   effort: reasoning,
                 },
+                max_output_tokens: 400,
               }),
             )
           toolCalls += response.toolCalls.length
