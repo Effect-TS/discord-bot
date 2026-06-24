@@ -6,7 +6,7 @@ import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
 export class RipgrepError extends Schema.TaggedErrorClass<RipgrepError>()(
   "RipgrepError",
   {
-    cause: Schema.Defect,
+    cause: Schema.Defect(),
   },
 ) {}
 

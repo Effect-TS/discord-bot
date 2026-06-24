@@ -12,6 +12,7 @@ import { PlaygroundLive } from "./Playground.ts"
 import { RemindersLive } from "./Reminders.ts"
 import { ReproRequesterLive } from "./ReproRequester.ts"
 import { Summarizer } from "./Summarizer.ts"
+import { HoneypotLive } from "./Honeypot.ts"
 
 const LogLevelLive = Layer.effect(
   References.MinimumLogLevel,
@@ -24,6 +25,7 @@ const MainLive = Layer.mergeAll(
   AiResponse,
   AutoThreadsLive,
   DadJokesLive,
+  HoneypotLive,
   NoEmbedLive,
   DocsLookupLive,
   IssueifierLive,
