@@ -241,7 +241,7 @@ export const AiResponse = Layer.effectDiscard(
     const application = yield* DiscordApplication
     const rest = yield* DiscordREST
     const chatModel =
-      yield* OpenAiLanguageModel.model("gpt-5.5").captureRequirements
+      yield* OpenAiLanguageModel.model("gpt-5.6-sol").captureRequirements
     const generate = Effect.fn("AiResponse.generate")(
       function* (
         context: Discord.APIInteraction,
