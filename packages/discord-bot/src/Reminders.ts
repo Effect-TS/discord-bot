@@ -40,7 +40,7 @@ const parseExpression = (match: string, expression: string, message: string) =>
   })
 
 const createThreadPolicy = Schedule.spaced("1 seconds").pipe(
-  Schedule.both(Schedule.recurs(3)),
+  Schedule.upTo({ times: 3 }),
 )
 
 const make = Effect.gen(function* () {

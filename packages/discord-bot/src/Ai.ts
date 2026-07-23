@@ -15,7 +15,9 @@ export const OpenAiLive = OpenAiClient.layerConfig({
   }),
 }).pipe(Layer.provide(NodeHttpClient.layerUndici))
 
-export const ChatModel = OpenAiLanguageModel.model("gpt-5.4-mini")
+export const ChatModel = OpenAiLanguageModel.model("gpt-5.6-sol", {
+  reasoning: { effort: "low" },
+})
 
 export class AiHelpers extends Context.Service<AiHelpers>()("app/AiHelpers", {
   make: Effect.gen(function* () {
@@ -101,11 +103,6 @@ Create a short title summarizing the message. Do not include markdown in the tit
         ],
       }).pipe(
         Effect.provide(model),
-        OpenAiLanguageModel.withConfigOverride({
-          temperature: 0.25,
-          // TODO
-          // max_tokens: 64
-        }),
         Effect.map((_) => cleanTitle(_.text)),
         Effect.withSpan("Ai.generateTitle", { attributes: { prompt } }),
       )
