@@ -7,6 +7,7 @@ import { InteractionsRegistry } from "dfx/gateway"
 import {
   Cause,
   Data,
+  DateTime,
   Effect,
   Layer,
   Option,
@@ -89,9 +90,14 @@ export class Summarizer extends Context.Service<Summarizer>()(
               `# ${thread.name}
 
 Thread started in: #${channelName}<br />
-Thread started at: ${new Date(
-                thread.thread_metadata!.create_timestamp!,
-              ).toUTCString()}
+Thread started at: ${DateTime.formatUtc(
+                DateTime.makeUnsafe(thread.thread_metadata!.create_timestamp!),
+                {
+                  dateStyle: "full",
+                  timeStyle: "long",
+                  locale: "en-US",
+                },
+              )}
 
 ${messageContent.join("\n\n")}`,
           ),
@@ -124,9 +130,14 @@ ${messageContent.join("\n\n")}`,
             onSome: ([, i]) => ` (replying to \\#${i})`,
           })
 
-          const header = `${smallOpen}${index}: **${username}**${reply} ${smallOpen}&mdash; ${new Date(
-            message.timestamp,
-          ).toUTCString()}${smallClose}${smallClose}`
+          const header = `${smallOpen}${index}: **${username}**${reply} ${smallOpen}&mdash; ${DateTime.formatUtc(
+            DateTime.makeUnsafe(message.timestamp),
+            {
+              dateStyle: "full",
+              timeStyle: "long",
+              locale: "en-US",
+            },
+          )}${smallClose}${smallClose}`
 
           const images = message.attachments.filter((_) =>
             _.content_type?.startsWith("image/"),

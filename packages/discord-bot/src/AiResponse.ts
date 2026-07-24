@@ -36,10 +36,10 @@ const Tools = Toolkit.make(
         description:
           "The path to the file to read, relative to the root of the repository",
       }),
-      startLine: Schema.optionalKey(Schema.Number).annotate({
+      startLine: Schema.optionalKey(Schema.Finite).annotate({
         description: "The line number to start reading from (inclusive)",
       }),
-      endLine: Schema.optionalKey(Schema.Number).annotate({
+      endLine: Schema.optionalKey(Schema.Finite).annotate({
         description: "The line number to stop reading at (exclusive)",
       }),
     }),
@@ -129,7 +129,6 @@ export const AiResponse = Layer.effectDiscard(
 
     const ixTokens = new Map<Discord.Snowflake, string>()
 
-    // @effect-diagnostics-next-line effectFnImplicitAny:off
     const command = Ix.global(
       {
         name: "ai",
