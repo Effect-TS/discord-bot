@@ -55,15 +55,14 @@ const make = Effect.gen(function* () {
       messages.cleanForChannel(channel),
     )
     const input = Prompt.make(
-      [...collected].toReversed().map(
-        (msg): Prompt.Message =>
-          Prompt.makeMessage("user", {
-            content: [
-              Prompt.makePart("text", {
-                text: `@${msg.author.username}: ${msg.content}`,
-              }),
-            ],
-          }),
+      [...collected].toReversed().map((msg): Prompt.Message =>
+        Prompt.makeMessage("user", {
+          content: [
+            Prompt.makePart("text", {
+              text: `@${msg.author.username}: ${msg.content}`,
+            }),
+          ],
+        }),
       ),
     )
     const summary = yield* LanguageModel.generateObject({
@@ -136,7 +135,6 @@ https://discord.com/channels/${channel.guild_id}/${channel.id}
       Effect.withSpan("Issueifier.followUp"),
     )
 
-  // @effect-diagnostics-next-line effectFnImplicitAny:off
   const command = Ix.global(
     {
       name: "issueify",

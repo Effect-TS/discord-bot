@@ -25,7 +25,7 @@ importers:
   .:
     devDependencies:
       '@effect/tsgo':
-        specifier: ^0.24.3
+        specifier: 0.24.3
         version: 0.24.3
       '@types/node':
         specifier: ^26.1.1

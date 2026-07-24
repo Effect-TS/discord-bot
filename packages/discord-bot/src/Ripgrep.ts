@@ -12,7 +12,7 @@ export class RipgrepError extends Schema.TaggedErrorClass<RipgrepError>()(
 
 export class RipgrepMatch extends Schema.Class<RipgrepMatch>("RipgrepMatch")({
   path: Schema.String,
-  lineNumber: Schema.Number,
+  lineNumber: Schema.Finite,
   line: Schema.String,
 }) {}
 
@@ -20,7 +20,7 @@ const RgJsonMatch = Schema.Struct({
   type: Schema.Literal("match"),
   data: Schema.Struct({
     path: Schema.Struct({ text: Schema.String }),
-    line_number: Schema.Number,
+    line_number: Schema.Finite,
     lines: Schema.Struct({ text: Schema.String }),
   }),
 })

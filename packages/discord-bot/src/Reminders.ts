@@ -2,7 +2,16 @@ import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import type { Discord } from "dfx"
 import { DiscordREST } from "dfx/DiscordREST"
 import { DiscordGateway } from "dfx/gateway"
-import { Cron, Data, Effect, FiberMap, Layer, Result, Schedule } from "effect"
+import {
+  Cron,
+  Data,
+  DateTime,
+  Effect,
+  FiberMap,
+  Layer,
+  Result,
+  Schedule,
+} from "effect"
 
 class MissingTopic extends Data.TaggedError("MissingTopic") {}
 
@@ -92,11 +101,12 @@ const make = Effect.gen(function* () {
     message: string,
   ) {
     yield* Effect.annotateCurrentSpan({ message })
+    const now = yield* DateTime.now
     const msg = yield* rest.createMessage(channelId, {
       content: message,
     })
     yield* rest.createThreadFromMessage(msg.channel_id, msg.id, {
-      name: `${new Date().toDateString()} - ${message}`,
+      name: `${DateTime.formatIsoDate(now)} - ${message}`,
     })
   }, Effect.retry(createThreadPolicy))
 
