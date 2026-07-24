@@ -8,7 +8,8 @@ Do not use `as any` or `: any` anywhere.
 
 ## Learning more about the "effect" & "@effect/\*" packages
 
-`.repos/effect/LLMS.md` is an authoritative source of information about the
+Read `.repos/effect/LLMS.md` **completely** before looking elsewhere for
+information about these packages. It is an authoritative source of information about the
 "effect" and "@effect/\*" packages. Read this before looking elsewhere for
 information about these packages. It contains the best practices for using
 effect.
