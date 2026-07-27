@@ -56,7 +56,7 @@ export class EffectRepo extends Context.Service<
 
       const repo = Fiber.join(
         yield* Effect.forkScoped(
-          git.clone("https://github.com/effect-ts/effect-smol.git"),
+          git.clone("https://github.com/effect-ts/effect.git"),
         ),
       )
 
