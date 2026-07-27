@@ -263,11 +263,11 @@ Be concise and to the point.
 
 **YOU MUST** keep responses under 1000 characters.
 
-The effect repository can be found at: https://github.com/Effect-TS/effect-smol
+The effect repository can be found at: https://github.com/effect-ts/effect
 If mentioning files from the repository, create a github link to the file or lines in the repository.
 For example:
 
-[src/Effect.ts](https://github.com/Effect-TS/effect-smol/blob/main/src/Effect.ts#L123)
+[packages/effect/src/Effect.ts](https://github.com/effect-ts/effect/blob/main/packages/effect/src/Effect.ts#L123)
 
 Here is a copy of the LLMS.md document from the root of the effect repository, investigate this document *and the linked examples *before** looking at rest of the codebase.
 
