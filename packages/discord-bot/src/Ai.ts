@@ -15,7 +15,7 @@ export const OpenAiLive = OpenAiClient.layerConfig({
   }),
 }).pipe(Layer.provide(NodeHttpClient.layerUndici))
 
-export const ChatModel = OpenAiLanguageModel.model("gpt-5.6-sol", {
+export const ChatModel = OpenAiLanguageModel.model("gpt-5.6-luna", {
   reasoning: { effort: "low" },
 })
 
@@ -70,21 +70,18 @@ export class AiHelpers extends Context.Service<AiHelpers>()("app/AiHelpers", {
                   msg.type === Discord.MessageType.REPLY,
               )
               .filter((msg) => msg.content.trim().length > 0)
-              .map(
-                (msg): Prompt.Message =>
-                  msg.author.id === botUser.id
-                    ? Prompt.makeMessage("assistant", {
-                        content: [
-                          Prompt.makePart("text", { text: msg.content }),
-                        ],
-                      })
-                    : Prompt.makeMessage("user", {
-                        content: [
-                          Prompt.makePart("text", {
-                            text: `<@${msg.author.id}>: ${msg.content}`,
-                          }),
-                        ],
-                      }),
+              .map((msg): Prompt.Message =>
+                msg.author.id === botUser.id
+                  ? Prompt.makeMessage("assistant", {
+                      content: [Prompt.makePart("text", { text: msg.content })],
+                    })
+                  : Prompt.makeMessage("user", {
+                      content: [
+                        Prompt.makePart("text", {
+                          text: `<@${msg.author.id}>: ${msg.content}`,
+                        }),
+                      ],
+                    }),
               ),
           ),
         ),

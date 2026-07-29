@@ -39,7 +39,7 @@ const make = Effect.gen(function* () {
   const github = yield* Github
   const fiberMap = yield* FiberMap.make<Discord.Snowflake>()
   const summaryModel = yield* OpenAiLanguageModel.model("gpt-5.6-sol", {
-    reasoning: { effort: "low" },
+    reasoning: { effort: "medium" },
   }).captureRequirements
 
   const createGithubIssue = github.wrap((_) => _.issues.create)
