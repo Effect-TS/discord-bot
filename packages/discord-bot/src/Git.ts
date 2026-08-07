@@ -3,7 +3,7 @@ import type { Scope } from "effect"
 import { Effect, FileSystem, Layer, Schema, Context } from "effect"
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
 
-export class GitError extends Schema.TaggedErrorClass<GitError>()("GitError", {
+export class GitError extends Schema.TaggedError<GitError>()("GitError", {
   cause: Schema.Defect(),
 }) {}
 

@@ -6,16 +6,12 @@ Do not use `as any` or `: any` anywhere.
 
 - Use `pnpm check`
 
-## Learning more about the "effect" & "@effect/\*" packages
+## Learning more about the "effect" packages
 
-Read `.repos/effect/LLMS.md` **completely** before looking elsewhere for
+Read `node_modules/effect/AGENTS.md` **completely** before looking elsewhere for
 information about these packages. It is an authoritative source of information about the
-"effect" and "@effect/\*" packages. Read this before looking elsewhere for
-information about these packages. It contains the best practices for using
-effect.
+"effect" and "@effect/\*" packages.
 
 ## Learning more about the "dfx" packages
 
-The source code can be found in `.repos/dfx`.
-
-Use this instead of node_modules to learn more.
+The source code can be found in `node_modules/dfx`.

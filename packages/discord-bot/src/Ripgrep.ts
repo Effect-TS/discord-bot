@@ -3,7 +3,7 @@ import { Effect, Layer, Result, Schema, Context, Stream } from "effect"
 import { Ndjson } from "effect/unstable/encoding"
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
 
-export class RipgrepError extends Schema.TaggedErrorClass<RipgrepError>()(
+export class RipgrepError extends Schema.TaggedError<RipgrepError>()(
   "RipgrepError",
   {
     cause: Schema.Defect(),
