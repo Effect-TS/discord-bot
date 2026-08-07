@@ -8,17 +8,17 @@ settings:
 catalogs:
   default:
     '@effect/ai-openai':
-      specifier: 4.0.0-beta.101
-      version: 4.0.0-beta.101
+      specifier: 4.0.0-beta.105
+      version: 4.0.0-beta.105
     '@effect/platform-node':
-      specifier: 4.0.0-beta.101
-      version: 4.0.0-beta.101
+      specifier: 4.0.0-beta.105
+      version: 4.0.0-beta.105
     dfx:
-      specifier: ^1.0.15
+      specifier: 1.0.15
       version: 1.0.15
     effect:
-      specifier: 4.0.0-beta.101
-      version: 4.0.0-beta.101
+      specifier: 4.0.0-beta.105
+      version: 4.0.0-beta.105
 
 importers:
 
@@ -33,6 +33,12 @@ importers:
       concurrently:
         specifier: ^10.0.3
         version: 10.0.3
+      dfx:
+        specifier: 'catalog:'
+        version: 1.0.15(effect@4.0.0-beta.105)
+      effect:
+        specifier: 4.0.0-beta.105
+        version: 4.0.0-beta.105
       glob:
         specifier: ^13.0.6
         version: 13.0.6
@@ -62,13 +68,13 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-beta.101(effect@4.0.0-beta.101)(ioredis@5.11.1)
+        version: 4.0.0-beta.105(effect@4.0.0-beta.105)(ioredis@5.11.1)
       dfx:
         specifier: 'catalog:'
-        version: 1.0.15(effect@4.0.0-beta.101)
+        version: 1.0.15(effect@4.0.0-beta.105)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-beta.101
+        version: 4.0.0-beta.105
 
   packages/discord-bot:
     devDependencies:
@@ -80,10 +86,10 @@ importers:
         version: link:../shared
       '@effect/ai-openai':
         specifier: 'catalog:'
-        version: 4.0.0-beta.101(effect@4.0.0-beta.101)
+        version: 4.0.0-beta.105(effect@4.0.0-beta.105)
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-beta.101(effect@4.0.0-beta.101)(ioredis@5.11.1)
+        version: 4.0.0-beta.105(effect@4.0.0-beta.105)(ioredis@5.11.1)
       '@octokit/plugin-rest-endpoint-methods':
         specifier: ^17.0.0
         version: 17.0.0(@octokit/core@7.0.6)
@@ -95,10 +101,10 @@ importers:
         version: 26.1.1
       dfx:
         specifier: 'catalog:'
-        version: 1.0.15(effect@4.0.0-beta.101)
+        version: 1.0.15(effect@4.0.0-beta.105)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-beta.101
+        version: 4.0.0-beta.105
       fuzzysort:
         specifier: ^3.1.0
         version: 3.1.0
@@ -119,30 +125,30 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-beta.101(effect@4.0.0-beta.101)(ioredis@5.11.1)
+        version: 4.0.0-beta.105(effect@4.0.0-beta.105)(ioredis@5.11.1)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-beta.101
+        version: 4.0.0-beta.105
 
 packages:
 
-  '@effect/ai-openai@4.0.0-beta.101':
-    resolution: {integrity: sha512-gsuJUWrfGdoBTlxhhTgvilwjbTpqF86aWHIBNAP8aa6H0mDYTmtp5WDdlUKrDFVC+1pR6mLEJCePRLtCWJv+KQ==}
+  '@effect/ai-openai@4.0.0-beta.105':
+    resolution: {integrity: sha512-DMVRgnaEmmqR5kf3/eYe+7vpzF0mYzbK21fj2HsD1ebbWcGGd8r9zKSMosoP6L6+kCxqU6E9XHbEzh9FK1PpUQ==}
     peerDependencies:
-      effect: ^4.0.0-beta.101
+      effect: ^4.0.0-beta.105
 
-  '@effect/platform-node-shared@4.0.0-beta.101':
-    resolution: {integrity: sha512-g4L7XiyJSNJLJVhlslyg2zBCQsoKQf1y1gd+Yfd+3wD9ymC+m7ymbd/5FGqnT1aXV6E2AwRr4D/R1eyRUikvWQ==}
+  '@effect/platform-node-shared@4.0.0-beta.105':
+    resolution: {integrity: sha512-UfeC8cFm4sP+XW14OO66CcOGJ8PcD102hH0kLwj8xUVL6nYIDGE/SJvlfVmFx+9OWF6rnjfXjMV6vyl6mCdhCQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.101
+      effect: ^4.0.0-beta.105
 
-  '@effect/platform-node@4.0.0-beta.101':
-    resolution: {integrity: sha512-pClk7dmMtHgM6Byu7CzGfrPvZ1/4BwmrRlCg2Op+iJozMkwVUxq8v4beK8b9SvxsliJjHZFznjvkVLX7LQjBqw==}
+  '@effect/platform-node@4.0.0-beta.105':
+    resolution: {integrity: sha512-gOHtgE9PqCT8aiiM0W7ZSbu4M2/jPGfJOKWuyBCxofNV5Np36fFY55FSa1MtyG+vjOjlD5btNY2i6i/SPtRqTA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-beta.101
-      ioredis: ^5.7.0
+      effect: ^4.0.0-beta.105
+      ioredis: '>=5.7.0 <6.0.0'
 
   '@effect/tsgo-darwin-arm64@0.24.2':
     resolution: {integrity: sha512-Yutnhayc6m0tdKPFZgxiiv+M/mA81mt0Lh2tFBV7VYfWmndqIWFb42i/p8g9BA5DkxuXuf3dFQbhBvtfwF82/w==}
@@ -1163,8 +1169,8 @@ packages:
     resolution: {integrity: sha512-8qlrMROW8DhpzWWzgNq9kpeLDxKanWa4EDVoj/ASVv2nr+dSr4JPmu2tFSydf3hAGI/OIJTnZyD0JulMYIxx4w==}
     engines: {node: '>=16'}
 
-  effect@4.0.0-beta.101:
-    resolution: {integrity: sha512-HjowumlIo+orthn4jMlEJPuzIYPBV+uq/XiciHWhiedLsXQpWHdNJHO5d59BVDP5s1LPuvERcktwFqRXnJqnhA==}
+  effect@4.0.0-beta.105:
+    resolution: {integrity: sha512-7U5OzWVNlpnZFvXiZfOeu8V+dCQUa3Om569HnYG2Dx8C8V6uoKS920kFJkIDEYVhlSGhzkRqaGKmYY9bPkBMMQ==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -1201,9 +1207,6 @@ packages:
       picomatch:
         optional: true
 
-  find-my-way-ts@0.1.6:
-    resolution: {integrity: sha512-a85L9ZoXtNAey3Y6Z+eBWW658kO/MwR7zIafkIUPUMf3isZG0NCs2pjW2wtjxAKuJPxMAsHUIP4ZPGv0o5gyTA==}
-
   fix-dts-default-cjs-exports@1.0.1:
     resolution: {integrity: sha512-pVIECanWFC61Hzl2+oOCtoJ3F17kglZC/6N94eRWycFgBH35hHx0Li604ZIzhseh97mf2p0cv7vVrOZGoqhlEg==}
 
@@ -1234,10 +1237,6 @@ packages:
     resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
     engines: {node: '>=18'}
     hasBin: true
-
-  ini@7.0.0:
-    resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
-    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
   ioredis@5.11.1:
     resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
@@ -1371,9 +1370,6 @@ packages:
 
   msgpackr@2.0.4:
     resolution: {integrity: sha512-o1C5KRmuRt+apqMr1HuGSqWStZoRBUpEsCsl15uM9VdAF1qHLtvMOU2En747EnTyEl6c4pzPewRMFF31s1CNbA==}
-
-  multipasta@0.2.8:
-    resolution: {integrity: sha512-ZPWuMKyv0cSO29f7hozp+k6+crZbQijV8ipMvxNxRf2SwtYGTX1ZX89Kd20VV4H9Znonx+EQn+iy1wGQsJ+b+Q==}
 
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
@@ -1566,10 +1562,6 @@ packages:
     resolution: {integrity: sha512-m1TdR/rvT7kgGJZhspNtXdsdYk0fddFpJJFlG5s+UkPFo6lkLoZ3YLOaovPYjq1R75NP5JfeTlSHaOsE09peCg==}
     engines: {node: '>=20'}
 
-  toml@4.3.0:
-    resolution: {integrity: sha512-lVb8X9BsPVuH0M4BKeS91tXAmJvCjQ5UIyAbQFaxkKGyUFK2RPkhwaFSQH8vbpl1d23eu/IBH+dwVMHWaq9A5A==}
-    engines: {node: '>=20'}
-
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
@@ -1748,23 +1740,23 @@ packages:
 
 snapshots:
 
-  '@effect/ai-openai@4.0.0-beta.101(effect@4.0.0-beta.101)':
+  '@effect/ai-openai@4.0.0-beta.105(effect@4.0.0-beta.105)':
     dependencies:
-      effect: 4.0.0-beta.101
+      effect: 4.0.0-beta.105
 
-  '@effect/platform-node-shared@4.0.0-beta.101(effect@4.0.0-beta.101)':
+  '@effect/platform-node-shared@4.0.0-beta.105(effect@4.0.0-beta.105)':
     dependencies:
       '@types/ws': 8.18.1
-      effect: 4.0.0-beta.101
+      effect: 4.0.0-beta.105
       ws: 8.21.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0-beta.101(effect@4.0.0-beta.101)(ioredis@5.11.1)':
+  '@effect/platform-node@4.0.0-beta.105(effect@4.0.0-beta.105)(ioredis@5.11.1)':
     dependencies:
-      '@effect/platform-node-shared': 4.0.0-beta.101(effect@4.0.0-beta.101)
-      effect: 4.0.0-beta.101
+      '@effect/platform-node-shared': 4.0.0-beta.105(effect@4.0.0-beta.105)
+      effect: 4.0.0-beta.105
       ioredis: 5.11.1
       mime: 4.1.0
       undici: 8.8.0
@@ -2525,10 +2517,10 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  dfx@1.0.15(effect@4.0.0-beta.101):
+  dfx@1.0.15(effect@4.0.0-beta.105):
     dependencies:
       discord-api-types: 0.38.50
-      effect: 4.0.0-beta.101
+      effect: 4.0.0-beta.105
     optionalDependencies:
       discord-verify: 1.2.0
 
@@ -2539,18 +2531,13 @@ snapshots:
       '@types/express': 4.17.25
     optional: true
 
-  effect@4.0.0-beta.101:
+  effect@4.0.0-beta.105:
     dependencies:
       '@standard-schema/spec': 1.1.0
       fast-check: 4.9.0
-      find-my-way-ts: 0.1.6
-      ini: 7.0.0
       kubernetes-types: 1.30.0
       msgpackr: 2.0.4
-      multipasta: 0.2.8
-      toml: 4.3.0
       uuid: 14.0.1
-      yaml: 2.9.0
 
   emoji-regex@10.6.0: {}
 
@@ -2601,8 +2588,6 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.5
 
-  find-my-way-ts@0.1.6: {}
-
   fix-dts-default-cjs-exports@1.0.1:
     dependencies:
       magic-string: 0.30.21
@@ -2627,8 +2612,6 @@ snapshots:
   html-entities@2.6.0: {}
 
   husky@9.1.7: {}
-
-  ini@7.0.0: {}
 
   ioredis@5.11.1:
     dependencies:
@@ -2749,8 +2732,6 @@ snapshots:
   msgpackr@2.0.4:
     optionalDependencies:
       msgpackr-extract: 3.0.4
-
-  multipasta@0.2.8: {}
 
   mz@2.7.0:
     dependencies:
@@ -2968,8 +2949,6 @@ snapshots:
 
   toad-cache@3.7.4: {}
 
-  toml@4.3.0: {}
-
   tree-kill@1.2.2: {}
 
   ts-interface-checker@0.1.13: {}
@@ -3094,7 +3073,8 @@ snapshots:
 
   y18n@5.0.8: {}
 
-  yaml@2.9.0: {}
+  yaml@2.9.0:
+    optional: true
 
   yargs-parser@22.0.0: {}
 

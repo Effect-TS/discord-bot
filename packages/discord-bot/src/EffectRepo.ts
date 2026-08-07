@@ -16,7 +16,7 @@ import { glob } from "glob"
 import { Git } from "./Git.ts"
 import { Ripgrep } from "./Ripgrep.ts"
 
-export class EffectRepoError extends Schema.TaggedErrorClass<EffectRepoError>()(
+export class EffectRepoError extends Schema.TaggedError<EffectRepoError>()(
   "EffectRepoError",
   { cause: Schema.Defect() },
 ) {}
