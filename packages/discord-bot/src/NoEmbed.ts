@@ -7,15 +7,15 @@ import { nestedConfigProvider } from "./utils/Config.ts"
 
 const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.withDefault(
-    Config.string("keyword"),
+    Config.String("keyword"),
     "[noembed]",
   )
   const urlWhitelist = yield* Config.withDefault(
-    Config.string("urlWhitelist"),
+    Config.String("urlWhitelist"),
     "effect.website",
   ).pipe(Config.map(toList))
   const urlExclude = yield* Config.withDefault(
-    Config.string("urlExclude"),
+    Config.String("urlExclude"),
     "effect.website/play",
   ).pipe(Config.map(toList))
 

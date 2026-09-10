@@ -39,7 +39,7 @@ export class Github extends Context.Service<Github, GithubService>()(
   "app/Github",
   {
     make: Effect.gen(function* () {
-      const token = yield* Config.redacted("token")
+      const token = yield* Config.Redacted("token")
       const octokit = new Octokit({ auth: Redacted.value(token) })
 
       const rest = octokit.rest

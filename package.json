@@ -15,7 +15,7 @@
     "@types/node": "^26.1.1",
     "concurrently": "^10.0.3",
     "dfx": "catalog:",
-    "effect": "4.0.0-beta.105",
+    "effect": "catalog:",
     "glob": "^13.0.6",
     "husky": "^9.1.7",
     "lint-staged": "^17.2.0",

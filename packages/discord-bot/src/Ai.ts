@@ -8,7 +8,7 @@ import { HttpClient } from "effect/unstable/http"
 import * as Str from "./utils/String.ts"
 
 export const OpenAiLive = OpenAiClient.layerConfig({
-  apiKey: Config.redacted("OPENAI_API_KEY"),
+  apiKey: Config.Redacted("OPENAI_API_KEY"),
   transformClient: HttpClient.retryTransient({
     times: 3,
     schedule: Schedule.exponential(500),
