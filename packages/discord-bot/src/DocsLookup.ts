@@ -13,7 +13,7 @@ import {
 } from "effect"
 import type { Mutable } from "effect/Types"
 import { HttpClient, HttpClientResponse } from "effect/unstable/http"
-import fuzzysort from "fuzzysort"
+import * as fuzzysort from "fuzzysort"
 import * as Prettier from "prettier"
 
 const docUrls = [
@@ -163,7 +163,7 @@ const make = Effect.fn(function* (options: {
       })
     }).pipe(
       Effect.catchTags({
-        QueryTooShort: (_) =>
+        QueryTooShort: () =>
           Effect.succeed(
             Ix.response({
               type: Discord.InteractionCallbackTypes

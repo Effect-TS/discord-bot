@@ -47,7 +47,7 @@ export class Github extends Context.Service<Github, GithubService>()(
       const request = <A>(f: (_: GithubApi) => Promise<A>) =>
         Effect.withSpan(
           Effect.tryPromise({
-            try: () => f(rest),
+            try: () => f(rest as any),
             catch: (cause) => new GithubError({ cause }),
           }),
           "Github.request",
@@ -60,7 +60,7 @@ export class Github extends Context.Service<Github, GithubService>()(
         (...args: Args) =>
           Effect.map(
             Effect.tryPromise({
-              try: () => f(rest)(...args),
+              try: () => f(rest as any)(...args),
               catch: (cause) => new GithubError({ cause }),
             }),
             (_) => _.data,
@@ -72,7 +72,7 @@ export class Github extends Context.Service<Github, GithubService>()(
         Stream.paginate(0, (page) =>
           Effect.map(
             Effect.tryPromise({
-              try: () => f(rest, page),
+              try: () => f(rest as any, page),
               catch: (cause) => new GithubError({ cause }),
             }),
             (_) => [_.data, maybeNextPage(page, _.headers.link)] as const,
