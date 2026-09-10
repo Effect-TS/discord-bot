@@ -1,9 +1,12 @@
-FROM node:24-alpine AS base
+# effect-tsgo's packaged Oxlint integration requires glibc on Linux.
+FROM node:24-bookworm-slim AS base
 ENV NODE_ENV=production
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
-RUN apk add --no-cache ripgrep git
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates ripgrep git \
+    && rm -rf /var/lib/apt/lists/*
 
 FROM base AS build
 COPY . /usr/src/app
