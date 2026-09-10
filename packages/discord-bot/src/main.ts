@@ -16,7 +16,7 @@ import { HoneypotLive } from "./Honeypot.ts"
 
 const LogLevelLive = Layer.effect(
   References.MinimumLogLevel,
-  Config.withDefault(Config.boolean("DEBUG"), false).pipe(
+  Config.withDefault(Config.Boolean("DEBUG"), false).pipe(
     Config.map((debug) => (debug ? "All" : "Info")),
   ),
 )

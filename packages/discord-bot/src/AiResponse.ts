@@ -325,7 +325,7 @@ ${llmsMd}`
       Effect.provide(chatModel),
       Effect.withSpan("AiResponse.generate (inner)"),
       (effect, context) =>
-        Effect.onError(effect, (_) =>
+        Effect.onError(effect, () =>
           pipe(
             rest.deleteOriginalWebhookMessage(
               application.id,

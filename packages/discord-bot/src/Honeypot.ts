@@ -7,7 +7,7 @@ import { nestedConfigProvider } from "./utils/Config.ts"
 
 const make = Effect.gen(function* () {
   const topicKeyword = yield* Config.withDefault(
-    Config.string("keyword"),
+    Config.String("keyword"),
     "[honeypot]",
   )
 

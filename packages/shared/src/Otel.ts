@@ -9,10 +9,10 @@ import {
 export const TracerLayer = (serviceName: string): Layer.Layer<never> =>
   Layer.unwrap(
     Effect.gen(function* () {
-      const apiKey = yield* Config.redacted("HONEYCOMB_API_KEY").pipe(
+      const apiKey = yield* Config.Redacted("HONEYCOMB_API_KEY").pipe(
         Config.option,
       )
-      const dataset = yield* Config.string("HONEYCOMB_DATASET").pipe(
+      const dataset = yield* Config.String("HONEYCOMB_DATASET").pipe(
         Config.withDefault(serviceName),
       )
       if (Option.isNone(apiKey)) {
