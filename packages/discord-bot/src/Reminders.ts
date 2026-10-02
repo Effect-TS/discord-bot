@@ -61,7 +61,7 @@ const make = Effect.gen(function* () {
     function* (channel: Discord.GatewayChannelModifyDispatchData) {
       yield* FiberMap.remove(fibers, channel.id)
 
-      const [errors, matches] = yield* parseTopic(channel.topic ?? "")
+      const [matches, errors] = yield* parseTopic(channel.topic ?? "")
       yield* Effect.forEach(errors, (err) => Effect.logInfo(err))
       if (matches.length === 0) {
         return yield* new MissingTopic()

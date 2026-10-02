@@ -1,10 +1,6 @@
 import { NodeHttpClient } from "@effect/platform-node"
 import { Config, Effect, Layer, Option, Redacted } from "effect"
-import {
-  Otlp,
-  OtlpSerialization,
-  OtlpTracer,
-} from "effect/unstable/observability"
+import { Otlp, OtlpSerialization, OtlpTracer } from "effect/observability"
 
 export const TracerLayer = (serviceName: string): Layer.Layer<never> =>
   Layer.unwrap(

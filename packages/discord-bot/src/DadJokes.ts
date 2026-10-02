@@ -2,11 +2,7 @@ import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
 import { Effect, flow, Layer, Schedule, Schema } from "effect"
-import {
-  HttpClient,
-  HttpClientRequest,
-  HttpClientResponse,
-} from "effect/unstable/http"
+import { HttpClient, HttpClientRequest, HttpClientResponse } from "effect/http"
 
 const make = Effect.gen(function* () {
   const client = (yield* HttpClient.HttpClient).pipe(

@@ -1,7 +1,7 @@
 import { NodeServices } from "@effect/platform-node"
 import { Effect, Layer, Result, Schema, Context, Stream } from "effect"
-import { Ndjson } from "effect/unstable/encoding"
-import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
+import { Ndjson } from "effect/encoding"
+import { ChildProcess, ChildProcessSpawner } from "effect/process"
 
 export class RipgrepError extends Schema.TaggedError<RipgrepError>()(
   "RipgrepError",

@@ -1,7 +1,8 @@
 import { DiscordGatewayLayer } from "@chat/discord/DiscordGateway"
 import { Discord, Ix } from "dfx"
 import { InteractionsRegistry } from "dfx/gateway"
-import { Effect, Encoding, Layer, Option } from "effect"
+import { Effect, Layer, Option } from "effect"
+import { Base64Url } from "effect/encoding"
 
 export const PlaygroundLive = Effect.gen(function* () {
   const registry = yield* InteractionsRegistry
@@ -9,7 +10,7 @@ export const PlaygroundLive = Effect.gen(function* () {
   // oxlint-disable-next-line unicorn/consistent-function-scoping
   const linkFromCode = (code: string) =>
     Effect.sync(() => {
-      const encoded = Encoding.encodeBase64Url(code)
+      const encoded = Base64Url.encode(code)
       return `https://effect.website/play/?code=${encoded}`
     })
 

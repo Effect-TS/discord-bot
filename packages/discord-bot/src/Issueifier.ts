@@ -15,7 +15,7 @@ import {
   Schema,
   Stream,
 } from "effect"
-import { LanguageModel, Prompt } from "effect/unstable/ai"
+import { LanguageModel, Prompt } from "effect/ai"
 import { OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { Github } from "./Github.ts"

@@ -14,7 +14,7 @@ import {
   Schema,
   Stream,
 } from "effect"
-import { Chat, Prompt, Tool, Toolkit } from "effect/unstable/ai"
+import { Chat, Prompt, Tool, Toolkit } from "effect/ai"
 import { AiHelpers, OpenAiLive } from "./Ai.ts"
 import { ChannelsCache } from "./ChannelsCache.ts"
 import { EffectRepo } from "./EffectRepo.ts"

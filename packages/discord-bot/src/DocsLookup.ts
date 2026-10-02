@@ -12,7 +12,7 @@ import {
   Schema,
 } from "effect"
 import type { Mutable } from "effect/Types"
-import { HttpClient, HttpClientResponse } from "effect/unstable/http"
+import { HttpClient, HttpClientResponse } from "effect/http"
 import * as fuzzysort from "fuzzysort"
 import * as Prettier from "prettier"
 
