@@ -1,7 +1,7 @@
 import { NodeServices } from "@effect/platform-node"
 import type { Scope } from "effect"
 import { Effect, FileSystem, Layer, Schema, Context } from "effect"
-import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process"
+import { ChildProcess, ChildProcessSpawner } from "effect/process"
 
 export class GitError extends Schema.TaggedError<GitError>()("GitError", {
   cause: Schema.Defect(),

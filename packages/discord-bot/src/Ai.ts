@@ -3,8 +3,8 @@ import { OpenAiClient, OpenAiLanguageModel } from "@effect/ai-openai"
 import { NodeHttpClient } from "@effect/platform-node"
 import { Discord, DiscordREST } from "dfx"
 import { Config, Effect, Layer, Option, pipe, Schedule, Context } from "effect"
-import { LanguageModel, Prompt } from "effect/unstable/ai"
-import { HttpClient } from "effect/unstable/http"
+import { LanguageModel, Prompt } from "effect/ai"
+import { HttpClient } from "effect/http"
 import * as Str from "./utils/String.ts"
 
 export const OpenAiLive = OpenAiClient.layerConfig({
@@ -49,10 +49,12 @@ export class AiHelpers extends Context.Service<AiHelpers>()("app/AiHelpers", {
         Effect.all(
           {
             openingMessage: getOpeningMessage(thread).pipe(Effect.option),
-            messages: rest.listMessages(thread.id, {
-              before: message?.id,
-              limit: 10,
-            }),
+            messages: rest
+              .listMessages(thread.id, {
+                before: message?.id,
+                limit: 10,
+              })
+              .pipe(Effect.map((messages) => messages ?? [])),
           },
           { concurrency: "unbounded" },
         ),

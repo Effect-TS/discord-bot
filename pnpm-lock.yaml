@@ -8,17 +8,17 @@ settings:
 catalogs:
   default:
     '@effect/ai-openai':
-      specifier: 4.0.0-rc.113
-      version: 4.0.0-rc.113
+      specifier: 4.0.0
+      version: 4.0.0
     '@effect/platform-node':
-      specifier: 4.0.0-rc.113
-      version: 4.0.0-rc.113
+      specifier: 4.0.0
+      version: 4.0.0
     dfx:
-      specifier: 1.0.16
-      version: 1.0.16
+      specifier: 1.1.0
+      version: 1.1.0
     effect:
-      specifier: 4.0.0-rc.113
-      version: 4.0.0-rc.113
+      specifier: 4.0.0
+      version: 4.0.0
 
 importers:
 
@@ -35,10 +35,10 @@ importers:
         version: 10.0.5
       dfx:
         specifier: 'catalog:'
-        version: 1.0.16(effect@4.0.0-rc.113)
+        version: 1.1.0(effect@4.0.0)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-rc.113
+        version: 4.0.0
       glob:
         specifier: ^13.0.6
         version: 13.0.6
@@ -68,13 +68,13 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-rc.113(effect@4.0.0-rc.113)(redis@6.2.1)
+        version: 4.0.0(effect@4.0.0)(redis@6.2.1)
       dfx:
         specifier: 'catalog:'
-        version: 1.0.16(effect@4.0.0-rc.113)
+        version: 1.1.0(effect@4.0.0)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-rc.113
+        version: 4.0.0
 
   packages/discord-bot:
     devDependencies:
@@ -86,10 +86,10 @@ importers:
         version: link:../shared
       '@effect/ai-openai':
         specifier: 'catalog:'
-        version: 4.0.0-rc.113(effect@4.0.0-rc.113)
+        version: 4.0.0(effect@4.0.0)
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-rc.113(effect@4.0.0-rc.113)(redis@6.2.1)
+        version: 4.0.0(effect@4.0.0)(redis@6.2.1)
       '@octokit/plugin-rest-endpoint-methods':
         specifier: ^18.0.0
         version: 18.0.0(@octokit/core@7.0.6)
@@ -101,10 +101,10 @@ importers:
         version: 26.1.1
       dfx:
         specifier: 'catalog:'
-        version: 1.0.16(effect@4.0.0-rc.113)
+        version: 1.1.0(effect@4.0.0)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-rc.113
+        version: 4.0.0
       fuzzysort:
         specifier: ^4.0.2
         version: 4.0.2
@@ -125,29 +125,29 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0-rc.113(effect@4.0.0-rc.113)(redis@6.2.1)
+        version: 4.0.0(effect@4.0.0)(redis@6.2.1)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0-rc.113
+        version: 4.0.0
 
 packages:
 
-  '@effect/ai-openai@4.0.0-rc.113':
-    resolution: {integrity: sha512-J7zuAc1QfdlJRUoMX38xj4xI1jQ1tUXdwAiyheNP1rLk5KUcy17En097ltvppXK/OI1h/GPFTd7wgiyMqgu4HA==}
+  '@effect/ai-openai@4.0.0':
+    resolution: {integrity: sha512-WjLvyFW4urzXkNy+Ki1YQE912yOxMYHps5gbiPfiUDghuHz0hfA+jzprGL8vj4fTwZI56TIwkviKRqfQNwka7w==}
     peerDependencies:
-      effect: ^4.0.0-rc.113
+      effect: ^4.0.0
 
-  '@effect/platform-node-shared@4.0.0-rc.113':
-    resolution: {integrity: sha512-EPCfjvKlHmNDgqIlT85P1OcgNUNvRxNtBpTFOz1UGHwNJe6Ap7rP93Rue7kzFUeplQMy6EfoZEH4CJR4N0nJ1g==}
+  '@effect/platform-node-shared@4.0.0':
+    resolution: {integrity: sha512-VBXHJU9UXVZPdQGGDRjGXpo+TpOzRwZuMrdKAtIxi1qwcRftmacZ1zTgIrzBa0Z2RA2KVkoOecQUsTlt/nJZhw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-rc.113
+      effect: ^4.0.0
 
-  '@effect/platform-node@4.0.0-rc.113':
-    resolution: {integrity: sha512-8luSE2JcGVsALQ6cZOWh5jdZu+VgcUKIKPfhN/MjX+ZzIuK/krm3jZBHYZdhqkXjM9s8aYGBxNMHGF0WzF+Gpg==}
+  '@effect/platform-node@4.0.0':
+    resolution: {integrity: sha512-/L+4MUbl8FejPKLHLROYSOebvHnfixkP8KiblSD/DE5uH5xENZBHaux4nH6XMnRP+lr8ajpEJFS8sUrmmxFJeQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0-rc.113
+      effect: ^4.0.0
       redis: '>=5.0.0 <7.0.0'
 
   '@effect/tsgo-darwin-arm64@0.44.0':
@@ -1157,20 +1157,20 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  dfx@1.0.16:
-    resolution: {integrity: sha512-yiaAPJpWfY9pJA4qTxckKwe9mThO+LiGtIOaChe4RxAwYUrRIo8ArDJ3+hFsiDa9CXi+QYaG0E43avG2nhOx4Q==}
+  dfx@1.1.0:
+    resolution: {integrity: sha512-1FkKFM/780mvAVewqfBi0ePyq3BQr/v+dppzMNyNggG4ITLQOdUxks4hyzPz4GGag19WOiavlVXutfO6SjnzUQ==}
     peerDependencies:
-      effect: '>=4.0.0-rc.113 <5.0.0'
+      effect: ^4.0.0
 
-  discord-api-types@0.38.55:
-    resolution: {integrity: sha512-ytuaRTzdnHUCXJ6KjL9MrItQX0xKncBKEeYI1Bst4+ud47eejH3cG6gaesYakjpPcUhh68XYS2YwGq3mmujFsA==}
+  discord-api-types@0.38.56:
+    resolution: {integrity: sha512-Hti4RZsGvF5C7SM8rF2MDHtIm0Hyfrlk84GpEA29nj91tvVVMvX+oQSCodu10t2ZcjFGofq8TX0YyC04B2E69Q==}
 
   discord-verify@1.2.0:
     resolution: {integrity: sha512-8qlrMROW8DhpzWWzgNq9kpeLDxKanWa4EDVoj/ASVv2nr+dSr4JPmu2tFSydf3hAGI/OIJTnZyD0JulMYIxx4w==}
     engines: {node: '>=16'}
 
-  effect@4.0.0-rc.113:
-    resolution: {integrity: sha512-uZ4Bh7KSlw2sdVdNDHPLSNjLGH+MWap7cheIHZoB/1T/ZJ3pvI4KiN3kUp50MpFKXhygOMmReJJOwWMQPwpPAg==}
+  effect@4.0.0:
+    resolution: {integrity: sha512-ooc1TG5t+FfzgYnFz2ff6BBKyZ7EwBRVXC7c4RhQUAD6/TZ2gTXXMeb4WX7a19ozQo4J73/QW+S00YAIresoMQ==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -1573,8 +1573,8 @@ packages:
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
 
-  undici@8.10.2:
-    resolution: {integrity: sha512-/y4/bH9YNU5hi9NIrpOuvGXFcxrj3CMrV+/AYpowAYTpHn8gX/XPFjNy766FPoYY0miQhdW977JFWKGNhBdwyQ==}
+  undici@8.11.2:
+    resolution: {integrity: sha512-u4UB2/IrKdU6lFxumHmmo1a3fCQO5tzQllRorfoRS63txhrB7xTpSn1PftwC4qEHkOaqP95fCWW4lJzwErwzhQ==}
     engines: {node: '>=22.19.0'}
 
   universal-github-app-jwt@2.2.2:
@@ -1676,8 +1676,8 @@ packages:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
 
-  ws@8.21.3:
-    resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
+  ws@8.22.0:
+    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1707,25 +1707,25 @@ packages:
 
 snapshots:
 
-  '@effect/ai-openai@4.0.0-rc.113(effect@4.0.0-rc.113)':
+  '@effect/ai-openai@4.0.0(effect@4.0.0)':
     dependencies:
-      effect: 4.0.0-rc.113
+      effect: 4.0.0
 
-  '@effect/platform-node-shared@4.0.0-rc.113(effect@4.0.0-rc.113)':
+  '@effect/platform-node-shared@4.0.0(effect@4.0.0)':
     dependencies:
       '@types/ws': 8.18.1
-      effect: 4.0.0-rc.113
-      ws: 8.21.3
+      effect: 4.0.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0-rc.113(effect@4.0.0-rc.113)(redis@6.2.1)':
+  '@effect/platform-node@4.0.0(effect@4.0.0)(redis@6.2.1)':
     dependencies:
-      '@effect/platform-node-shared': 4.0.0-rc.113(effect@4.0.0-rc.113)
-      effect: 4.0.0-rc.113
+      '@effect/platform-node-shared': 4.0.0(effect@4.0.0)
+      effect: 4.0.0
       redis: 6.2.1
-      undici: 8.10.2
+      undici: 8.11.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -2466,21 +2466,21 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  dfx@1.0.16(effect@4.0.0-rc.113):
+  dfx@1.1.0(effect@4.0.0):
     dependencies:
-      discord-api-types: 0.38.55
-      effect: 4.0.0-rc.113
+      discord-api-types: 0.38.56
+      effect: 4.0.0
     optionalDependencies:
       discord-verify: 1.2.0
 
-  discord-api-types@0.38.55: {}
+  discord-api-types@0.38.56: {}
 
   discord-verify@1.2.0:
     dependencies:
       '@types/express': 4.17.25
     optional: true
 
-  effect@4.0.0-rc.113: {}
+  effect@4.0.0: {}
 
   emoji-regex@10.6.0: {}
 
@@ -2919,7 +2919,7 @@ snapshots:
 
   undici-types@8.3.0: {}
 
-  undici@8.10.2: {}
+  undici@8.11.2: {}
 
   universal-github-app-jwt@2.2.2: {}
 
@@ -2970,7 +2970,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  ws@8.21.3: {}
+  ws@8.22.0: {}
 
   y18n@5.0.8: {}
 

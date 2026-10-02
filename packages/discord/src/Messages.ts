@@ -48,6 +48,7 @@ export class Messages extends Context.Service<Messages>()("app/Messages", {
               limit: 100,
               before: Option.getOrUndefined(before)!,
             }),
+            Effect.map((messages) => messages ?? []),
             Effect.map((messages) =>
               messages.length < 100
                 ? ([
