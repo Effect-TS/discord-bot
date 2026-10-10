@@ -20,6 +20,11 @@ catalogs:
       specifier: 4.0.2
       version: 4.0.2
 
+patchedDependencies:
+  '@effect/ai-openai@4.0.2':
+    hash: 4fec79e4050f222e9a1d5988cc830455b6a5b29edcaf0c57888c7c203e4cd73f
+    path: patches/@effect__ai-openai@4.0.2.patch
+
 importers:
 
   .:
@@ -86,7 +91,7 @@ importers:
         version: link:../shared
       '@effect/ai-openai':
         specifier: 'catalog:'
-        version: 4.0.2(effect@4.0.2)
+        version: 4.0.2(patch_hash=4fec79e4050f222e9a1d5988cc830455b6a5b29edcaf0c57888c7c203e4cd73f)(effect@4.0.2)
       '@effect/platform-node':
         specifier: 'catalog:'
         version: 4.0.2(effect@4.0.2)(redis@6.2.1)
@@ -1707,7 +1712,7 @@ packages:
 
 snapshots:
 
-  '@effect/ai-openai@4.0.2(effect@4.0.2)':
+  '@effect/ai-openai@4.0.2(patch_hash=4fec79e4050f222e9a1d5988cc830455b6a5b29edcaf0c57888c7c203e4cd73f)(effect@4.0.2)':
     dependencies:
       effect: 4.0.2
 
