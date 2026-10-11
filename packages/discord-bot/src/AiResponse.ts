@@ -286,7 +286,6 @@ ${llmsMd}`
                   effort: reasoning,
                 },
                 store: false,
-                include: ["reasoning.encrypted_content"],
               }),
             )
           toolCalls += response.toolCalls.length

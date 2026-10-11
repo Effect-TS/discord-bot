@@ -33,10 +33,7 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "msgpackr-extract"
-    ],
-    "patchedDependencies": {
-      "@effect/ai-openai@4.0.2": "patches/@effect__ai-openai@4.0.2.patch"
-    }
+    ]
   },
   "lint-staged": {
     "*.{ts,tsx}": [
