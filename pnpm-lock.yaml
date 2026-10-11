@@ -8,17 +8,17 @@ settings:
 catalogs:
   default:
     '@effect/ai-openai':
-      specifier: 4.0.0
-      version: 4.0.0
+      specifier: 4.0.3
+      version: 4.0.3
     '@effect/platform-node':
-      specifier: 4.0.0
-      version: 4.0.0
+      specifier: 4.0.3
+      version: 4.0.3
     dfx:
       specifier: 1.1.0
       version: 1.1.0
     effect:
-      specifier: 4.0.0
-      version: 4.0.0
+      specifier: 4.0.3
+      version: 4.0.3
 
 importers:
 
@@ -35,10 +35,10 @@ importers:
         version: 10.0.5
       dfx:
         specifier: 'catalog:'
-        version: 1.1.0(effect@4.0.0)
+        version: 1.1.0(effect@4.0.3)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0
+        version: 4.0.3
       glob:
         specifier: ^13.0.6
         version: 13.0.6
@@ -68,13 +68,13 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0(effect@4.0.0)(redis@6.2.1)
+        version: 4.0.3(effect@4.0.3)(redis@6.2.1)
       dfx:
         specifier: 'catalog:'
-        version: 1.1.0(effect@4.0.0)
+        version: 1.1.0(effect@4.0.3)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0
+        version: 4.0.3
 
   packages/discord-bot:
     devDependencies:
@@ -86,10 +86,10 @@ importers:
         version: link:../shared
       '@effect/ai-openai':
         specifier: 'catalog:'
-        version: 4.0.0(effect@4.0.0)
+        version: 4.0.3(effect@4.0.3)
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0(effect@4.0.0)(redis@6.2.1)
+        version: 4.0.3(effect@4.0.3)(redis@6.2.1)
       '@octokit/plugin-rest-endpoint-methods':
         specifier: ^18.0.0
         version: 18.0.0(@octokit/core@7.0.6)
@@ -101,10 +101,10 @@ importers:
         version: 26.1.1
       dfx:
         specifier: 'catalog:'
-        version: 1.1.0(effect@4.0.0)
+        version: 1.1.0(effect@4.0.3)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0
+        version: 4.0.3
       fuzzysort:
         specifier: ^4.0.2
         version: 4.0.2
@@ -125,29 +125,29 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 'catalog:'
-        version: 4.0.0(effect@4.0.0)(redis@6.2.1)
+        version: 4.0.3(effect@4.0.3)(redis@6.2.1)
       effect:
         specifier: 'catalog:'
-        version: 4.0.0
+        version: 4.0.3
 
 packages:
 
-  '@effect/ai-openai@4.0.0':
-    resolution: {integrity: sha512-WjLvyFW4urzXkNy+Ki1YQE912yOxMYHps5gbiPfiUDghuHz0hfA+jzprGL8vj4fTwZI56TIwkviKRqfQNwka7w==}
+  '@effect/ai-openai@4.0.3':
+    resolution: {integrity: sha512-jdD/5uryLdlnf2XEUe1yAPSKzsYGpgBX65azWAaLtcMPk4FlP5xq3JnLfVOtOLAgiRMJ9RaMmd/7GVUeW5q3hA==}
     peerDependencies:
-      effect: ^4.0.0
+      effect: ^4.0.3
 
-  '@effect/platform-node-shared@4.0.0':
-    resolution: {integrity: sha512-VBXHJU9UXVZPdQGGDRjGXpo+TpOzRwZuMrdKAtIxi1qwcRftmacZ1zTgIrzBa0Z2RA2KVkoOecQUsTlt/nJZhw==}
+  '@effect/platform-node-shared@4.0.3':
+    resolution: {integrity: sha512-5srkJfmWklWSgwZwlkMeTXobfNtxuwuTCvY9JWdPXRv/PBXAe5kKSptzRxT778oFFsaE9IMI8X61pvkifT9Eug==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0
+      effect: ^4.0.3
 
-  '@effect/platform-node@4.0.0':
-    resolution: {integrity: sha512-/L+4MUbl8FejPKLHLROYSOebvHnfixkP8KiblSD/DE5uH5xENZBHaux4nH6XMnRP+lr8ajpEJFS8sUrmmxFJeQ==}
+  '@effect/platform-node@4.0.3':
+    resolution: {integrity: sha512-ctvREpC1EzRVsOm0JyIzYHajAQScFaec6Gl+M7TEIpEqdmmx6Ju11Um92EA/CE2KBfY5Fp1QWlqTkK6lOL7tqg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.0
+      effect: ^4.0.3
       redis: '>=5.0.0 <7.0.0'
 
   '@effect/tsgo-darwin-arm64@0.44.0':
@@ -923,8 +923,8 @@ packages:
   '@types/serve-static@1.15.10':
     resolution: {integrity: sha512-tRs1dB+g8Itk72rlSI2ZrW6vZg0YrLI81iQSTkMmOqnqCaNr/8Ek4VwWcN5vZgCYWbg/JJSGBlUaYGAOP73qBw==}
 
-  '@types/ws@8.18.1':
-    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+  '@types/ws@8.18.2':
+    resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
 
   '@typescript/typescript-aix-ppc64@7.0.2':
     resolution: {integrity: sha512-MTKKkWB7p/0E9xi1d1tHtZ5PiLkGEMIq88pK2CubZjOsLtYTLqhgIgi6zepFa+9GHZ6h05NMCkQxGKiPXMxXtQ==}
@@ -1169,8 +1169,8 @@ packages:
     resolution: {integrity: sha512-8qlrMROW8DhpzWWzgNq9kpeLDxKanWa4EDVoj/ASVv2nr+dSr4JPmu2tFSydf3hAGI/OIJTnZyD0JulMYIxx4w==}
     engines: {node: '>=16'}
 
-  effect@4.0.0:
-    resolution: {integrity: sha512-ooc1TG5t+FfzgYnFz2ff6BBKyZ7EwBRVXC7c4RhQUAD6/TZ2gTXXMeb4WX7a19ozQo4J73/QW+S00YAIresoMQ==}
+  effect@4.0.3:
+    resolution: {integrity: sha512-LoWn/Uwwx0JjHSDmBAAahx8sB+klzM6vsZovnbYowBNw6B4QScJLRLBByO61plvNiycx7HPN8FnsWUCu0eXW5w==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -1707,23 +1707,23 @@ packages:
 
 snapshots:
 
-  '@effect/ai-openai@4.0.0(effect@4.0.0)':
+  '@effect/ai-openai@4.0.3(effect@4.0.3)':
     dependencies:
-      effect: 4.0.0
+      effect: 4.0.3
 
-  '@effect/platform-node-shared@4.0.0(effect@4.0.0)':
+  '@effect/platform-node-shared@4.0.3(effect@4.0.3)':
     dependencies:
-      '@types/ws': 8.18.1
-      effect: 4.0.0
+      '@types/ws': 8.18.2
+      effect: 4.0.3
       ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0(effect@4.0.0)(redis@6.2.1)':
+  '@effect/platform-node@4.0.3(effect@4.0.3)(redis@6.2.1)':
     dependencies:
-      '@effect/platform-node-shared': 4.0.0(effect@4.0.0)
-      effect: 4.0.0
+      '@effect/platform-node-shared': 4.0.3(effect@4.0.3)
+      effect: 4.0.3
       redis: 6.2.1
       undici: 8.11.2
     transitivePeerDependencies:
@@ -2325,7 +2325,7 @@ snapshots:
       '@types/send': 0.17.6
     optional: true
 
-  '@types/ws@8.18.1':
+  '@types/ws@8.18.2':
     dependencies:
       '@types/node': 26.1.1
 
@@ -2466,10 +2466,10 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  dfx@1.1.0(effect@4.0.0):
+  dfx@1.1.0(effect@4.0.3):
     dependencies:
       discord-api-types: 0.38.56
-      effect: 4.0.0
+      effect: 4.0.3
     optionalDependencies:
       discord-verify: 1.2.0
 
@@ -2480,7 +2480,7 @@ snapshots:
       '@types/express': 4.17.25
     optional: true
 
-  effect@4.0.0: {}
+  effect@4.0.3: {}
 
   emoji-regex@10.6.0: {}
 
