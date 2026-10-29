@@ -2,10 +2,10 @@ packages:
   - packages/*
 
 catalog:
-  "@effect/ai-openai": 4.0.3
-  "@effect/platform-node": 4.0.3
+  "@effect/ai-openai": 4.1.0
+  "@effect/platform-node": 4.1.0
   dfx: 1.1.0
-  effect: 4.0.3
+  effect: 4.1.0
 
 injectWorkspacePackages: true
 
